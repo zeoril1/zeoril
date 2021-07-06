@@ -1,1 +1,1 @@
-web: gunicorn zeoril.wsgi
+web: gunicorn DiscordBot:app
