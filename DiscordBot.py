@@ -57,7 +57,7 @@ async def on_message(message):
     global voice_client
     if message.content.startswith('!xur'):
         Xur()
-        await message.channel.send(file=discord.File('2.jpg'))
+        await message.channel.send(file=discord.File('XUR_result.png'))
 
     if message.content.startswith('Роляем'):
         author = message.author
@@ -146,7 +146,7 @@ def Xur():
     ys=140
     yt=250
     i=0
-    im1 = Image.open('test.jpg')
+    im1 = Image.open('XUR.png')
     massage=[]
     print('[command]: xur ')
     jsonItemUrl = base_url+'/common/destiny2_content/json/ru/DestinyInventoryItemLiteDefinition-eba8280f-f7f5-483f-b95c-73106def620d.json'
@@ -178,7 +178,7 @@ def Xur():
                     ys=ys+468
                     yt=yt+468
                     break
-    im1.save('2.jpg')
+    im1.save('XUR_result.png')
 
         
 client.run(DISCORD_BOT_TOKEN)
