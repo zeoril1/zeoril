@@ -5,10 +5,14 @@ import asyncio
 import requests
 import time
 import json
+import datetime
+from datetime import date
 from yandex_music.client import Client
 from discord import FFmpegPCMAudio
 from discord.utils import get
 from io import BytesIO
+import random
+import xlrd
 from lxml import html
 from PIL import Image, ImageDraw, ImageFilter,ImageFont
 
@@ -52,8 +56,36 @@ async def on_message(message):
     if message.content.startswith('!xur'):
         Xur()
         await message.channel.send(file=discord.File('2.jpg'))
-        
-    if message.content.startswith('!pl'):
+
+    if message.content.startswith('Роляем'):
+        author = message.author
+
+        exot = xlrd.open_workbook('exotic.xls', formatting_info=True)
+
+        sheet = exot.sheet_by_index(0)
+        ran = random.randint(1, 87)
+        weapon = sheet.row_values(ran)[0]
+        chellenge = sheet.row_values(ran)[2]
+        EngWeapon = sheet.row_values(ran)[1]
+
+        emb = discord.Embed(title=f'Оружие: {weapon} ({EngWeapon}) ',
+                            description=f'\n**Челлендж**:\n{chellenge}',
+                            colour=discord.Color.blue())
+
+        await message.reply(embed=emb)
+
+    if message.content.startswith('!vote'):
+        emb = discord.Embed(title=f'Голосование за рейд',
+                            description=':one: Хрустальный Чертог \n\n:two: Склеп Глубокого Камня \n\n:three: Сад Спасения \n\n:four: Последнее Желание',
+                            colour=discord.Color.blue())
+
+        mess = await message.channel.send(embed=emb)
+        await mess.add_reaction('1️⃣')
+        await mess.add_reaction('2️⃣')
+        await mess.add_reaction('3️⃣')
+        await mess.add_reaction('4️⃣')
+
+    '''if message.content.startswith('!pl'):
         s = message.content
         l = s.find('!')
         r = s.find(' ')
@@ -70,7 +102,7 @@ async def on_message(message):
             bot = await discord.VoiceChannel.connect(channel)
             source = FFmpegPCMAudio(name_music)
             if not bot.is_playing():
-                play_music(bot,source)
+                play_music(bot,source)'''
                 
     if message.content.startswith('!test'):
         global voice
@@ -88,7 +120,7 @@ async def on_message(message):
         voice.source = discord.PCMVolumeTransformer(voice.source)
         voice.source.volume = 1.00
 
-def play_music(bot,source):
+'''def play_music(bot,source):
     global player
     player = bot.play(source,after=lambda e: play_next(bot,e))
     voice = get(client.voice_clients, guild=ctx.guild)
@@ -105,15 +137,7 @@ def play_next(bot,e):
         
     else:
         print('закончилось')
-
-        
-@client.event
-async def on_member_join(member):
-    for nameRole in member.roles:
-        if nameRole.name != 'Бот':
-            print (client.get_guild(394939677590945804).roles)
-            role = discord.utils.get(client.get_guild(394939677590945804).roles, name = "Бот")
-            await member.add_roles(role)
+'''
 
 def Xur():   
     yp=228
@@ -125,37 +149,33 @@ def Xur():
     print('[command]: xur ')
     jsonItemUrl = base_url+'/common/destiny2_content/json/ru/DestinyInventoryItemLiteDefinition-eba8280f-f7f5-483f-b95c-73106def620d.json'
     itemRes = requests.get(jsonItemUrl)
-    '''for saleItem in res.json()['Response']['sales']['data']['2190858386']['saleItems']:
-        itemHash = int(res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash'])
-        nameItem = itemRes.json()[str(itemHash)]['displayProperties']['name']
-        imgItem = base_url+itemRes.json()[str(itemHash)]['displayProperties']['icon']
-        await message.channel.send(str(nameItem)+ ' ' + str(imgItem))'''
     for saleItem in res.json()['Response']['sales']['data']['2190858386']['saleItems']:
         itemHash = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash']
-        for id_w in weapon:
-            if (int(id_w['id']) == int(itemHash)):
-                response = requests.get("https://www.bungie.net"+id_w['icon'])
-                im2 = Image.open(BytesIO(response.content))
-                im1.paste(im2.resize((300,300)),(115,yp))
-                draw = ImageDraw.Draw(im1)
-                sale = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['costs'][0]['quantity']
-                ytt = yt
-                for line in textwrap.wrap(str(id_w['name']), width=10):
-                    font = ImageFont.truetype("arial.ttf", 62)
-                    draw.text((460, ytt), line,(0,0,0), font=font)
-                    font = ImageFont.truetype("arial.ttf", 60)
-                    draw.text((460, ytt), line,(149,191,255), font=font)
-                    ytt += font.getsize(line)[1]
-                font = ImageFont.truetype("arial.ttf", 72)
-                draw.text((510, ys),str(sale),(0,0,0),font=font)
-                font = ImageFont.truetype("arial.ttf", 70)
-                draw.text((510, ys),str(sale),(149,191,255),font=font)
-                '''font = ImageFont.truetype("18922.otf", 50)
-                draw.text((460, yt),str(id_w['name']),(255,0,0),font=font)'''
-                yp=yp+468
-                ys=ys+468
-                yt=yt+468
-                break
+        if itemHash != 3875551374:
+            for id_w in weapon:
+                if (int(id_w['id']) == int(itemHash)):
+                    response = requests.get("https://www.bungie.net"+id_w['icon'])
+                    im2 = Image.open(BytesIO(response.content))
+                    im1.paste(im2.resize((300,300)),(115,yp))
+                    draw = ImageDraw.Draw(im1)
+                    sale = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['costs'][0]['quantity']
+                    ytt = yt
+                    for line in textwrap.wrap(str(id_w['name']), width=10):
+                        font = ImageFont.truetype("18922.otf", 62)
+                        draw.text((460, ytt), line,(0,0,0), font=font)
+                        font = ImageFont.truetype("18922.otf", 60)
+                        draw.text((460, ytt), line,(149,191,255), font=font)
+                        ytt += font.getsize(line)[1]
+                    font = ImageFont.truetype("18922.otf", 72)
+                    draw.text((510, ys),str(sale),(0,0,0),font=font)
+                    font = ImageFont.truetype("18922.otf", 70)
+                    draw.text((510, ys),str(sale),(149,191,255),font=font)
+                    '''font = ImageFont.truetype("18922.otf", 50)
+                    draw.text((460, yt),str(id_w['name']),(255,0,0),font=font)'''
+                    yp=yp+468
+                    ys=ys+468
+                    yt=yt+468
+                    break
     im1.save('2.jpg')
 
         
