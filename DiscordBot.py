@@ -28,7 +28,7 @@ xur_url = "https://www.bungie.net/Platform/Destiny2/Vendors/?components=402"
 print ("\n\n\nConnecting to Bungie: " + xur_url + "\n")
 print ("Fetching data for: Xur's Inventory!")
 res = requests.get(xur_url, headers=HEADERS)
-with open("test.json", "r") as read_file:
+with open("Weapon.json", "r") as read_file:
     file_content = read_file.read()
     weapon = json.loads(file_content)
 # Print the error status:
@@ -50,14 +50,7 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
-@client.event
-async def on_voice_state_update(member,before,after):
-    if member.id == 193425328083828736:
-        channel = member.voice.channel
-        bot = await discord.VoiceChannel.connect(channel)
-        source = FFmpegPCMAudio('music/Никита.mp3')
-        bot.play(source)
-        
+
 @client.event
 async def on_message(message):
     global music_list
