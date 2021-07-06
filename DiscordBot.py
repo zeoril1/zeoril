@@ -28,7 +28,7 @@ xur_url = "https://www.bungie.net/Platform/Destiny2/Vendors/?components=402"
 print ("\n\n\nConnecting to Bungie: " + xur_url + "\n")
 print ("Fetching data for: Xur's Inventory!")
 res = requests.get(xur_url, headers=HEADERS)
-with open("Weapon.json", "r") as read_file:
+with open("resources/Weapon.json", "r") as read_file:
     file_content = read_file.read()
     weapon = json.loads(file_content)
 # Print the error status:
@@ -57,12 +57,12 @@ async def on_message(message):
     global voice_client
     if message.content.startswith('!xur'):
         Xur()
-        await message.channel.send(file=discord.File('XUR_result.png'))
+        await message.channel.send(file=discord.File('resources/XUR_result.png'))
 
     if message.content.startswith('Роляем'):
         author = message.author
 
-        exot = xlrd.open_workbook('exotic.xls', formatting_info=True)
+        exot = xlrd.open_workbook('resources/exotic.xls', formatting_info=True)
 
         sheet = exot.sheet_by_index(0)
         ran = random.randint(1, 87)
@@ -146,7 +146,7 @@ def Xur():
     ys=140
     yt=250
     i=0
-    im1 = Image.open('XUR.png')
+    im1 = Image.open('resources/XUR.png')
     massage=[]
     print('[command]: xur ')
     jsonItemUrl = base_url+'/common/destiny2_content/json/ru/DestinyInventoryItemLiteDefinition-eba8280f-f7f5-483f-b95c-73106def620d.json'
@@ -178,7 +178,7 @@ def Xur():
                     ys=ys+468
                     yt=yt+468
                     break
-    im1.save('XUR_result.png')
+    im1.save('resources/XUR_result.png')
 
         
 client.run(DISCORD_BOT_TOKEN)
