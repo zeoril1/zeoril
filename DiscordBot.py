@@ -16,6 +16,7 @@ import xlrd
 from lxml import html
 from PIL import Image, ImageDraw, ImageFilter,ImageFont
 
+
 DISCORD_BOT_TOKEN = 'NjcyMTE5NzA1MjEyOTQ0Mzg1.XjG2QQ.vX9v5I-taWoAaBE-CfMEc1y3N0k'
 
 HEADERS = {"X-API-Key":'d1a68787e89b4fd1a0f6a99dca645db7'}
@@ -28,7 +29,7 @@ xur_url = "https://www.bungie.net/Platform/Destiny2/Vendors/?components=402"
 print ("\n\n\nConnecting to Bungie: " + xur_url + "\n")
 print ("Fetching data for: Xur's Inventory!")
 res = requests.get(xur_url, headers=HEADERS)
-with open("test.json", "r") as read_file:
+with open("resources/Weapon.json", "r") as read_file:
     file_content = read_file.read()
     weapon = json.loads(file_content)
 # Print the error status:
@@ -50,26 +51,19 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
-@client.event
-async def on_voice_state_update(member,before,after):
-    if member.id == 193425328083828736:
-        channel = member.voice.channel
-        bot = await discord.VoiceChannel.connect(channel)
-        source = FFmpegPCMAudio('music/Никита.mp3')
-        bot.play(source)
-        
+
 @client.event
 async def on_message(message):
     global music_list
     global voice_client
     if message.content.startswith('!xur'):
         Xur()
-        await message.channel.send(file=discord.File('2.jpg'))
+        await message.channel.send(file=discord.File('resources/XUR_result.png'))
 
-    if message.content.startswith('Роляем'):
+    if message.content.startswith('!roll'):
         author = message.author
 
-        exot = xlrd.open_workbook('exotic.xls', formatting_info=True)
+        exot = xlrd.open_workbook('resources/exotic.xls', formatting_info=True)
 
         sheet = exot.sheet_by_index(0)
         ran = random.randint(1, 87)
@@ -93,7 +87,9 @@ async def on_message(message):
         await mess.add_reaction('2️⃣')
         await mess.add_reaction('3️⃣')
         await mess.add_reaction('4️⃣')
-
+    if message.content.startswith('!8 ball'):
+        ball = magic_ball()
+        await message.channel.send(ball)
     '''if message.content.startswith('!pl'):
         s = message.content
         l = s.find('!')
@@ -147,13 +143,20 @@ def play_next(bot,e):
     else:
         print('закончилось')
 '''
+def magic_ball():
+    answer = ['Бесспорно', 'Предрешено', 'Никаких сомнений', 'Определённо да', 'Можешь быть уверен в этом',
+              'Мне кажется — «да»', 'Вероятнее всего', 'Хорошие перспективы', 'Знаки говорят — «да»', 'Да',
+              'Пока не ясно, попробуй снова', 'Спроси позже', 'Лучше не рассказывать', 'Сейчас нельзя предсказать', 'Сконцентрируйся и спроси опять',
+              'Даже не думай', 'Мой ответ — «нет»', 'По моим данным — «нет»', 'Перспективы не очень хорошие', 'Весьма сомнительно']
+    rand = random.randint(0,19)
+    return answer[rand]
 
 def Xur():   
     yp=228
     ys=140
     yt=250
     i=0
-    im1 = Image.open('test.jpg')
+    im1 = Image.open('resources/XUR.png')
     massage=[]
     print('[command]: xur ')
     jsonItemUrl = base_url+'/common/destiny2_content/json/ru/DestinyInventoryItemLiteDefinition-eba8280f-f7f5-483f-b95c-73106def620d.json'
@@ -185,7 +188,7 @@ def Xur():
                     ys=ys+468
                     yt=yt+468
                     break
-    im1.save('2.jpg')
+    im1.save('resources/XUR_result.png')
 
         
 client.run(DISCORD_BOT_TOKEN)

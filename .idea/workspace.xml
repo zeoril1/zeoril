@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="ab68ad31-2da9-419f-9555-ce44170e0c7d" name="Default Changelist" comment="Бот на рейд">
-      <change beforePath="$PROJECT_DIR$/Procfile" beforeDir="false" afterPath="$PROJECT_DIR$/Procfile" afterDir="false" />
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="XUR Переработка">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,24 +11,14 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="PUSH_TAGS">
-      <GitPushTagMode>
-        <option name="argument" value="--tags" />
-        <option name="title" value="All" />
-      </GitPushTagMode>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitSEFilterConfiguration">
-    <file-type-list>
-      <filtered-out-file-type name="LOCAL_BRANCH" />
-      <filtered-out-file-type name="REMOTE_BRANCH" />
-      <filtered-out-file-type name="TAG" />
-      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
-    </file-type-list>
-  </component>
-  <component name="ProjectId" id="1uu1tnMs6I6dWjtprtDi5FUmS5x" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectId" id="1ux6c7jCMKpI9L4wnYfmxgvDKWY" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -39,13 +27,15 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/DiscordBot.py" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\zeoril\resources" />
+    </key>
   </component>
   <component name="RunManager">
-    <configuration name="Python" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="DiscordBot" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="zeoril" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -70,97 +60,55 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="ab68ad31-2da9-419f-9555-ce44170e0c7d" name="Default Changelist" comment="" />
-      <created>1625500877343</created>
+      <changelist id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="" />
+      <created>1625594971676</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1625500877343</updated>
+      <updated>1625594971676</updated>
     </task>
-    <task id="LOCAL-00001" summary="123">
-      <created>1625517772863</created>
+    <task id="LOCAL-00001" summary="XUR Переработка">
+      <created>1625595145785</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1625517772863</updated>
+      <updated>1625595145785</updated>
     </task>
-    <task id="LOCAL-00002" summary="Добавление картинки">
-      <created>1625557421117</created>
+    <task id="LOCAL-00002" summary="XUR Переработка">
+      <created>1625595156267</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1625557421117</updated>
+      <updated>1625595156267</updated>
     </task>
-    <task id="LOCAL-00003" summary="Правка шрифта">
-      <created>1625557606961</created>
+    <task id="LOCAL-00003" summary="XUR Переработка">
+      <created>1625595382596</created>
       <option name="number" value="00003" />
       <option name="presentableId" value="LOCAL-00003" />
       <option name="project" value="LOCAL" />
-      <updated>1625557606962</updated>
+      <updated>1625595382596</updated>
     </task>
-    <task id="LOCAL-00004" summary="Правка шрифта">
-      <created>1625558011379</created>
+    <task id="LOCAL-00004" summary="XUR Переработка">
+      <created>1625595392206</created>
       <option name="number" value="00004" />
       <option name="presentableId" value="LOCAL-00004" />
       <option name="project" value="LOCAL" />
-      <updated>1625558011379</updated>
+      <updated>1625595392206</updated>
     </task>
-    <task id="LOCAL-00005" summary="Бот на рейд">
-      <created>1625559771612</created>
+    <task id="LOCAL-00005" summary="XUR Переработка">
+      <created>1625595417626</created>
       <option name="number" value="00005" />
       <option name="presentableId" value="LOCAL-00005" />
       <option name="project" value="LOCAL" />
-      <updated>1625559771612</updated>
+      <updated>1625595417626</updated>
     </task>
-    <task id="LOCAL-00006" summary="Бот на рейд">
-      <created>1625559793033</created>
+    <task id="LOCAL-00006" summary="XUR Переработка">
+      <created>1625595594760</created>
       <option name="number" value="00006" />
       <option name="presentableId" value="LOCAL-00006" />
       <option name="project" value="LOCAL" />
-      <updated>1625559793033</updated>
+      <updated>1625595594760</updated>
     </task>
-    <task id="LOCAL-00007" summary="Бот на рейд">
-      <created>1625560746719</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1625560746719</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Бот на рейд">
-      <created>1625561281144</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1625561281144</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Бот на рейд">
-      <created>1625562127075</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1625562127075</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Бот на рейд">
-      <created>1625562330117</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1625562330117</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Бот на рейд">
-      <created>1625562990814</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1625562990814</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Бот на рейд">
-      <created>1625563539746</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1625563539746</updated>
-    </task>
-    <option name="localTasksCounter" value="13" />
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -173,13 +121,9 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="123" />
-    <MESSAGE value="Добавление картинки" />
-    <MESSAGE value="Правка шрифта" />
-    <MESSAGE value="Бот на рейд" />
-    <option name="LAST_COMMIT_MESSAGE" value="Бот на рейд" />
+    <MESSAGE value="XUR Переработка" />
+    <option name="LAST_COMMIT_MESSAGE" value="XUR Переработка" />
   </component>
 </project>
