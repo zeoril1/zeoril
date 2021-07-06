@@ -3,12 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="XUR Переработка">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/18922.otf" beforeDir="false" afterPath="$PROJECT_DIR$/resources/18922.otf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Weapon.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Weapon.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XUR.png" beforeDir="false" afterPath="$PROJECT_DIR$/resources/XUR.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XUR_result.png" beforeDir="false" afterPath="$PROJECT_DIR$/resources/XUR_result.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exotic.xls" beforeDir="false" afterPath="$PROJECT_DIR$/resources/exotic.xls" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +101,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625595417626</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="XUR Переработка">
+      <created>1625595594760</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1625595594760</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

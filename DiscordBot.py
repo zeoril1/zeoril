@@ -16,6 +16,7 @@ import xlrd
 from lxml import html
 from PIL import Image, ImageDraw, ImageFilter,ImageFont
 
+
 DISCORD_BOT_TOKEN = 'NjcyMTE5NzA1MjEyOTQ0Mzg1.XjG2QQ.vX9v5I-taWoAaBE-CfMEc1y3N0k'
 
 HEADERS = {"X-API-Key":'d1a68787e89b4fd1a0f6a99dca645db7'}
@@ -59,7 +60,7 @@ async def on_message(message):
         Xur()
         await message.channel.send(file=discord.File('resources/XUR_result.png'))
 
-    if message.content.startswith('Роляем'):
+    if message.content.startswith('!roll'):
         author = message.author
 
         exot = xlrd.open_workbook('resources/exotic.xls', formatting_info=True)
@@ -86,7 +87,9 @@ async def on_message(message):
         await mess.add_reaction('2️⃣')
         await mess.add_reaction('3️⃣')
         await mess.add_reaction('4️⃣')
-
+    if message.content.startswith('!8 ball'):
+        ball = magic_ball()
+        await message.channel.send(ball)
     '''if message.content.startswith('!pl'):
         s = message.content
         l = s.find('!')
@@ -140,6 +143,13 @@ def play_next(bot,e):
     else:
         print('закончилось')
 '''
+def magic_ball():
+    answer = ['Бесспорно', 'Предрешено', 'Никаких сомнений', 'Определённо да', 'Можешь быть уверен в этом',
+              'Мне кажется — «да»', 'Вероятнее всего', 'Хорошие перспективы', 'Знаки говорят — «да»', 'Да',
+              'Пока не ясно, попробуй снова', 'Спроси позже', 'Лучше не рассказывать', 'Сейчас нельзя предсказать', 'Сконцентрируйся и спроси опять',
+              'Даже не думай', 'Мой ответ — «нет»', 'По моим данным — «нет»', 'Перспективы не очень хорошие', 'Весьма сомнительно']
+    rand = random.randint(0,19)
+    return answer[rand]
 
 def Xur():   
     yp=228
