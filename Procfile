@@ -1,1 +1,1 @@
-web: python DiscordBot.py
+web: python DiscordBot.py runserver 0.0.0.0:$PORT
