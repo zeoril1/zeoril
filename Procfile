@@ -1,1 +1,1 @@
-web: gunicorn DiscordBot:app
+web: python DiscordBot.py runserver 0.0.0.0:5000
