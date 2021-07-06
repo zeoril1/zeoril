@@ -23,7 +23,7 @@ HEADERS = {"X-API-Key":'d1a68787e89b4fd1a0f6a99dca645db7'}
 base_url = "https://www.bungie.net"
 xur_url = "https://www.bungie.net/Platform/Destiny2/Vendors/?components=402"
 
-clientYA = Client.from_credentials('neprim1@yandex.ru', 'xthtp321pasha123') 
+'''clientYA = Client.from_credentials('neprim1@yandex.ru', 'xthtp321pasha123') '''
 # Send the request and store the result in res:
 print ("\n\n\nConnecting to Bungie: " + xur_url + "\n")
 print ("Fetching data for: Xur's Inventory!")
@@ -104,7 +104,7 @@ async def on_message(message):
             if not bot.is_playing():
                 play_music(bot,source)'''
                 
-    if message.content.startswith('!test'):
+    '''if message.content.startswith('!test'):
         global voice
         channel = message.author.voice.channel
         voice = get(client.voice_clients, guild=message.guild)
@@ -118,7 +118,7 @@ async def on_message(message):
 
         voice.play(FFmpegPCMAudio('music/223.mp3'), after=lambda e: print(f'RPG music in {channel} has finished playing.'))
         voice.source = discord.PCMVolumeTransformer(voice.source)
-        voice.source.volume = 1.00
+        voice.source.volume = 1.00'''
 
 '''def play_music(bot,source):
     global player
