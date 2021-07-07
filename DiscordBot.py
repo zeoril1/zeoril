@@ -38,8 +38,10 @@ client = discord.Client()
 list_h = []
 list_w = []
 list_t = []
+list_we = []
 list_prew = []
 music_list=[]
+
 
 @client.event
 async def on_ready():
@@ -147,7 +149,75 @@ def magic_ball():
     rand = random.randint(0,19)
     return answer[rand]
 
-def Xur():   
+def Xur():
+    global list_h, list_w, list_t, list_we, yp, ys, yt
+    i = 0
+    x = 0
+    print('[command]: xur ')
+    selItems = res.json()['Response']['sales']['data']['2190858386']['saleItems']
+    im1 = Image.open('resources/XUR.png')
+    for saleItem in selItems:
+        itemHash = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash']
+        if x != 1 and x != 2 and x !=3:
+            for item in list_h:
+                if int(item[0]) == int(itemHash):
+                    yp = 228 + (468*2)
+                    ys = 140 + (468*2)
+                    yt = 250 + (468*2)
+                    draw(item, saleItem, im1, yp, ys, yt)
+                    x = 1
+                    break
+
+        if x != 0 and x!=2 and x !=3:
+            for item in list_w:
+                if int(item[0]) == int(itemHash):
+                    yp = 228 + (468*3)
+                    ys = 140 + (468*3)
+                    yt = 250 + (468*3)
+                    draw(item, saleItem,im1,yp,ys,yt)
+                    x=2
+                    break
+
+        if x != 0 and x != 1 and x !=3:
+            for item in list_t:
+                if int(item[0]) == int(itemHash):
+                    yp = 228 + 468
+                    ys = 140 + 468
+                    yt = 250 + 468
+                    draw(item, saleItem, im1, yp, ys, yt)
+                    x = 3
+                    break
+
+        if x != 0 and x != 1 and x !=2:
+            for item in list_we:
+                if int(item[0]) == int(itemHash):
+                    yp = 228
+                    ys = 140
+                    yt = 250
+                    draw(item, saleItem, im1, yp, ys, yt)
+                    x=0
+                    break
+    im1.save('resources/XUR_result.png')
+
+def draw(item, saleItem, im1, yp, ys, yt):
+    loadIcon = requests.get("https://www.bungie.net" + item[2])
+    im2 = Image.open(BytesIO(loadIcon.content))
+    im1.paste(im2.resize((300, 300)), (115, yp))
+    draw = ImageDraw.Draw(im1)
+    sale = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['costs'][0]['quantity']
+    ytt = yt
+    for line in textwrap.wrap(str(item[1]), width=10):
+        font = ImageFont.truetype("resources/18922.otf", 62)
+        draw.text((460, ytt), line, (0, 0, 0), font=font)
+        font = ImageFont.truetype("resources/18922.otf", 60)
+        draw.text((460, ytt), line, (149, 191, 255), font=font)
+        ytt += font.getsize(line)[1]
+    font = ImageFont.truetype("resources/18922.otf", 72)
+    draw.text((510, ys), str(sale), (0, 0, 0), font=font)
+    font = ImageFont.truetype("resources/18922.otf", 70)
+    draw.text((510, ys), str(sale), (149, 191, 255), font=font)
+
+'''def Xur():   
     yp=228
     ys=140
     yt=250
@@ -178,16 +248,14 @@ def Xur():
                     draw.text((510, ys),str(sale),(0,0,0),font=font)
                     font = ImageFont.truetype("18922.otf", 70)
                     draw.text((510, ys),str(sale),(149,191,255),font=font)
-                    '''font = ImageFont.truetype("18922.otf", 50)
-                    draw.text((460, yt),str(id_w['name']),(255,0,0),font=font)'''
                     yp=yp+468
                     ys=ys+468
                     yt=yt+468
                     break
-    im1.save('resources/XUR_result.png')
+    im1.save('resources/XUR_result.png')'''
 
 def items_filler():
-    global list_h,list_w,list_t,list_prew
+    global list_h,list_w,list_t,list_w,list_prew
     f = open("resources/Items.json", "w", encoding="utf8")
     down_mani = requests.get(
         "https://www.bungie.net/common/destiny2_content/json/ru/DestinyInventoryItemLiteDefinition-1a7d8d39-ca62-40af-becd-98bca27ed617.json")  # делаем запрос
@@ -209,6 +277,8 @@ def items_filler():
                     list_w.append(list_prew)
                 elif sale['classType'] == 0:
                     list_t.append(list_prew)
+                elif sale['classType'] == 3:
+                    list_we.append(list_prew)
                 list_prew = []
         except KeyError:
             x = 1
