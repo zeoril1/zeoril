@@ -55,10 +55,12 @@ async def on_message(message):
     global music_list
     global voice_client
     if message.content.startswith('!xur'):
+        print('[command]: xur ')
         Xur()
         await message.channel.send(file=discord.File('resources/XUR_result.png'))
 
     if message.content.startswith('!roll'):
+        print('[command]: xur ')
         author = message.author
 
         exot = xlrd.open_workbook('resources/exotic.xls', formatting_info=True)
@@ -76,6 +78,7 @@ async def on_message(message):
         await message.reply(embed=emb)
 
     if message.content.startswith('!vote'):
+        print('[command]: xur ')
         emb = discord.Embed(title=f'Голосование за рейд',
                             description=':one: Хрустальный Чертог \n\n:two: Склеп Глубокого Камня \n\n:three: Сад Спасения \n\n:four: Последнее Желание',
                             colour=discord.Color.blue())
@@ -86,6 +89,7 @@ async def on_message(message):
         await mess.add_reaction('3️⃣')
         await mess.add_reaction('4️⃣')
     if message.content.startswith('!8 ball'):
+        print('[command]: xur ')
         ball = magic_ball()
         await message.channel.send(ball)
     '''if message.content.startswith('!pl'):
@@ -153,7 +157,6 @@ def Xur():
     global list_h, list_w, list_t, list_we, yp, ys, yt
     i = 0
     x = 0
-    print('[command]: xur ')
     selItems = res.json()['Response']['sales']['data']['2190858386']['saleItems']
     im1 = Image.open('resources/XUR.png')
     for saleItem in selItems:
