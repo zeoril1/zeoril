@@ -31,7 +31,7 @@ print ("Fetching data for: Xur's Inventory!")
 res = requests.get(xur_url, headers=HEADERS)
 with open("resources/Weapon.json", "r") as read_file:
     file_content = read_file.read()
-    weapon = json.loads(file_content)
+    weapons = json.loads(file_content)
 # Print the error status:
 music_list=[]
 client = discord.Client()
@@ -164,7 +164,7 @@ def Xur():
     for saleItem in res.json()['Response']['sales']['data']['2190858386']['saleItems']:
         itemHash = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash']
         if itemHash != 3875551374:
-            for id_w in weapon:
+            for id_w in weapons:
                 if (int(id_w['id']) == int(itemHash)):
                     response = requests.get("https://www.bungie.net"+id_w['icon'])
                     im2 = Image.open(BytesIO(response.content))
