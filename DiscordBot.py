@@ -160,6 +160,7 @@ def Xur():
     selItems = res.json()['Response']['sales']['data']['2190858386']['saleItems']
     im1 = Image.open('resources/XUR.png')
     for saleItem in selItems:
+        x=0
         itemHash = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash']
         if x != 1 and x != 2 and x !=3:
             for item in list_h:
@@ -168,8 +169,10 @@ def Xur():
                     ys = 140 + (468*2)
                     yt = 250 + (468*2)
                     draw(item, saleItem, im1, yp, ys, yt)
-                    x = 1
+                    x = 0
                     break
+                else:
+                    x=1
 
         if x != 0 and x!=2 and x !=3:
             for item in list_w:
@@ -178,8 +181,10 @@ def Xur():
                     ys = 140 + (468*3)
                     yt = 250 + (468*3)
                     draw(item, saleItem,im1,yp,ys,yt)
-                    x=2
+                    x=1
                     break
+                else:
+                    x=2
 
         if x != 0 and x != 1 and x !=3:
             for item in list_t:
@@ -188,8 +193,10 @@ def Xur():
                     ys = 140 + 468
                     yt = 250 + 468
                     draw(item, saleItem, im1, yp, ys, yt)
-                    x = 3
+                    x = 2
                     break
+                else:
+                    x=3
 
         if x != 0 and x != 1 and x !=2:
             for item in list_we:
@@ -198,8 +205,10 @@ def Xur():
                     ys = 140
                     yt = 250
                     draw(item, saleItem, im1, yp, ys, yt)
-                    x=0
+                    x=3
                     break
+                else:
+                    x = 4
     im1.save('resources/XUR_result.png')
 
 def draw(item, saleItem, im1, yp, ys, yt):
