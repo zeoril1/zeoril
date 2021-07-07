@@ -29,21 +29,17 @@ xur_url = "https://www.bungie.net/Platform/Destiny2/Vendors/?components=402"
 print ("\n\n\nConnecting to Bungie: " + xur_url + "\n")
 print ("Fetching data for: Xur's Inventory!")
 res = requests.get(xur_url, headers=HEADERS)
-with open("resources/Weapon.json", "r") as read_file:
+with open("resources/Items.json", "r", encoding="utf8") as read_file:
     file_content = read_file.read()
-    weapons = json.loads(file_content)
+    Items = json.loads(file_content)
 # Print the error status:
-music_list=[]
 client = discord.Client()
 
-
-def app(environ, start_response):
-    data = b"Hello, World!\n"
-    start_response("200 OK", [
-        ("Content-Type", "text/plain"),
-        ("Content-Length", str(len(data)))
-    ])
-    return iter([data])
+list_h = []
+list_w = []
+list_t = []
+list_prew = []
+music_list=[]
 
 @client.event
 async def on_ready():
@@ -164,7 +160,7 @@ def Xur():
     for saleItem in res.json()['Response']['sales']['data']['2190858386']['saleItems']:
         itemHash = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash']
         if itemHash != 3875551374:
-            for id_w in weapons:
+            for id_w in Items:
                 if (int(id_w['id']) == int(itemHash)):
                     response = requests.get("https://www.bungie.net"+id_w['icon'])
                     im2 = Image.open(BytesIO(response.content))
@@ -190,5 +186,34 @@ def Xur():
                     break
     im1.save('resources/XUR_result.png')
 
-        
+def items_filler():
+    global list_h,list_w,list_t,list_prew
+    f = open("resources/Items.json", "w", encoding="utf8")
+    down_mani = requests.get(
+        "https://www.bungie.net/common/destiny2_content/json/ru/DestinyInventoryItemLiteDefinition-1a7d8d39-ca62-40af-becd-98bca27ed617.json")  # делаем запрос
+    f.write(down_mani.text)  # записываем содержимое в файл; как видите - content запроса
+    f.close()
+
+    with open("resources/Items.json", "r", encoding="utf8") as read_file:
+        Items = json.load(read_file)
+    for id_w in Items:
+        try:
+            sale = Items[id_w]
+            if sale['inventory']['tierTypeName'] == 'Экзотический':
+                list_prew.append(str(sale['loreHash']))
+                list_prew.append(sale['displayProperties']['name'])
+                list_prew.append(sale['displayProperties']['icon'])
+                if sale['classType'] == 1:
+                    list_h.append(list_prew)
+                elif sale['classType'] == 2:
+                    list_w.append(list_prew)
+                elif sale['classType'] == 0:
+                    list_t.append(list_prew)
+                list_prew = []
+        except KeyError:
+            x = 1
+        else:
+            y = 1
+
+items_filler()
 client.run(DISCORD_BOT_TOKEN)
