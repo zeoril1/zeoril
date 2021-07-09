@@ -5,6 +5,7 @@ import asyncio
 import requests
 import time
 import json
+import dhooks
 import datetime
 from datetime import date
 from yandex_music.client import Client
@@ -18,6 +19,7 @@ from PIL import Image, ImageDraw, ImageFilter,ImageFont
 
 
 DISCORD_BOT_TOKEN = 'NjcyMTE5NzA1MjEyOTQ0Mzg1.XjG2QQ.vX9v5I-taWoAaBE-CfMEc1y3N0k'
+Discord_webhook = "https://discord.com/api/webhooks/862371875665870898/N_i02s7Zm8kgysmIllF4m6c7YgK655WmwZA8SLnUMuO2HW16y-7q6_7TkYmA82oh1jjp"
 
 HEADERS = {"X-API-Key":'d1a68787e89b4fd1a0f6a99dca645db7'}
  
@@ -29,21 +31,19 @@ xur_url = "https://www.bungie.net/Platform/Destiny2/Vendors/?components=402"
 print ("\n\n\nConnecting to Bungie: " + xur_url + "\n")
 print ("Fetching data for: Xur's Inventory!")
 res = requests.get(xur_url, headers=HEADERS)
-with open("resources/Weapon.json", "r") as read_file:
+with open("resources/Items.json", "r", encoding="utf8") as read_file:
     file_content = read_file.read()
-    weapon = json.loads(file_content)
+    Items = json.loads(file_content)
 # Print the error status:
-music_list=[]
 client = discord.Client()
 
+list_h = []
+list_w = []
+list_t = []
+list_we = []
+list_prew = []
+music_list=[]
 
-def app(environ, start_response):
-    data = b"Hello, World!\n"
-    start_response("200 OK", [
-        ("Content-Type", "text/plain"),
-        ("Content-Length", str(len(data)))
-    ])
-    return iter([data])
 
 @client.event
 async def on_ready():
@@ -57,10 +57,12 @@ async def on_message(message):
     global music_list
     global voice_client
     if message.content.startswith('!xur'):
+        print('[command]: xur ')
         Xur()
         await message.channel.send(file=discord.File('resources/XUR_result.png'))
 
     if message.content.startswith('!roll'):
+        print('[command]: xur ')
         author = message.author
 
         exot = xlrd.open_workbook('resources/exotic.xls', formatting_info=True)
@@ -78,6 +80,7 @@ async def on_message(message):
         await message.reply(embed=emb)
 
     if message.content.startswith('!vote'):
+        print('[command]: xur ')
         emb = discord.Embed(title=f'Голосование за рейд',
                             description=':one: Хрустальный Чертог \n\n:two: Склеп Глубокого Камня \n\n:three: Сад Спасения \n\n:four: Последнее Желание',
                             colour=discord.Color.blue())
@@ -88,6 +91,7 @@ async def on_message(message):
         await mess.add_reaction('3️⃣')
         await mess.add_reaction('4️⃣')
     if message.content.startswith('!8 ball'):
+        print('[command]: xur ')
         ball = magic_ball()
         await message.channel.send(ball)
     '''if message.content.startswith('!pl'):
@@ -151,7 +155,91 @@ def magic_ball():
     rand = random.randint(0,19)
     return answer[rand]
 
-def Xur():   
+def Xur():
+    global list_h, list_w, list_t, list_we, yp, ys, yt
+    i = 0
+    x = 0
+    selItems = res.json()['Response']['sales']['data']['2190858386']['saleItems']
+    im1 = Image.open('resources/XUR.png')
+    for saleItem in selItems:
+        x=0
+        itemHash = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash']
+        if  itemHash != 2125848607:
+            if x != 1 and x != 2 and x !=3:
+                for item in list_h:
+                    if int(item[0]) == int(itemHash):
+                        yp = 228 + (468*2)
+                        ys = 140 + (468*2)
+                        yt = 250 + (468*2)
+                        draw(item, saleItem, im1, yp, ys, yt)
+                        x = 0
+                        break
+                    else:
+                        x=1
+
+            if x != 0 and x!=2 and x !=3:
+                for item in list_w:
+                    if int(item[0]) == int(itemHash):
+                        yp = 228 + (468*3)
+                        ys = 140 + (468*3)
+                        yt = 250 + (468*3)
+                        draw(item, saleItem,im1,yp,ys,yt)
+                        x=1
+                        break
+                    else:
+                        x=2
+
+            if x != 0 and x != 1 and x !=3:
+                for item in list_t:
+                    if int(item[0]) == int(itemHash):
+                        yp = 228 + 468
+                        ys = 140 + 468
+                        yt = 250 + 468
+                        draw(item, saleItem, im1, yp, ys, yt)
+                        x = 2
+                        break
+                    else:
+                        x=3
+
+            if x != 0 and x != 1 and x !=2:
+                for item in list_we:
+                    if int(item[0]) == int(itemHash):
+                        yp = 228
+                        ys = 140
+                        yt = 250
+                        draw(item, saleItem, im1, yp, ys, yt)
+                        x=3
+                        break
+                    else:
+                        x = 4
+    im1.save('resources/XUR_result.png')
+
+def draw(item, saleItem, im1, yp, ys, yt):
+    loadIcon = requests.get("https://www.bungie.net" + item[2])
+    im2 = Image.open(BytesIO(loadIcon.content))
+    im1.paste(im2.resize((300, 300)), (115, yp))
+    draw = ImageDraw.Draw(im1)
+    sale = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['costs'][0]['quantity']
+    ytt = yt
+    for line in textwrap.wrap(str(item[1]), width=10):
+        font = ImageFont.truetype("resources/18922.otf", 62)
+        draw.text((460, ytt), line, (0, 0, 0), font=font)
+        font = ImageFont.truetype("resources/18922.otf", 60)
+        draw.text((460, ytt), line, (149, 191, 255), font=font)
+        ytt += font.getsize(line)[1]
+    font = ImageFont.truetype("resources/18922.otf", 72)
+    draw.text((510, ys), str(sale), (0, 0, 0), font=font)
+    font = ImageFont.truetype("resources/18922.otf", 70)
+    draw.text((510, ys), str(sale), (149, 191, 255), font=font)
+
+def Twitter():
+    webhook = dhooks.Webhook(Discord_webhook)
+    embed = dhooks.Embed(
+        description='123',color=0xfcdbf0
+    )
+    embed.add_field(name='test', value='title')
+    webhook.send(embed=embed)
+'''def Xur():
     yp=228
     ys=140
     yt=250
@@ -164,7 +252,8 @@ def Xur():
     for saleItem in res.json()['Response']['sales']['data']['2190858386']['saleItems']:
         itemHash = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash']
         if itemHash != 3875551374:
-            for id_w in weapon:
+            for id_w in Items:
+                print(id_w['id'])
                 if (int(id_w['id']) == int(itemHash)):
                     response = requests.get("https://www.bungie.net"+id_w['icon'])
                     im2 = Image.open(BytesIO(response.content))
@@ -182,13 +271,42 @@ def Xur():
                     draw.text((510, ys),str(sale),(0,0,0),font=font)
                     font = ImageFont.truetype("18922.otf", 70)
                     draw.text((510, ys),str(sale),(149,191,255),font=font)
-                    '''font = ImageFont.truetype("18922.otf", 50)
-                    draw.text((460, yt),str(id_w['name']),(255,0,0),font=font)'''
                     yp=yp+468
                     ys=ys+468
                     yt=yt+468
                     break
-    im1.save('resources/XUR_result.png')
+    im1.save('resources/XUR_result.png')'''
 
-        
+def items_filler():
+    global list_h,list_w,list_t,list_w,list_prew
+    f = open("resources/Items.json", "w", encoding="utf8")
+    down_mani = requests.get(
+        "https://www.bungie.net/common/destiny2_content/json/ru/DestinyInventoryItemLiteDefinition-1a7d8d39-ca62-40af-becd-98bca27ed617.json")  # делаем запрос
+    f.write(down_mani.text)  # записываем содержимое в файл; как видите - content запроса
+    f.close()
+
+    with open("resources/Items.json", "r", encoding="utf8") as read_file:
+        Items = json.load(read_file)
+    for id_w in Items:
+        try:
+            sale = Items[id_w]
+            if sale['inventory']['tierTypeName'] == 'Экзотический':
+                list_prew.append(id_w)
+                list_prew.append(sale['displayProperties']['name'])
+                list_prew.append(sale['displayProperties']['icon'])
+                if sale['classType'] == 1:
+                    list_h.append(list_prew)
+                elif sale['classType'] == 2:
+                    list_w.append(list_prew)
+                elif sale['classType'] == 0:
+                    list_t.append(list_prew)
+                elif sale['classType'] == 3:
+                    list_we.append(list_prew)
+                list_prew = []
+        except KeyError:
+            x = 1
+        else:
+            y = 1
+items_filler()
+Twitter()
 client.run(DISCORD_BOT_TOKEN)
