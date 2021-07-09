@@ -5,6 +5,7 @@ import asyncio
 import requests
 import time
 import json
+import dhooks
 import datetime
 from datetime import date
 from yandex_music.client import Client
@@ -18,6 +19,7 @@ from PIL import Image, ImageDraw, ImageFilter,ImageFont
 
 
 DISCORD_BOT_TOKEN = 'NjcyMTE5NzA1MjEyOTQ0Mzg1.XjG2QQ.vX9v5I-taWoAaBE-CfMEc1y3N0k'
+Discord_webhook = "https://discord.com/api/webhooks/862371875665870898/N_i02s7Zm8kgysmIllF4m6c7YgK655WmwZA8SLnUMuO2HW16y-7q6_7TkYmA82oh1jjp"
 
 HEADERS = {"X-API-Key":'d1a68787e89b4fd1a0f6a99dca645db7'}
  
@@ -162,53 +164,55 @@ def Xur():
     for saleItem in selItems:
         x=0
         itemHash = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash']
-        if x != 1 and x != 2 and x !=3:
-            for item in list_h:
-                if int(item[0]) == int(itemHash):
-                    yp = 228 + (468*2)
-                    ys = 140 + (468*2)
-                    yt = 250 + (468*2)
-                    draw(item, saleItem, im1, yp, ys, yt)
-                    x = 0
-                    break
-                else:
-                    x=1
+        print(itemHash)
+        if  itemHash != 2125848607:
+            if x != 1 and x != 2 and x !=3:
+                for item in list_h:
+                    if int(item[0]) == int(itemHash):
+                        yp = 228 + (468*2)
+                        ys = 140 + (468*2)
+                        yt = 250 + (468*2)
+                        draw(item, saleItem, im1, yp, ys, yt)
+                        x = 0
+                        break
+                    else:
+                        x=1
 
-        if x != 0 and x!=2 and x !=3:
-            for item in list_w:
-                if int(item[0]) == int(itemHash):
-                    yp = 228 + (468*3)
-                    ys = 140 + (468*3)
-                    yt = 250 + (468*3)
-                    draw(item, saleItem,im1,yp,ys,yt)
-                    x=1
-                    break
-                else:
-                    x=2
+            if x != 0 and x!=2 and x !=3:
+                for item in list_w:
+                    if int(item[0]) == int(itemHash):
+                        yp = 228 + (468*3)
+                        ys = 140 + (468*3)
+                        yt = 250 + (468*3)
+                        draw(item, saleItem,im1,yp,ys,yt)
+                        x=1
+                        break
+                    else:
+                        x=2
 
-        if x != 0 and x != 1 and x !=3:
-            for item in list_t:
-                if int(item[0]) == int(itemHash):
-                    yp = 228 + 468
-                    ys = 140 + 468
-                    yt = 250 + 468
-                    draw(item, saleItem, im1, yp, ys, yt)
-                    x = 2
-                    break
-                else:
-                    x=3
+            if x != 0 and x != 1 and x !=3:
+                for item in list_t:
+                    if int(item[0]) == int(itemHash):
+                        yp = 228 + 468
+                        ys = 140 + 468
+                        yt = 250 + 468
+                        draw(item, saleItem, im1, yp, ys, yt)
+                        x = 2
+                        break
+                    else:
+                        x=3
 
-        if x != 0 and x != 1 and x !=2:
-            for item in list_we:
-                if int(item[0]) == int(itemHash):
-                    yp = 228
-                    ys = 140
-                    yt = 250
-                    draw(item, saleItem, im1, yp, ys, yt)
-                    x=3
-                    break
-                else:
-                    x = 4
+            if x != 0 and x != 1 and x !=2:
+                for item in list_we:
+                    if int(item[0]) == int(itemHash):
+                        yp = 228
+                        ys = 140
+                        yt = 250
+                        draw(item, saleItem, im1, yp, ys, yt)
+                        x=3
+                        break
+                    else:
+                        x = 4
     im1.save('resources/XUR_result.png')
 
 def draw(item, saleItem, im1, yp, ys, yt):
@@ -229,7 +233,14 @@ def draw(item, saleItem, im1, yp, ys, yt):
     font = ImageFont.truetype("resources/18922.otf", 70)
     draw.text((510, ys), str(sale), (149, 191, 255), font=font)
 
-'''def Xur():   
+def Twitter():
+    webhook = dhooks.Webhook(Discord_webhook)
+    embed = dhooks.Embed(
+        description='123',color=0xfcdbf0
+    )
+    embed.add_field(name='test', value='title')
+    webhook.send(embed=embed)
+'''def Xur():
     yp=228
     ys=140
     yt=250
@@ -243,6 +254,7 @@ def draw(item, saleItem, im1, yp, ys, yt):
         itemHash = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash']
         if itemHash != 3875551374:
             for id_w in Items:
+                print(id_w['id'])
                 if (int(id_w['id']) == int(itemHash)):
                     response = requests.get("https://www.bungie.net"+id_w['icon'])
                     im2 = Image.open(BytesIO(response.content))
@@ -280,7 +292,7 @@ def items_filler():
         try:
             sale = Items[id_w]
             if sale['inventory']['tierTypeName'] == 'Экзотический':
-                list_prew.append(str(sale['loreHash']))
+                list_prew.append(id_w)
                 list_prew.append(sale['displayProperties']['name'])
                 list_prew.append(sale['displayProperties']['icon'])
                 if sale['classType'] == 1:
@@ -296,6 +308,6 @@ def items_filler():
             x = 1
         else:
             y = 1
-
 items_filler()
+Twitter()
 client.run(DISCORD_BOT_TOKEN)
