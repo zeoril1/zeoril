@@ -164,7 +164,7 @@ def Xur():
     for saleItem in selItems:
         x=0
         itemHash = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash']
-        if  itemHash != 2125848607:
+        if  itemHash != 2125848607 and itemHash != 3875551374:
             if x != 1 and x != 2 and x !=3:
                 for item in list_h:
                     if int(item[0]) == int(itemHash):
@@ -215,6 +215,7 @@ def Xur():
     im1.save('resources/XUR_result.png')
 
 def draw(item, saleItem, im1, yp, ys, yt):
+    print(item[0])
     loadIcon = requests.get("https://www.bungie.net" + item[2])
     im2 = Image.open(BytesIO(loadIcon.content))
     im1.paste(im2.resize((300, 300)), (115, yp))
