@@ -164,7 +164,6 @@ def Xur():
     for saleItem in selItems:
         x=0
         itemHash = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash']
-        print(itemHash)
         if  itemHash != 2125848607:
             if x != 1 and x != 2 and x !=3:
                 for item in list_h:
