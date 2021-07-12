@@ -13,7 +13,8 @@ from discord import FFmpegPCMAudio
 from discord.utils import get
 from io import BytesIO
 import random
-import xlrd
+import xlrd,xlwt
+from xlutils.copy import copy
 from lxml import html
 from PIL import Image, ImageDraw, ImageFilter,ImageFont
 
@@ -62,7 +63,7 @@ async def on_message(message):
         await message.channel.send(file=discord.File('resources/XUR_result.png'))
 
     if message.content.startswith('!roll'):
-        print('[command]: xur ')
+        print('[command]: roll ')
         author = message.author
 
         exot = xlrd.open_workbook('resources/exotic.xls', formatting_info=True)
@@ -80,7 +81,7 @@ async def on_message(message):
         await message.reply(embed=emb)
 
     if message.content.startswith('!vote'):
-        print('[command]: xur ')
+        print('[command]: vote ')
         emb = discord.Embed(title=f'Голосование за рейд',
                             description=':one: Хрустальный Чертог \n\n:two: Склеп Глубокого Камня \n\n:three: Сад Спасения \n\n:four: Последнее Желание',
                             colour=discord.Color.blue())
@@ -90,10 +91,36 @@ async def on_message(message):
         await mess.add_reaction('2️⃣')
         await mess.add_reaction('3️⃣')
         await mess.add_reaction('4️⃣')
+
     if message.content.startswith('!8 ball'):
-        print('[command]: xur ')
+        print('[command]: 8 ball ')
         ball = magic_ball()
         await message.channel.send(ball)
+
+    if message.content.startswith('!update'):
+        x=0
+        print('[command]: update ')
+        list = message.content.split('|')
+        exot = xlrd.open_workbook('resources/exotic.xls', formatting_info=True)
+        sheet = exot.sheet_by_index(0)
+        wb = copy(exot)
+        sheet_w = wb.get_sheet(0)
+        ran = random.randint(1, 87)
+        for quest in sheet:
+            x=x+1
+            if quest[0].value == list[1]:
+                if quest[2].value != 'Нет.':
+                    text=quest[2].value+';'+list[2]
+                else:
+                    text =list[2]
+                sheet_w.write(x-1,2,text)
+                wb.save('resources/exotic.xls')
+                break
+        '''weapon = sheet.row_values(ran)[0]
+        chellenge = sheet.row_values(ran)[2]
+        EngWeapon = sheet.row_values(ran)[1]'''
+        await message.channel.send('Для' + list[1] +' добавлено испытание '+list[2])
+
     '''if message.content.startswith('!pl'):
         s = message.content
         l = s.find('!')
@@ -233,51 +260,6 @@ def draw(item, saleItem, im1, yp, ys, yt):
     font = ImageFont.truetype("resources/18922.otf", 70)
     draw.text((510, ys), str(sale), (149, 191, 255), font=font)
 
-def Twitter():
-    webhook = dhooks.Webhook(Discord_webhook)
-    embed = dhooks.Embed(
-        description='123',color=0xfcdbf0
-    )
-    embed.add_field(name='test', value='title')
-    webhook.send(embed=embed)
-'''def Xur():
-    yp=228
-    ys=140
-    yt=250
-    i=0
-    im1 = Image.open('resources/XUR.png')
-    massage=[]
-    print('[command]: xur ')
-    jsonItemUrl = base_url+'/common/destiny2_content/json/ru/DestinyInventoryItemLiteDefinition-eba8280f-f7f5-483f-b95c-73106def620d.json'
-    itemRes = requests.get(jsonItemUrl)
-    for saleItem in res.json()['Response']['sales']['data']['2190858386']['saleItems']:
-        itemHash = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash']
-        if itemHash != 3875551374:
-            for id_w in Items:
-                print(id_w['id'])
-                if (int(id_w['id']) == int(itemHash)):
-                    response = requests.get("https://www.bungie.net"+id_w['icon'])
-                    im2 = Image.open(BytesIO(response.content))
-                    im1.paste(im2.resize((300,300)),(115,yp))
-                    draw = ImageDraw.Draw(im1)
-                    sale = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['costs'][0]['quantity']
-                    ytt = yt
-                    for line in textwrap.wrap(str(id_w['name']), width=10):
-                        font = ImageFont.truetype("18922.otf", 62)
-                        draw.text((460, ytt), line,(0,0,0), font=font)
-                        font = ImageFont.truetype("18922.otf", 60)
-                        draw.text((460, ytt), line,(149,191,255), font=font)
-                        ytt += font.getsize(line)[1]
-                    font = ImageFont.truetype("18922.otf", 72)
-                    draw.text((510, ys),str(sale),(0,0,0),font=font)
-                    font = ImageFont.truetype("18922.otf", 70)
-                    draw.text((510, ys),str(sale),(149,191,255),font=font)
-                    yp=yp+468
-                    ys=ys+468
-                    yt=yt+468
-                    break
-    im1.save('resources/XUR_result.png')'''
-
 def items_filler():
     global list_h,list_w,list_t,list_w,list_prew
     f = open("resources/Items.json", "w", encoding="utf8")
@@ -308,6 +290,6 @@ def items_filler():
             x = 1
         else:
             y = 1
+
 items_filler()
-Twitter()
 client.run(DISCORD_BOT_TOKEN)
