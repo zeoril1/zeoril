@@ -119,7 +119,7 @@ async def on_message(message):
         '''weapon = sheet.row_values(ran)[0]
         chellenge = sheet.row_values(ran)[2]
         EngWeapon = sheet.row_values(ran)[1]'''
-        await message.channel.send('Готово')
+        await message.channel.send('Для' + list[1] +' добавлено испытание '+list[2])
 
     '''if message.content.startswith('!pl'):
         s = message.content

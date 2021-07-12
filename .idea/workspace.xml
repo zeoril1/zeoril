@@ -4,11 +4,9 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="XUR правки">
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Добавление испытаний">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/exotic.xls" beforeDir="false" afterPath="$PROJECT_DIR$/resources/exotic.xls" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,8 +100,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.Test" />
       <item itemvalue="Python.DiscordBot" />
+      <item itemvalue="Python.Test" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -213,7 +211,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625855707149</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Добавление испытаний">
+      <created>1625859224906</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1625859224906</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -232,6 +237,7 @@
     <MESSAGE value="XUR Переработка" />
     <MESSAGE value="Микро лог" />
     <MESSAGE value="XUR правки" />
-    <option name="LAST_COMMIT_MESSAGE" value="XUR правки" />
+    <MESSAGE value="Добавление испытаний" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавление испытаний" />
   </component>
 </project>
