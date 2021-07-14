@@ -15,7 +15,7 @@ from io import BytesIO
 import random
 import xlrd,xlwt
 from xlutils.copy import copy
-from lxml import html
+from mutagen.mp3 import MP3
 from PIL import Image, ImageDraw, ImageFilter,ImageFont
 
 
@@ -52,6 +52,18 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
+
+@client.event
+async def on_voice_state_update(member,before,after):
+    if member.id == 284610292095123456:
+        channel = member.voice.channel
+        bot = await discord.VoiceChannel.connect(channel)
+        f = MP3('music/Dungeon master.mp3')
+        t = f.info.length+0.2
+        bot.play(FFmpegPCMAudio(executable="F:/zeoril/music/ffmpeg/ffmpeg.exe", source="music/Dungeon master.mp3"))
+        time.sleep(t)
+        await bot.disconnect()
+
 
 @client.event
 async def on_message(message):
