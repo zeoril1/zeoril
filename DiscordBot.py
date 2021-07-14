@@ -56,7 +56,7 @@ async def on_ready():
 
 @client.event
 async def on_voice_state_update(member,before,after):
-    if member.id == 284610292095123456:
+    if member.id == 284610292095123456 and before.channel!=after.channel:
         channel = member.voice.channel
         bot = await discord.VoiceChannel.connect(channel)
         f = MP3('music/Dungeon master.mp3')
