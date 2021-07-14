@@ -60,7 +60,7 @@ async def on_voice_state_update(member,before,after):
         bot = await discord.VoiceChannel.connect(channel)
         f = MP3('music/Dungeon master.mp3')
         t = f.info.length+0.2
-        bot.play(FFmpegPCMAudio(executable="F:/zeoril/music/ffmpeg/ffmpeg.exe", source="music/Dungeon master.mp3"))
+        bot.play(FFmpegPCMAudio(executable="music/ffmpeg/ffmpeg.exe", source="music/Dungeon master.mp3"))
         time.sleep(t)
         await bot.disconnect()
 
