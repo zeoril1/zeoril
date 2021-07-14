@@ -11,6 +11,7 @@ from datetime import date
 from yandex_music.client import Client
 from discord import FFmpegPCMAudio
 from discord.utils import get
+import os
 from io import BytesIO
 import random
 import xlrd,xlwt
@@ -60,7 +61,7 @@ async def on_voice_state_update(member,before,after):
         bot = await discord.VoiceChannel.connect(channel)
         f = MP3('music/Dungeon master.mp3')
         t = f.info.length+0.2
-        bot.play(FFmpegPCMAudio(executable="music/ffmpeg/ffmpeg", source="music/Dungeon master.mp3"))
+        bot.play(FFmpegPCMAudio(source="music/Dungeon master.mp3"))
         time.sleep(t)
         await bot.disconnect()
 
