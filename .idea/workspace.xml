@@ -4,9 +4,10 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="add song Nikos">
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="add song dobrozhor, detorquemada, saren, Darkswatter">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/Items.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Items.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/XUR_result.png" beforeDir="false" afterPath="$PROJECT_DIR$/resources/XUR_result.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -102,8 +103,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.DiscordBot" />
       <item itemvalue="Python.Test" />
+      <item itemvalue="Python.DiscordBot" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -318,7 +319,21 @@
       <option name="project" value="LOCAL" />
       <updated>1626364149114</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="add song dobrozhor, detorquemada, saren, Darkswatter">
+      <created>1626373113732</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1626373113732</updated>
+    </task>
+    <task id="LOCAL-00031" summary="add song dobrozhor, detorquemada, saren, Darkswatter">
+      <created>1626373451002</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1626373451002</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -341,6 +356,7 @@
     <MESSAGE value="Dungeon master" />
     <MESSAGE value="Song gtix, zeoril, seya, wariri" />
     <MESSAGE value="add song Nikos" />
-    <option name="LAST_COMMIT_MESSAGE" value="add song Nikos" />
+    <MESSAGE value="add song dobrozhor, detorquemada, saren, Darkswatter" />
+    <option name="LAST_COMMIT_MESSAGE" value="add song dobrozhor, detorquemada, saren, Darkswatter" />
   </component>
 </project>
