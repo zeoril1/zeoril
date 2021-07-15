@@ -4,7 +4,7 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Dungeon master">
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Song gtix, zeoril, seya, wariri">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/music/.mp3" beforeDir="false" />
@@ -306,7 +306,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626270317624</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Song gtix, zeoril, seya, wariri">
+      <created>1626363970946</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1626363970946</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -327,6 +334,7 @@
     <MESSAGE value="XUR правки" />
     <MESSAGE value="Добавление испытаний" />
     <MESSAGE value="Dungeon master" />
-    <option name="LAST_COMMIT_MESSAGE" value="Dungeon master" />
+    <MESSAGE value="Song gtix, zeoril, seya, wariri" />
+    <option name="LAST_COMMIT_MESSAGE" value="Song gtix, zeoril, seya, wariri" />
   </component>
 </project>
