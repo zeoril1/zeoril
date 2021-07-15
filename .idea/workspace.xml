@@ -7,6 +7,8 @@
     <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Dungeon master">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/music/.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/music/223.mp3" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/XUR_result.png" beforeDir="false" afterPath="$PROJECT_DIR$/resources/XUR_result.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -297,7 +299,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626266181564</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Dungeon master">
+      <created>1626270317624</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1626270317624</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
