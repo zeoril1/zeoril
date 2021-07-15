@@ -45,7 +45,8 @@ list_t = []
 list_we = []
 list_prew = []
 music_welcome = [[284610292095123456,"music/Dungeon master.mp3"],[209443383385522176,"music/RIP EARS ORGASM.mp3"],
-                 [217236953324584960,"music/Boy next door.mp3"],[400709228270059531,"music/Fucking slaves get your ass back here.mp3"]]
+                 [217236953324584960,"music/Boy next door.mp3"],[400709228270059531,"music/Fucking slaves get your ass back here.mp3"],
+                 [193425328083828736,"music/Stick your finger in my ass.mp3"]]
 music_list=[]
 
 
