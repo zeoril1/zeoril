@@ -33,9 +33,6 @@ xur_url = "https://www.bungie.net/Platform/Destiny2/Vendors/?components=402"
 print ("\n\n\nConnecting to Bungie: " + xur_url + "\n")
 print ("Fetching data for: Xur's Inventory!")
 res = requests.get(xur_url, headers=HEADERS)
-with open("resources/Items.json", "r", encoding="utf8") as read_file:
-    file_content = read_file.read()
-    Items = json.loads(file_content)
 # Print the error status:
 client = discord.Client()
 
