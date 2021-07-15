@@ -275,7 +275,7 @@ def items_filler():
     global list_h,list_w,list_t,list_w,list_prew
     f = open("resources/Items.json", "w", encoding="utf8")
     down_mani = requests.get(
-        "https://www.bungie.net/common/destiny2_content/json/ru/DestinyInventoryItemLiteDefinition-1a7d8d39-ca62-40af-becd-98bca27ed617.json")  # делаем запрос
+        "https://www.bungie.net/common/destiny2_content/json/ru/DestinyInventoryItemLiteDefinition-83786a32-35ec-4f9e-b5e8-c8bba5890ab3.json")  # делаем запрос
     f.write(down_mani.text)  # записываем содержимое в файл; как видите - content запроса
     f.close()
 
