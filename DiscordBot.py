@@ -44,6 +44,8 @@ list_w = []
 list_t = []
 list_we = []
 list_prew = []
+music_welcome = [[284610292095123456,"music/Dungeon master.mp3"],[209443383385522176,"music/RIP EARS ORGASM.mp3"],
+                 [217236953324584960,"music/Boy next door.mp3"],[400709228270059531,"music/Fucking slaves get your ass back here.mp3"]]
 music_list=[]
 
 
@@ -56,15 +58,16 @@ async def on_ready():
 
 @client.event
 async def on_voice_state_update(member,before,after):
-    if member.id == 284610292095123456 and before.channel!=after.channel:
-        channel = member.voice.channel
-        bot = await discord.VoiceChannel.connect(channel)
-        f = MP3('music/Dungeon master.mp3')
-        t = f.info.length+0.2
-        bot.play(FFmpegPCMAudio(source="music/Dungeon master.mp3"))
-        time.sleep(t)
-        await bot.disconnect()
-
+    try:
+        if before.channel!=after.channel and discord.voice_client is not None:
+            return_song = play_song(member.id)
+            if return_song[0] > 0:
+                bot = await discord.VoiceChannel.connect(member.voice.channel)
+                bot.play(FFmpegPCMAudio(return_song[1]))
+                time.sleep(return_song[0])
+                await bot.disconnect()
+    except Exception:
+        print(Exception)
 
 @client.event
 async def on_message(message):
@@ -169,24 +172,16 @@ async def on_message(message):
         voice.source = discord.PCMVolumeTransformer(voice.source)
         voice.source.volume = 1.00'''
 
-'''def play_music(bot,source):
-    global player
-    player = bot.play(source,after=lambda e: play_next(bot,e))
-    voice = get(client.voice_clients, guild=ctx.guild)
-    print (voice)
-    player.source = discord.PCMVolumeTransformer(player.source)
-    
-def play_next(bot,e):
-    global music_list
-    if len(music_list)>0:
-        print (music_list)
-        source = FFmpegPCMAudio(executable="D:/ffmpeg/bin/ffmpeg.exe",source=music_list[0])
-        music_list.pop()
-        play_music(bot, source)
-        
-    else:
-        print('закончилось')
-'''
+def play_song(id):
+    global music_welcome
+    time = 0
+    for list_id in music_welcome:
+        if list_id[0] == id:
+            file = MP3(list_id[1])
+            time = file.info.length + 0.2
+            break
+    return (time,list_id[1])
+
 def magic_ball():
     answer = ['Бесспорно', 'Предрешено', 'Никаких сомнений', 'Определённо да', 'Можешь быть уверен в этом',
               'Мне кажется — «да»', 'Вероятнее всего', 'Хорошие перспективы', 'Знаки говорят — «да»', 'Да',
