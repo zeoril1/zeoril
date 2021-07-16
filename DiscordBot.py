@@ -273,7 +273,7 @@ def chellenge_update(list_con):
         if wks.cell(cell.row,cell.col+2).value == 'Нет.':
             wks.update_cell(cell.row,cell.col+2,list_con[2])
         else:
-            wks.update_cell(cell.row,cell.col+2,wks.cell(cell.row,cell.col+2).value+';'+list_con[2])
+            wks.update_cell(cell.row,cell.col+2,wks.cell(cell.row,cell.col+2).value+' ; '+list_con[2])
         return 0
     except gspread.exceptions.CellNotFound:
         return 1
