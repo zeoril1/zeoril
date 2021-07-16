@@ -64,7 +64,6 @@ async def on_voice_state_update(member,before,after):
 
 @client.event
 async def on_message(message):
-    global music_list
     if message.content.startswith('!xur'):
         print('[command]: xur ')
         Xur()
@@ -184,7 +183,6 @@ def Xur():
     im1.save('resources/XUR_result.png')
 
 def draw(item, saleItem, im1, yp, ys, yt):
-    print(item[0])
     loadIcon = requests.get("https://www.bungie.net" + item[2])
     im2 = Image.open(BytesIO(loadIcon.content))
     im1.paste(im2.resize((300, 300)), (115, yp))
