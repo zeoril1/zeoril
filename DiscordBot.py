@@ -66,7 +66,6 @@ async def on_voice_state_update(member,before,after):
 async def on_message(message):
     if message.content.startswith('!xur'):
         print('[command]: xur ')
-        items_filler()
         Xur()
         await message.channel.send(file=discord.File('resources/XUR_result.png'))
 
@@ -125,6 +124,7 @@ def magic_ball():
     return answer[rand]
 
 def Xur():
+    items_filler()
     global list_h, list_w, list_t, list_we, yp, ys, yt
     i = 0
     x = 0
