@@ -9,10 +9,8 @@ import gspread
 import time
 import json
 import random
-import xlrd,xlwt
 from discord import FFmpegPCMAudio
 from io import BytesIO
-from xlutils.copy import copy
 from mutagen.mp3 import MP3
 from PIL import Image, ImageDraw,ImageFont
 
