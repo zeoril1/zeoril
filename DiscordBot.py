@@ -26,7 +26,7 @@ base_url = "https://www.bungie.net"
 xur_url = "https://www.bungie.net/Platform/Destiny2/Vendors/?components=402"
 
 # Send the request and store the result in res:
-print ("\n\n\nConnecting to Bungie: " + xur_url + "\n")
+print ("\n\n\nConnecting to Bungie: " + base_url + "\n")
 print ("Fetching data for: Xur's Inventory!")
 res = requests.get(xur_url, headers=HEADERS)
 # Print the error status:
@@ -42,7 +42,7 @@ music_welcome = [[284610292095123456,"music/Dungeon master.mp3"],[20944338338552
                  [193425328083828736,"music/Stick your finger in my ass.mp3"],[196682643767689218,"music/FUCK YOU.mp3"],
                  [310730616926896128,"music/Fisting is 300 $.mp3"],[478605922285912074,"music/Do you like watching me.mp3"],
                  [306678386800066562,"music/WOO.mp3"]]
-global_xur = [('16.07.2021', '20:05')]
+global_xur = [('16.07.2021', '17:05')]
 
 @client.event
 async def on_ready():
@@ -301,7 +301,6 @@ def items_filler():
             y = 1
 
 def auto_xur():
-    print('123')
     global global_xur
     date = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
     for i in global_xur:
@@ -321,6 +320,5 @@ def sch():
 
 thread = threading.Thread(target=sch)
 thread.start()
-print (datetime.datetime.now().strftime("%d.%m.%Y %H:%M"))
 items_filler()
 client.run(DISCORD_BOT_TOKEN)
