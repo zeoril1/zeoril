@@ -35,7 +35,7 @@ list_w = []
 list_t = []
 list_we = []
 list_prew = []
-music_welcome = [[284610292095123456,"music/Dungeon master.mp3"],[209443383385522176,"music/RIP EARS ORGASM.mp3"],
+music_welcome = [[284610292095123456,"music/Dungeon master.mp3"],[209443383385522176,"music/y2mate.mp3"],
                  [217236953324584960,"music/Boy next door.mp3"],[400709228270059531,"music/Fucking slaves get your ass back here.mp3"],
                  [193425328083828736,"music/Stick your finger in my ass.mp3"],[196682643767689218,"music/FUCK YOU.mp3"],
                  [310730616926896128,"music/I played with his dick.mp3"],[478605922285912074,"music/Do you like watching me.mp3"],
