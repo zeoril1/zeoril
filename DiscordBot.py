@@ -270,9 +270,16 @@ def draw(item, saleItem, im1, yp, ys, yt):
 
 def items_filler():
     global list_h,list_w,list_t,list_w,list_prew
+    m = open("resources/manifest.json", "w", encoding="utf8")
+    manifest = requests.get("https://www.bungie.net/Platform/Destiny2/Manifest/")
+    m.write(manifest.text)  # записываем содержимое в файл; как видите - content запроса
+    m.close()
+    with open("resources/manifest.json", "r", encoding="utf8") as mf:
+        manifest = json.load(mf)
+    url_items = "https://www.bungie.net"+manifest['Response']['jsonWorldComponentContentPaths']['ru']['DestinyInventoryItemLiteDefinition']
     f = open("resources/Items.json", "w", encoding="utf8")
     down_mani = requests.get(
-        "https://www.bungie.net/common/destiny2_content/json/ru/DestinyInventoryItemLiteDefinition-83786a32-35ec-4f9e-b5e8-c8bba5890ab3.json")  # делаем запрос
+        url_items)  # делаем запрос
     f.write(down_mani.text)  # записываем содержимое в файл; как видите - content запроса
     f.close()
 
