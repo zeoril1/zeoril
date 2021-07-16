@@ -52,7 +52,7 @@ async def on_ready():
 @client.event
 async def on_voice_state_update(member,before,after):
     try:
-        if before.channel!=after.channel and discord.voice_client is not None:
+        if before.channel!=after.channel and discord.voice_client is not None and after.channel is not None:
             return_song = play_song(member.id)
             if return_song[0] > 0:
                 bot = await discord.VoiceChannel.connect(member.voice.channel)
@@ -64,7 +64,6 @@ async def on_voice_state_update(member,before,after):
 
 @client.event
 async def on_message(message):
-    global music_list
     if message.content.startswith('!xur'):
         print('[command]: xur ')
         Xur()
@@ -184,7 +183,6 @@ def Xur():
     im1.save('resources/XUR_result.png')
 
 def draw(item, saleItem, im1, yp, ys, yt):
-    print(item[0])
     loadIcon = requests.get("https://www.bungie.net" + item[2])
     im2 = Image.open(BytesIO(loadIcon.content))
     im1.paste(im2.resize((300, 300)), (115, yp))
@@ -272,7 +270,10 @@ def chellenge_update(list_con):
         gc = gspread.service_account('resources/config_google.json')
         wks = gc.open("Exotic").sheet1
         cell = wks.find(list_con[1])
-        wks.update_cell(cell.row,cell.col+2,list_con[2])
+        if wks.cell(cell.row,cell.col+2).value == 'Нет.':
+            wks.update_cell(cell.row,cell.col+2,list_con[2])
+        else:
+            wks.update_cell(cell.row,cell.col+2,wks.cell(cell.row,cell.col+2).value+' ; '+list_con[2])
         return 0
     except gspread.exceptions.CellNotFound:
         return 1
