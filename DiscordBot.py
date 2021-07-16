@@ -101,26 +101,12 @@ async def on_message(message):
     if message.content.startswith('!update'):
         x=0
         print('[command]: update ')
-        list = message.content.split('|')
-        exot = xlrd.open_workbook('resources/exotic.xls', formatting_info=True)
-        sheet = exot.sheet_by_index(0)
-        wb = copy(exot)
-        sheet_w = wb.get_sheet(0)
-        ran = random.randint(1, 87)
-        for quest in sheet:
-            x=x+1
-            if quest[0].value == list[1]:
-                if quest[2].value != 'Нет.':
-                    text=quest[2].value+';'+list[2]
-                else:
-                    text =list[2]
-                sheet_w.write(x-1,2,text)
-                wb.save('resources/exotic.xls')
-                break
-        '''weapon = sheet.row_values(ran)[0]
-        chellenge = sheet.row_values(ran)[2]
-        EngWeapon = sheet.row_values(ran)[1]'''
-        await message.channel.send('Для' + list[1] +' добавлено испытание '+list[2])
+        list_con = message.content.split('|')
+        status = chellenge_update(list_con)
+        if status == 0:
+            await message.channel.send('Для **' + list_con[1] +'** добавлено испытание **'+list_con[2]+'**')
+        elif status == 1:
+            await message.channel.send('**'+list_con[1] + '** не найден')
 
 def play_song(id):
     global music_welcome
@@ -282,6 +268,17 @@ def chellenge_roll():
     chellenge = wks.row_values(ran)[2]
     EngWeapon = wks.row_values(ran)[1]
     return (weapon,EngWeapon,chellenge)
+
+def chellenge_update(list_con):
+    try:
+        gc = gspread.service_account('resources/config_google.json')
+        wks = gc.open("Exotic").sheet1
+        cell = wks.find(list_con[1])
+        wks.update_cell(cell.row,cell.col+2,list_con[2])
+        return 0
+    except gspread.exceptions.CellNotFound:
+        return 1
+
 
 thread = threading.Thread(target=sch)
 thread.start()
