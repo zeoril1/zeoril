@@ -40,7 +40,7 @@ music_welcome = [[284610292095123456,"music/Dungeon master.mp3"],[20944338338552
                  [193425328083828736,"music/Stick your finger in my ass.mp3"],[196682643767689218,"music/FUCK YOU.mp3"],
                  [310730616926896128,"music/I played with his dick.mp3"],[478605922285912074,"music/Do you like watching me.mp3"],
                  [306678386800066562,"music/WOO.mp3"],[429219492279877642,"music/Fisting is 300 $.mp3"]]
-global_xur = [('16.07.2021', '18:40')]
+global_xur = [('16.07.2021', '21:55')]
 
 @client.event
 async def on_ready():
@@ -124,6 +124,7 @@ def magic_ball():
     return answer[rand]
 
 def Xur():
+    print(1)
     items_filler()
     global list_h, list_w, list_t, list_we, yp, ys, yt
     i = 0
@@ -245,6 +246,7 @@ def auto_xur():
     for i in global_xur:
         runTime = i[0] + " " + i[1]
         if i and date == str(runTime):
+            print(2)
             Xur()
             webhook = discord.Webhook.from_url(
                 Discord_webhook,
