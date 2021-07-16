@@ -4,10 +4,9 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Update song Халик">
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="fix xur">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/XUR_result.png" beforeDir="false" afterPath="$PROJECT_DIR$/resources/XUR_result.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -444,7 +443,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626447276940</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="fix xur">
+      <created>1626459553376</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1626459553376</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -474,6 +480,7 @@
     <MESSAGE value="Online exotic" />
     <MESSAGE value="Fix" />
     <MESSAGE value="Update song Халик" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update song Халик" />
+    <MESSAGE value="fix xur" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix xur" />
   </component>
 </project>
