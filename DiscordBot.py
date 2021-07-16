@@ -131,41 +131,6 @@ async def on_message(message):
         EngWeapon = sheet.row_values(ran)[1]'''
         await message.channel.send('Для' + list[1] +' добавлено испытание '+list[2])
 
-    '''if message.content.startswith('!pl'):
-        s = message.content
-        l = s.find('!')
-        r = s.find(' ')
-        searchMusic = s[:l] + s[r+1:]
-        search = clientYA.search(text=searchMusic,type_='track',page=0)['tracks']['results'][0]
-        name_music = 'music/'+search['title']+'.mp3'
-        search.download(name_music)
-        channel = message.author.voice.channel
-        voice_client = get(client.voice_clients, guild=message.guild)
-        if voice_client and voice_client.is_connected():
-            if voice_client.is_playing():
-                music_list.append(name_music)
-        else:
-            bot = await discord.VoiceChannel.connect(channel)
-            source = FFmpegPCMAudio(name_music)
-            if not bot.is_playing():
-                play_music(bot,source)'''
-                
-    '''if message.content.startswith('!test'):
-        global voice
-        channel = message.author.voice.channel
-        voice = get(client.voice_clients, guild=message.guild)
-
-        if voice and voice.is_connected():
-            await voice.move_to(channel)
-
-        else:
-            voice = await channel.connect()
-            print(f'Bot connected to voice channel {channel}\n')
-
-        voice.play(FFmpegPCMAudio('music/223.mp3'), after=lambda e: print(f'RPG music in {channel} has finished playing.'))
-        voice.source = discord.PCMVolumeTransformer(voice.source)
-        voice.source.volume = 1.00'''
-
 def play_song(id):
     global music_welcome
     time = 0
