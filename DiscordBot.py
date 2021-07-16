@@ -184,6 +184,7 @@ def Xur():
 
 def draw(item, saleItem, im1, yp, ys, yt):
     loadIcon = requests.get("https://www.bungie.net" + item[2])
+    print(loadIcon)
     im2 = Image.open(BytesIO(loadIcon.content))
     im1.paste(im2.resize((300, 300)), (115, yp))
     draw = ImageDraw.Draw(im1)
