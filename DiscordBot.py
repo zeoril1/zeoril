@@ -270,7 +270,10 @@ def chellenge_update(list_con):
         gc = gspread.service_account('resources/config_google.json')
         wks = gc.open("Exotic").sheet1
         cell = wks.find(list_con[1])
-        wks.update_cell(cell.row,cell.col+2,list_con[2])
+        if wks.cell(cell.row,cell.col+2).value == 'Нет.':
+            wks.update_cell(cell.row,cell.col+2,list_con[2])
+        else:
+            wks.update_cell(cell.row,cell.col+2,wks.cell(cell.row,cell.col+2).value+';'+list_con[2])
         return 0
     except gspread.exceptions.CellNotFound:
         return 1
