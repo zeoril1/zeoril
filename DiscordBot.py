@@ -1,34 +1,30 @@
 # -*- coding: utf-8 -*-
 import discord
 import textwrap
+import schedule
+import datetime
 import asyncio
 import requests
+import threading
 import time
 import json
-import dhooks
-import datetime
-from datetime import date
-from yandex_music.client import Client
 from discord import FFmpegPCMAudio
-from discord.utils import get
-import os
 from io import BytesIO
 import random
 import xlrd,xlwt
 from xlutils.copy import copy
 from mutagen.mp3 import MP3
-from PIL import Image, ImageDraw, ImageFilter,ImageFont
+from PIL import Image, ImageDraw,ImageFont
 
 
 DISCORD_BOT_TOKEN = 'NjcyMTE5NzA1MjEyOTQ0Mzg1.XjG2QQ.vX9v5I-taWoAaBE-CfMEc1y3N0k'
-Discord_webhook = "https://discord.com/api/webhooks/862371875665870898/N_i02s7Zm8kgysmIllF4m6c7YgK655WmwZA8SLnUMuO2HW16y-7q6_7TkYmA82oh1jjp"
+Discord_webhook = "https://discord.com/api/webhooks/865537838279950366/PDHL8Y_Z_UatFOmCIm9K37ZzqqZOERc4tB-TBnCmAptk3czhl0QTImiN_3GLMWPyLwuH"
 
 HEADERS = {"X-API-Key":'d1a68787e89b4fd1a0f6a99dca645db7'}
  
 base_url = "https://www.bungie.net"
 xur_url = "https://www.bungie.net/Platform/Destiny2/Vendors/?components=402"
 
-'''clientYA = Client.from_credentials('neprim1@yandex.ru', 'xthtp321pasha123') '''
 # Send the request and store the result in res:
 print ("\n\n\nConnecting to Bungie: " + xur_url + "\n")
 print ("Fetching data for: Xur's Inventory!")
@@ -46,8 +42,7 @@ music_welcome = [[284610292095123456,"music/Dungeon master.mp3"],[20944338338552
                  [193425328083828736,"music/Stick your finger in my ass.mp3"],[196682643767689218,"music/FUCK YOU.mp3"],
                  [310730616926896128,"music/Fisting is 300 $.mp3"],[478605922285912074,"music/Do you like watching me.mp3"],
                  [306678386800066562,"music/WOO.mp3"]]
-music_list=[]
-
+global_xur = [('16.07.2021', '18:05')]
 
 @client.event
 async def on_ready():
@@ -72,7 +67,6 @@ async def on_voice_state_update(member,before,after):
 @client.event
 async def on_message(message):
     global music_list
-    global voice_client
     if message.content.startswith('!xur'):
         print('[command]: xur ')
         Xur()
@@ -270,9 +264,16 @@ def draw(item, saleItem, im1, yp, ys, yt):
 
 def items_filler():
     global list_h,list_w,list_t,list_w,list_prew
+    m = open("resources/manifest.json", "w", encoding="utf8")
+    manifest = requests.get("https://www.bungie.net/Platform/Destiny2/Manifest/")
+    m.write(manifest.text)  # записываем содержимое в файл; как видите - content запроса
+    m.close()
+    with open("resources/manifest.json", "r", encoding="utf8") as mf:
+        manifest = json.load(mf)
+    url_items = "https://www.bungie.net"+manifest['Response']['jsonWorldComponentContentPaths']['ru']['DestinyInventoryItemLiteDefinition']
     f = open("resources/Items.json", "w", encoding="utf8")
     down_mani = requests.get(
-        "https://www.bungie.net/common/destiny2_content/json/ru/DestinyInventoryItemLiteDefinition-83786a32-35ec-4f9e-b5e8-c8bba5890ab3.json")  # делаем запрос
+        url_items)  # делаем запрос
     f.write(down_mani.text)  # записываем содержимое в файл; как видите - content запроса
     f.close()
 
@@ -299,5 +300,26 @@ def items_filler():
         else:
             y = 1
 
+def auto_xur():
+    print('123')
+    global global_xur
+    date = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
+    for i in global_xur:
+        runTime = i[0] + " " + i[1]
+        if i and date == str(runTime):
+            Xur()
+            webhook = discord.Webhook.from_url(
+                Discord_webhook,
+                adapter=discord.RequestsWebhookAdapter())
+            webhook.send(file=discord.File('resources/XUR_result.png'))
+
+def sch():
+    schedule.every().minutes.do(auto_xur)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+thread = threading.Thread(target=sch)
+thread.start()
 items_filler()
 client.run(DISCORD_BOT_TOKEN)
