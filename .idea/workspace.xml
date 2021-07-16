@@ -368,7 +368,21 @@
       <option name="project" value="LOCAL" />
       <updated>1626431195473</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="Add auto posting xur">
+      <created>1626431487984</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1626431487984</updated>
+    </task>
+    <task id="LOCAL-00038" summary="Add auto posting xur">
+      <created>1626440417090</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1626440417090</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
