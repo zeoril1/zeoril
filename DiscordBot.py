@@ -3,15 +3,15 @@ import discord
 import textwrap
 import schedule
 import datetime
-import asyncio
 import requests
 import threading
+import gspread
 import time
 import json
-from discord import FFmpegPCMAudio
-from io import BytesIO
 import random
 import xlrd,xlwt
+from discord import FFmpegPCMAudio
+from io import BytesIO
 from xlutils.copy import copy
 from mutagen.mp3 import MP3
 from PIL import Image, ImageDraw,ImageFont
@@ -74,18 +74,9 @@ async def on_message(message):
 
     if message.content.startswith('!roll'):
         print('[command]: roll ')
-        author = message.author
-
-        exot = xlrd.open_workbook('resources/exotic.xls', formatting_info=True)
-
-        sheet = exot.sheet_by_index(0)
-        ran = random.randint(1, 87)
-        weapon = sheet.row_values(ran)[0]
-        chellenge = sheet.row_values(ran)[2]
-        EngWeapon = sheet.row_values(ran)[1]
-
-        emb = discord.Embed(title=f'Оружие: {weapon} ({EngWeapon}) ',
-                            description=f'\n**Челлендж**:\n{chellenge}',
+        chellenge_value = chellenge_roll()
+        emb = discord.Embed(title=f'Оружие: {chellenge_value[0]} ({chellenge_value[1]}) ',
+                            description=f'\n**Челлендж**:\n{chellenge_value[2]}',
                             colour=discord.Color.blue())
 
         await message.reply(embed=emb)
@@ -282,6 +273,15 @@ def sch():
     while True:
         schedule.run_pending()
         time.sleep(1)
+
+def chellenge_roll():
+    gc = gspread.service_account('resources/config_google.json')
+    wks = gc.open("Exotic").sheet1
+    ran = random.randint(1, 87)
+    weapon = wks.row_values(ran)[0]
+    chellenge = wks.row_values(ran)[2]
+    EngWeapon = wks.row_values(ran)[1]
+    return (weapon,EngWeapon,chellenge)
 
 thread = threading.Thread(target=sch)
 thread.start()
