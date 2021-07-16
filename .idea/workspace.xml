@@ -114,20 +114,6 @@
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
     </task>
-    <task id="LOCAL-00003" summary="XUR Переработка">
-      <created>1625595382596</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1625595382596</updated>
-    </task>
-    <task id="LOCAL-00004" summary="XUR Переработка">
-      <created>1625595392206</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1625595392206</updated>
-    </task>
     <task id="LOCAL-00005" summary="XUR Переработка">
       <created>1625595417626</created>
       <option name="number" value="00005" />
@@ -457,7 +443,21 @@
       <option name="project" value="LOCAL" />
       <updated>1626460575411</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="fix xur">
+      <created>1626461294844</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1626461294844</updated>
+    </task>
+    <task id="LOCAL-00053" summary="fix xur">
+      <created>1626461835664</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1626461835664</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
