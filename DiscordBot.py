@@ -57,7 +57,7 @@ async def on_voice_state_update(member,before,after):
 
 @client.event
 async def on_message(message):
-    if message.content.startswith('!updateconfig'):
+    if message.content.startswith('!configupdate'):
         download_config()
         await message.channel.send('Конфиг обновлен')
 
@@ -246,12 +246,10 @@ def items_filler():
 
 def auto_xur():
     global global_xur
-    print(1)
     date = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
     for i in global_xur:
         runTime = i[0] + " " + i[1]
         if i and date == str(runTime):
-            print(2)
             Xur()
             webhook = discord.Webhook.from_url(
                 Discord_webhook,
