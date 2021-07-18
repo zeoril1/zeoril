@@ -37,7 +37,7 @@ list_t = []
 list_we = []
 list_prew = []
 music_welcome = []
-global_xur = [('16.07.2021', '19:05')]
+global_xur = [('23.07.2021', '17:05')]
 
 @client.event
 async def on_ready():
@@ -61,6 +61,8 @@ async def on_voice_state_update(member,before,after):
 
 @client.event
 async def on_message(message):
+    if message.content.startswith('!updateconfig'):
+        download_config()
     if message.content.startswith('!xur'):
         print('[command]: xur ')
         Xur()
@@ -107,10 +109,17 @@ def play_song(id):
     time = 0
     for list_id in music_welcome:
         if int(list_id[0]) == id:
-            file = MP3(list_id[1])
+            download_music(list_id[1])
+            file = MP3("music/song.mp3")
             time = file.info.length + 0.2
             break
-    return (time,list_id[1])
+    return (time,"music/song.mp3")
+
+def download_music(music_id):
+    song_url = "https://www.zeoril.ru/zaebala/"+music_id
+    song = requests.get(song_url)
+    with open('music/song.mp3', 'wb') as file:
+        file.write(song.content)
 
 def magic_ball():
     answer = ['Бесспорно', 'Предрешено', 'Никаких сомнений', 'Определённо да', 'Можешь быть уверен в этом',
@@ -294,9 +303,9 @@ def download_config():
     song_config = requests.get(song_url)
     with open('resources/welcome_song.txt', 'w') as f:
         f.write(song_config.text)
+    read_song()
 
 thread = threading.Thread(target=sch)
 thread.start()
 download_config()
-read_song()
 client.run(DISCORD_BOT_TOKEN)
