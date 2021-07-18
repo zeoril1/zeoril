@@ -59,6 +59,8 @@ async def on_voice_state_update(member,before,after):
 async def on_message(message):
     if message.content.startswith('!updateconfig'):
         download_config()
+        await message.channel.send('Конфиг обновлен')
+
     if message.content.startswith('!xur'):
         print('[command]: xur ')
         Xur()
