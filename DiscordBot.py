@@ -47,16 +47,13 @@ async def on_ready():
 
 @client.event
 async def on_voice_state_update(member,before,after):
-    try:
-        if before.channel!=after.channel and discord.voice_client is not None and after.channel is not None:
-            return_song = play_song(member.id)
-            if return_song[0] > 0:
-                bot = await discord.VoiceChannel.connect(member.voice.channel)
-                bot.play(FFmpegPCMAudio(return_song[1]))
-                time.sleep(return_song[0])
-                await bot.disconnect()
-    except Exception:
-        print(Exception)
+    if before.channel!=after.channel and discord.voice_client is not None and after.channel is not None:
+        return_song = play_song(member.id)
+        if return_song[0] > 0:
+            bot = await discord.VoiceChannel.connect(member.voice.channel)
+            bot.play(FFmpegPCMAudio(return_song[1]))
+            time.sleep(return_song[0])
+            await bot.disconnect()
 
 @client.event
 async def on_message(message):
