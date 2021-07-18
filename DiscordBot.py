@@ -286,6 +286,7 @@ def chellenge_update(list_con):
 
 def read_song():
     global music_welcome
+    music_welcome = []
     with open('resources/welcome_song.txt', 'r') as f:
         for eachLine in f:
             a = eachLine
