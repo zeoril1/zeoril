@@ -4,7 +4,8 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="fix xur">
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Add song veil">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -112,13 +113,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00005" summary="XUR Переработка">
-      <created>1625595417626</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1625595417626</updated>
     </task>
     <task id="LOCAL-00006" summary="XUR Переработка">
       <created>1625595594760</created>
@@ -456,7 +450,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626461835664</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="Add song veil">
+      <created>1626542427506</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1626542427506</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -487,6 +488,7 @@
     <MESSAGE value="Fix" />
     <MESSAGE value="Update song Халик" />
     <MESSAGE value="fix xur" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix xur" />
+    <MESSAGE value="Add song veil" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add song veil" />
   </component>
 </project>

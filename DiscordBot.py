@@ -35,12 +35,7 @@ list_w = []
 list_t = []
 list_we = []
 list_prew = []
-music_welcome = [[284610292095123456,"music/Dungeon master.mp3"],[209443383385522176,"music/y2mate.mp3"],
-                 [217236953324584960,"music/Boy next door.mp3"],[400709228270059531,"music/Fucking slaves get your ass back here.mp3"],
-                 [193425328083828736,"music/Stick your finger in my ass.mp3"],[196682643767689218,"music/FUCK YOU.mp3"],
-                 [310730616926896128,"music/Fisting is 300 $.mp3"],[478605922285912074,"music/Do you like watching me.mp3"],
-                 [306678386800066562,"music/WOO.mp3"],[429219492279877642,"music/Fisting is 300 $.mp3"],
-                 [429219492279877642,"music/Oh shit iam sorry.mp3"]]
+music_welcome = []
 global_xur = [('16.07.2021', '19:05')]
 
 @client.event
@@ -110,7 +105,7 @@ def play_song(id):
     global music_welcome
     time = 0
     for list_id in music_welcome:
-        if list_id[0] == id:
+        if int(list_id[0]) == id:
             file = MP3(list_id[1])
             time = file.info.length + 0.2
             break
@@ -283,7 +278,17 @@ def chellenge_update(list_con):
     except gspread.exceptions.CellNotFound:
         return 1
 
+def read_song():
+    global music_welcome
+    with open('resources/welcome_song.txt', 'r') as f:
+        for eachLine in f:
+            a = eachLine
+            a = a.split(',')
+            for spl in a:
+                b = spl.split(' ', maxsplit=1)
+                music_welcome.append(b)
 
 thread = threading.Thread(target=sch)
 thread.start()
+read_song()
 client.run(DISCORD_BOT_TOKEN)
