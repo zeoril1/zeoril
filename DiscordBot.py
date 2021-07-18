@@ -9,7 +9,6 @@ import gspread
 import time
 import json
 import random
-import yadisk
 from discord import FFmpegPCMAudio
 from io import BytesIO
 from mutagen.mp3 import MP3
