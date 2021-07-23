@@ -7,8 +7,9 @@
     <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="add auth and vendors spidi,clovis">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/XUR_result.png" beforeDir="false" afterPath="$PROJECT_DIR$/resources/XUR_result.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/emojis.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/emojis.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/token.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/token.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vendor.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,20 +117,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Dungeon master">
-      <created>1626263545959</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1626263545959</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Dungeon master">
-      <created>1626263692356</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1626263692356</updated>
     </task>
     <task id="LOCAL-00020" summary="Dungeon master">
       <created>1626263801267</created>
@@ -460,7 +447,21 @@
       <option name="project" value="LOCAL" />
       <updated>1627073175535</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="add auth and vendors spidi,clovis">
+      <created>1627074641446</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1627074641446</updated>
+    </task>
+    <task id="LOCAL-00068" summary="add auth and vendors spidi,clovis">
+      <created>1627074664318</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1627074664318</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
