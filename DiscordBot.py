@@ -152,18 +152,19 @@ def magic_ball():
 def draw(item, cost, im1, yp, ys, yt):
     loadIcon = requests.get("https://www.bungie.net" + item[1])
     im2 = Image.open(BytesIO(loadIcon.content))
-    im1.paste(im2.resize((300, 300)), (115, yp))
+    im1.paste(im2.resize((284, 303)), (116, yp))
     draw = ImageDraw.Draw(im1)
-    for line in textwrap.wrap(str(item[1]), width=10):
+    text = item[0].split(' ')
+    for line in text:
         font = ImageFont.truetype("resources/18922.otf", 62)
         draw.text((460, yt), line, (0, 0, 0), font=font)
         font = ImageFont.truetype("resources/18922.otf", 60)
         draw.text((460, yt), line, (149, 191, 255), font=font)
         yt += font.getsize(line)[1]
     font = ImageFont.truetype("resources/18922.otf", 72)
-    draw.text((510, ys), str(cost), (0, 0, 0), font=font)
+    draw.text((510, ys), str(cost[1]), (0, 0, 0), font=font)
     font = ImageFont.truetype("resources/18922.otf", 70)
-    draw.text((510, ys), str(cost), (149, 191, 255), font=font)
+    draw.text((510, ys), str(cost[1]), (149, 191, 255), font=font)
 
 def items_filler():
     global list_h,list_w,list_t,list_w,list_prew
@@ -292,7 +293,7 @@ def xur_img(vendor_items):
                     yt = 250 + (468 * 2)
                     info.append(item[0])
                     info.append(item_list[1])
-                    draw(info, item[2][0][1], im1, yp, ys, yt)
+                    draw(info, item[2][0], im1, yp, ys, yt)
                     x=0
                     break
                 else:
@@ -305,7 +306,7 @@ def xur_img(vendor_items):
                     yt = 250 + (468 * 3)
                     info.append(item[0])
                     info.append(item_list[1])
-                    draw(info, item[2][0][1], im1, yp, ys, yt)
+                    draw(info, item[2][0], im1, yp, ys, yt)
                     x = 1
                     break
                 else:
@@ -313,12 +314,12 @@ def xur_img(vendor_items):
         if x == 2:
             for item_list in list_t:
                 if item[0] == item_list[0]:
-                    yp = 228 + 468
+                    yp = 227 + 468
                     ys = 140 + 468
                     yt = 250 + 468
                     info.append(item[0])
                     info.append(item_list[1])
-                    draw(info, item[2][0][1], im1, yp, ys, yt)
+                    draw(info, item[2][0], im1, yp, ys, yt)
                     x = 2
                     break
                 else:
@@ -326,12 +327,12 @@ def xur_img(vendor_items):
         if x == 3 and item[0] != 'Экзотическая энграмма':
             for item_list in list_we:
                 if item[0] == item_list[0]:
-                    yp = 226
+                    yp = 227
                     ys = 140
                     yt = 250
                     info.append(item[0])
                     info.append(item_list[1])
-                    draw(info, item[2][0][1], im1, yp, ys, yt)
+                    draw(info, item[2][0], im1, yp, ys, yt)
                     x=3
                     break
                 else:
@@ -339,6 +340,7 @@ def xur_img(vendor_items):
         if x == 4:
             print (item[0]+' не найдено')
     im1.save('resources/XUR_result.png')
+    print("Готово")
 
 def get_vender_info(vendor_id):
     global vendor_items
@@ -447,5 +449,5 @@ thread = threading.Thread(target=sch)
 thread.start()
 get_token(refresh_token,'refresh_token')
 download_config_song()
-get_vender_info('2190858386')
-#client.run(DISCORD_BOT_TOKEN)
+#get_vender_info('2190858386')
+client.run(DISCORD_BOT_TOKEN)
