@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="config song">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/welcome_song.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/welcome_song.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +50,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="JSON" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/TestSort.py" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -112,20 +115,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00014" summary="XUR правки">
-      <created>1625855707149</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1625855707149</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Добавление испытаний">
-      <created>1625859224906</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1625859224906</updated>
     </task>
     <task id="LOCAL-00016" summary="Добавление испытаний">
       <created>1626115569495</created>
@@ -456,7 +445,21 @@
       <option name="project" value="LOCAL" />
       <updated>1626606401637</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="config song">
+      <created>1626606730417</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1626606730417</updated>
+    </task>
+    <task id="LOCAL-00064" summary="config song">
+      <created>1626606892102</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1626606892102</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

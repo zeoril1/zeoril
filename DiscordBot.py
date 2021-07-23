@@ -9,23 +9,27 @@ import gspread
 import time
 import json
 import random
-from discord import FFmpegPCMAudio
+from discord import FFmpegPCMAudio, Emoji
 from io import BytesIO
 from mutagen.mp3 import MP3
-from PIL import Image, ImageDraw,ImageFont
-
+from PIL import Image, ImageDraw, ImageFont
+import os
+cookies = []
+token = ''
+refresh_token = 'CIGxAxKGAgAgybmnpVgnk2m56Plyd8/cx+CJgGJt/tj1jycxt6o0+ObgAAAAbm6POKQPcIrqwaNM3s/Mixpuz0LSHnrsI7TsmnfZaKqCBgn85Qt3TNMQEUjN8kobe9UuIb6KI3WMQhtkV9iLXHlMJNoA82eToXCZw2epDOiiX6gw1DKKVfIitYJfkTO9RAuOyzk66MDaIbB7LDKWtpVJ+tQ2xN9sdLRIVmvmirIFUyWZY98OeiZQ/a++UVdk2iaV74nrDgWURBpsFkM8H3hdq5dFGzy8tvXVsSW44Jz82ymDDrGT6d3uAOq38+gfBXLUAaLcuG97SbzlwW6MYCwFSUomWyQlu6c6WE2PxGg='
 
 DISCORD_BOT_TOKEN = 'NjcyMTE5NzA1MjEyOTQ0Mzg1.XjG2QQ.vX9v5I-taWoAaBE-CfMEc1y3N0k'
 Discord_webhook = "https://discord.com/api/webhooks/865537838279950366/PDHL8Y_Z_UatFOmCIm9K37ZzqqZOERc4tB-TBnCmAptk3czhl0QTImiN_3GLMWPyLwuH"
+discord_hook_token = "https://discord.com/api/webhooks/865526515344212018/GJNKyPj9dAVLluVcA3_CZs49u52P64XLWCIa2C4t-xju0M36Uo-PQcTp_qst8XGK5xz1"
 
-HEADERS = {"X-API-Key":'d1a68787e89b4fd1a0f6a99dca645db7'}
+HEADERS = {"X-API-Key": 'd1a68787e89b4fd1a0f6a99dca645db7'}
  
 base_url = "https://www.bungie.net"
 xur_url = "https://www.bungie.net/Platform/Destiny2/Vendors/?components=402"
 
 # Send the request and store the result in res:
-print ("\n\n\nConnecting to Bungie: " + base_url + "\n")
-print ("Fetching data for: Xur's Inventory!")
+print("\n\n\nConnecting to Bungie: " + base_url + "\n")
+print("Fetching data for: Xur's Inventory!")
 res = requests.get(xur_url, headers=HEADERS)
 # Print the error status:
 client = discord.Client()
@@ -36,7 +40,12 @@ list_t = []
 list_we = []
 list_prew = []
 music_welcome = []
+vendor_items = []
+vendor_emoji =""
 global_xur = [('23.07.2021', '17:05')]
+name_items = [["улучшающие призмы","Улучшающая призма"],["улучшающие ядра","Улучшающее ядро"],["блеск","Блеск"],
+              ["датасети","Датасеть"],["барионную ветвь","Барионная ветвь"],["гелиевые нити","Гелиевые нити"],
+              ["листья из кругометалла","Листья из кругометалла"]]
 
 @client.event
 async def on_ready():
@@ -46,8 +55,8 @@ async def on_ready():
     print('------')
 
 @client.event
-async def on_voice_state_update(member,before,after):
-    if before.channel!=after.channel and discord.voice_client is not None and after.channel is not None:
+async def on_voice_state_update(member, before, after):
+    if before.channel != after.channel and discord.voice_client is not None and after.channel is not None:
         return_song = play_song(member.id)
         if return_song[0] > 0:
             bot = await discord.VoiceChannel.connect(member.voice.channel)
@@ -57,9 +66,20 @@ async def on_voice_state_update(member,before,after):
 
 @client.event
 async def on_message(message):
-    if message.content.startswith('!updateconfig'):
-        download_config()
+    if message.content.startswith('!configupdate'):
+        print('[command]: configupdate ')
+        download_config_song()
         await message.channel.send('Конфиг обновлен')
+
+    if message.content.startswith('!spider'):
+        print('[command]: spider ')
+        emb = get_vender_info('863940356')
+        await message.channel.send(embed=emb)
+
+    if message.content.startswith('!clovis'):
+        print('[command]: clovis ')
+        emb = get_vender_info('672118013')
+        await message.channel.send(embed=emb)
 
     if message.content.startswith('!xur'):
         print('[command]: xur ')
@@ -93,25 +113,24 @@ async def on_message(message):
         await message.channel.send(ball)
 
     if message.content.startswith('!update'):
-        x=0
         print('[command]: update ')
         list_con = message.content.split('|')
         status = chellenge_update(list_con)
         if status == 0:
-            await message.channel.send('Для **' + list_con[1] +'** добавлено испытание **'+list_con[2]+'**')
+            await message.channel.send('Для **' + list_con[1] + '** добавлено испытание **'+list_con[2]+'**')
         elif status == 1:
             await message.channel.send('**'+list_con[1] + '** не найден')
 
-def play_song(id):
+def play_song(id_song):
     global music_welcome
-    time = 0
+    time_sleep = 0
     for list_id in music_welcome:
-        if int(list_id[0]) == id:
+        if int(list_id[0]) == id_song:
             download_music(list_id[1])
             file = MP3("music/song.mp3")
-            time = file.info.length + 0.2
+            time_sleep = file.info.length + 0.2
             break
-    return (time,"music/song.mp3")
+    return (time_sleep, "music/song.mp3")
 
 def download_music(music_id):
     song_url = "https://www.zeoril.ru/zaebala/"+music_id
@@ -246,12 +265,10 @@ def items_filler():
 
 def auto_xur():
     global global_xur
-    print(1)
     date = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
     for i in global_xur:
         runTime = i[0] + " " + i[1]
         if i and date == str(runTime):
-            print(2)
             Xur()
             webhook = discord.Webhook.from_url(
                 Discord_webhook,
@@ -297,14 +314,122 @@ def read_song():
                 b = spl.split(' ', maxsplit=1)
                 music_welcome.append(b)
 
-def download_config():
+def download_config_song():
+    global vendor_emoji
     song_url = "https://www.zeoril.ru/zaebala/welcome_song.txt"
     song_config = requests.get(song_url)
     with open('resources/welcome_song.txt', 'w') as f:
         f.write(song_config.text)
+
+    with open('resources/emojis.json', 'r', encoding="utf8") as f:
+        vendor_emoji = json.load(f)
     read_song()
+
+def download_config_cookie():
+    cookies_url = "https://www.zeoril.ru/zaebala/cookie.txt"
+    cookies_config = requests.get(cookies_url)
+    with open('resources/cookies.txt', 'w') as f:
+        f.write(cookies_config.text)
+    return (cookies_config.text)
+
+def get_info():
+    r = requests.get(
+        'https://www.bungie.net/Platform/Destiny2/3/Profile/4611686018496871111/Character/2305843009565724374/Vendors/?components=400',
+        headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
+    print(r.text)
+
+def get_vender_info(vendor_id):
+    global vendor_items
+    vendor_items=[]
+    r = requests.get(
+        'https://www.bungie.net/Platform/Destiny2/3/Profile/4611686018496871111/Character/2305843009565724374/Vendors/'+str(vendor_id)+'/?components=402,401',
+        headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
+    vendor_save = open("resources/vendor.json", "w", encoding="utf8")
+    vendor_save.write(r.text)  # записываем содержимое в файл; как видите - content запроса
+    vendor_save.close()
+    with open("resources/vendor.json", "r", encoding="utf8") as vendor_data:
+        vendor = json.load(vendor_data)
+    cat_vendor = vendor['Response']['categories']['data']['categories']
+    vendor = vendor['Response']['sales']['data']
+    if '863940356' == str(vendor_id):
+        cat_index = 3
+    elif '672118013' == str(vendor_id):
+        cat_index = 8
+    for cat_id in cat_vendor:
+        if int(cat_id['displayCategoryIndex']) == cat_index:
+            for item_index in cat_id['itemIndexes']:
+                item = vendor[str(item_index)]
+                info_items = get_item_info(item['itemHash'], item['costs'][0]['itemHash'], item['quantity'],
+                                           item['costs'][0]['quantity'])
+                if int(str(info_items[0]).find("Купить ")) != -1:
+                    re = info_items[0]
+                    re = re.replace("Купить ", "")
+                    for name in name_items:
+                        if name[0] == re:
+                            re = name[1]
+                else:
+                    re = info_items[0]
+                vendor_items.append([re, info_items[1], info_items[2], info_items[3]])
+            break
+    emb = build_message()
+    return emb
+
+def get_item_info(itemHash,itemHashBuy,sell_quantity,buy_quantity):
+    with open("resources/Items.json", "r", encoding="utf8") as read_file:
+        Items = json.load(read_file)
+    x=0
+    for id_w in Items:
+        if int(id_w) == int(itemHash):
+            item = Items[id_w]
+            sell = item['displayProperties']['name']
+        elif int(id_w) == int(itemHashBuy):
+            item = Items[id_w]
+            buy = item['displayProperties']['name']
+    return sell,buy,sell_quantity,buy_quantity
+
+def build_message():
+    emb = discord.Embed()
+    for item in vendor_items:
+        emoji_buy = vendor_emoji[item[0]]
+        emoji_sell = vendor_emoji[item[1]]
+        if item[2] != 1:
+            emb.add_field(name=str(item[2]) + ' ' + item[0] + ' ' + emoji_buy,
+                          value='Стоимость: ' + str(item[3]) + ' ' + emoji_sell, inline=True)
+        else:
+            emb.add_field(name=item[0] + ' ' + emoji_buy,
+                          value='Стоимость: ' + str(item[3]) + ' ' + emoji_sell, inline=True)
+    return emb
+
+def get_token(code_token,type_get_token):
+    global token,refresh_token
+    token_url = 'https://www.bungie.net/Platform/App/OAuth/Token/'
+    autorization = "Basic MzcxNDg6Rlo4eDItdEFBZ2x4NjBXT1lPeUNBSXMyTTZHQ2ZHVVBMV1NDTVZrdVpBOA=="
+    cookies_bungie = download_config_cookie()
+    r = requests.post(token_url, headers={
+        'Authorization': autorization,
+        'Content-Type': 'application/x-www-form-urlencoded', 'cookie': cookies_bungie},
+                      data={'grant_type': type_get_token, 'refresh_token': code_token})
+
+    token = str(r.text)
+    token = token.split(':')
+    refresh_token = token[4].replace('"', "")
+    refresh_token = refresh_token.split(',')
+    refresh_token = refresh_token[0]
+    token = token[1].replace('"', "")
+    token = token.split(',')
+    token = token[0]
+    token = 'Bearer ' + token
+    print(token)
+    webhook = discord.Webhook.from_url(
+        discord_hook_token,
+        adapter=discord.RequestsWebhookAdapter())
+    webhook.send(refresh_token)
+    with open('resources/token.txt', 'w') as f:
+        f.write(refresh_token)
 
 thread = threading.Thread(target=sch)
 thread.start()
-download_config()
+get_token(refresh_token,'refresh_token')
+download_config_song()
+#get_vender_info('863940356')
 client.run(DISCORD_BOT_TOKEN)
