@@ -76,7 +76,7 @@ async def on_message(message):
         emb = get_vender_info('863940356')
         await message.channel.send(embed=emb)
 
-    if message.content.startswith('!clovis'):
+    if message.content.startswith('!banshe'):
         print('[command]: clovis ')
         emb = get_vender_info('672118013')
         await message.channel.send(embed=emb)
