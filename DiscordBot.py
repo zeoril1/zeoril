@@ -211,7 +211,7 @@ def auto_xur():
     for i in global_xur:
         runTime = i[0] + " " + i[1]
         if i and date == str(runTime):
-            #Xur()
+            get_vender_info('2190858386')
             webhook = discord.Webhook.from_url(
                 Discord_webhook,
                 adapter=discord.RequestsWebhookAdapter())
