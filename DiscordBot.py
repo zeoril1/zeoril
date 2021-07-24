@@ -45,7 +45,9 @@ vendor_emoji =""
 global_xur = [('23.07.2021', '17:05')]
 name_items = [["улучшающие призмы","Улучшающая призма"],["улучшающие ядра","Улучшающее ядро"],["блеск","Блеск"],
               ["датасети","Датасеть"],["барионную ветвь","Барионная ветвь"],["гелиевые нити","Гелиевые нити"],
-              ["листья из кругометалла","Листья из кругометалла"]]
+              ["листья из кругометалла","Листья из кругометалла"],["осколки сумерсвета","Осколок сумерсвета"],
+              ["эфирный виток","Эфирный виток"]]
+
 
 @client.event
 async def on_ready():
@@ -76,15 +78,18 @@ async def on_message(message):
         emb = get_vender_info('863940356')
         await message.channel.send(embed=emb)
 
-    if message.content.startswith('!clovis'):
+    if message.content.startswith('!banshe'):
         print('[command]: clovis ')
         emb = get_vender_info('672118013')
         await message.channel.send(embed=emb)
 
     if message.content.startswith('!xur'):
         print('[command]: xur ')
-        Xur()
+        get_vender_info('2190858386')
         await message.channel.send(file=discord.File('resources/XUR_result.png'))
+        '''print('[command]: xur ')
+        Xur()
+        await message.channel.send(file=discord.File('resources/XUR_result.png'))'''
 
     if message.content.startswith('!roll'):
         print('[command]: roll ')
@@ -146,84 +151,22 @@ def magic_ball():
     rand = random.randint(0,19)
     return answer[rand]
 
-def Xur():
-    print(3)
-    items_filler()
-    global list_h, list_w, list_t, list_we, yp, ys, yt
-    i = 0
-    x = 0
-    selItems = res.json()['Response']['sales']['data']['2190858386']['saleItems']
-    im1 = Image.open('resources/XUR.png')
-    for saleItem in selItems:
-        x=0
-        itemHash = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['itemHash']
-        if  itemHash != 2125848607 and itemHash != 3875551374:
-            if x != 1 and x != 2 and x !=3:
-                for item in list_h:
-                    if int(item[0]) == int(itemHash):
-                        yp = 228 + (468*2)
-                        ys = 140 + (468*2)
-                        yt = 250 + (468*2)
-                        draw(item, saleItem, im1, yp, ys, yt)
-                        x = 0
-                        break
-                    else:
-                        x=1
-
-            if x != 0 and x!=2 and x !=3:
-                for item in list_w:
-                    if int(item[0]) == int(itemHash):
-                        yp = 228 + (468*3)
-                        ys = 140 + (468*3)
-                        yt = 250 + (468*3)
-                        draw(item, saleItem,im1,yp,ys,yt)
-                        x=1
-                        break
-                    else:
-                        x=2
-
-            if x != 0 and x != 1 and x !=3:
-                for item in list_t:
-                    if int(item[0]) == int(itemHash):
-                        yp = 228 + 468
-                        ys = 140 + 468
-                        yt = 250 + 468
-                        draw(item, saleItem, im1, yp, ys, yt)
-                        x = 2
-                        break
-                    else:
-                        x=3
-
-            if x != 0 and x != 1 and x !=2:
-                for item in list_we:
-                    if int(item[0]) == int(itemHash):
-                        yp = 228
-                        ys = 140
-                        yt = 250
-                        draw(item, saleItem, im1, yp, ys, yt)
-                        x=3
-                        break
-                    else:
-                        x = 4
-    im1.save('resources/XUR_result.png')
-
-def draw(item, saleItem, im1, yp, ys, yt):
-    loadIcon = requests.get("https://www.bungie.net" + item[2])
+def draw(item, cost, im1, yp, ys, yt):
+    loadIcon = requests.get("https://www.bungie.net" + item[1])
     im2 = Image.open(BytesIO(loadIcon.content))
-    im1.paste(im2.resize((300, 300)), (115, yp))
+    im1.paste(im2.resize((284, 303)), (116, yp))
     draw = ImageDraw.Draw(im1)
-    sale = res.json()['Response']['sales']['data']['2190858386']['saleItems'][saleItem]['costs'][0]['quantity']
-    ytt = yt
-    for line in textwrap.wrap(str(item[1]), width=10):
+    text = item[0].split(' ')
+    for line in text:
         font = ImageFont.truetype("resources/18922.otf", 62)
-        draw.text((460, ytt), line, (0, 0, 0), font=font)
+        draw.text((460, yt), line, (0, 0, 0), font=font)
         font = ImageFont.truetype("resources/18922.otf", 60)
-        draw.text((460, ytt), line, (149, 191, 255), font=font)
-        ytt += font.getsize(line)[1]
+        draw.text((460, yt), line, (149, 191, 255), font=font)
+        yt += font.getsize(line)[1]
     font = ImageFont.truetype("resources/18922.otf", 72)
-    draw.text((510, ys), str(sale), (0, 0, 0), font=font)
+    draw.text((510, ys), str(cost[1]), (0, 0, 0), font=font)
     font = ImageFont.truetype("resources/18922.otf", 70)
-    draw.text((510, ys), str(sale), (149, 191, 255), font=font)
+    draw.text((510, ys), str(cost[1]), (149, 191, 255), font=font)
 
 def items_filler():
     global list_h,list_w,list_t,list_w,list_prew
@@ -246,7 +189,6 @@ def items_filler():
         try:
             sale = Items[id_w]
             if sale['inventory']['tierTypeName'] == 'Экзотический':
-                list_prew.append(id_w)
                 list_prew.append(sale['displayProperties']['name'])
                 list_prew.append(sale['displayProperties']['icon'])
                 if sale['classType'] == 1:
@@ -269,7 +211,7 @@ def auto_xur():
     for i in global_xur:
         runTime = i[0] + " " + i[1]
         if i and date == str(runTime):
-            Xur()
+            get_vender_info('2190858386')
             webhook = discord.Webhook.from_url(
                 Discord_webhook,
                 adapter=discord.RequestsWebhookAdapter())
@@ -338,9 +280,74 @@ def get_info():
         headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
     print(r.text)
 
+def xur_img(vendor_items):
+    items_filler()
+    global list_h, list_w, list_t, list_we, yp, ys, yt
+    im1 = Image.open('resources/XUR.png')
+    for item in vendor_items:
+        info = []
+        x=0
+        if x == 0:
+            for item_list in list_h:
+                if item[0] == item_list[0]:
+                    yp = 228 + (468 * 2)
+                    ys = 140 + (468 * 2)
+                    yt = 250 + (468 * 2)
+                    info.append(item[0])
+                    info.append(item_list[1])
+                    draw(info, item[2][0], im1, yp, ys, yt)
+                    x=0
+                    break
+                else:
+                    x = 1
+        if x == 1:
+            for item_list in list_w:
+                if item[0] == item_list[0]:
+                    yp = 228 + (468 * 3)
+                    ys = 140 + (468 * 3)
+                    yt = 250 + (468 * 3)
+                    info.append(item[0])
+                    info.append(item_list[1])
+                    draw(info, item[2][0], im1, yp, ys, yt)
+                    x = 1
+                    break
+                else:
+                    x = 2
+        if x == 2:
+            for item_list in list_t:
+                if item[0] == item_list[0]:
+                    yp = 227 + 468
+                    ys = 140 + 468
+                    yt = 250 + 468
+                    info.append(item[0])
+                    info.append(item_list[1])
+                    draw(info, item[2][0], im1, yp, ys, yt)
+                    x = 2
+                    break
+                else:
+                    x = 3
+        if x == 3 and item[0] != 'Экзотическая энграмма':
+            for item_list in list_we:
+                if item[0] == item_list[0]:
+                    yp = 227
+                    ys = 140
+                    yt = 250
+                    info.append(item[0])
+                    info.append(item_list[1])
+                    draw(info, item[2][0], im1, yp, ys, yt)
+                    x=3
+                    break
+                else:
+                    x = 4
+        if x == 4:
+            print (item[0]+' не найдено')
+    im1.save('resources/XUR_result.png')
+    print("Готово")
+
 def get_vender_info(vendor_id):
     global vendor_items
     vendor_items=[]
+    items_buy_cost=[]
     r = requests.get(
         'https://www.bungie.net/Platform/Destiny2/3/Profile/4611686018496871111/Character/2305843009565724374/Vendors/'+str(vendor_id)+'/?components=402,401',
         headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
@@ -355,12 +362,16 @@ def get_vender_info(vendor_id):
         cat_index = 3
     elif '672118013' == str(vendor_id):
         cat_index = 8
+    elif '2190858386' == str(vendor_id):
+        cat_index = 0
     for cat_id in cat_vendor:
         if int(cat_id['displayCategoryIndex']) == cat_index:
             for item_index in cat_id['itemIndexes']:
+                items_buy_cost = []
                 item = vendor[str(item_index)]
-                info_items = get_item_info(item['itemHash'], item['costs'][0]['itemHash'], item['quantity'],
-                                           item['costs'][0]['quantity'])
+                for cost_items in item['costs']:
+                    items_buy_cost.append([cost_items['itemHash'],cost_items['quantity']])
+                info_items = get_item_info(item['itemHash'], item['quantity'],items_buy_cost)
                 if int(str(info_items[0]).find("Купить ")) != -1:
                     re = info_items[0]
                     re = re.replace("Купить ", "")
@@ -369,12 +380,16 @@ def get_vender_info(vendor_id):
                             re = name[1]
                 else:
                     re = info_items[0]
-                vendor_items.append([re, info_items[1], info_items[2], info_items[3]])
+                vendor_items.append([re, info_items[1], info_items[2]])
             break
-    emb = build_message()
-    return emb
+    if '2190858386' != str(vendor_id):
+        emb = build_message()
+        return emb
+    else:
+        xur_img(vendor_items)
 
-def get_item_info(itemHash,itemHashBuy,sell_quantity,buy_quantity):
+def get_item_info(itemHash,sell_quantity,items_buy_cost):
+    buy_items = []
     with open("resources/Items.json", "r", encoding="utf8") as read_file:
         Items = json.load(read_file)
     x=0
@@ -382,22 +397,26 @@ def get_item_info(itemHash,itemHashBuy,sell_quantity,buy_quantity):
         if int(id_w) == int(itemHash):
             item = Items[id_w]
             sell = item['displayProperties']['name']
-        elif int(id_w) == int(itemHashBuy):
-            item = Items[id_w]
-            buy = item['displayProperties']['name']
-    return sell,buy,sell_quantity,buy_quantity
+        else:
+            for buy_hash in items_buy_cost:
+                if int(id_w) == int(buy_hash[0]):
+                    item = Items[id_w]
+                    buy_items.append([item['displayProperties']['name'],buy_hash[1]])
+    return sell,sell_quantity,buy_items
 
 def build_message():
     emb = discord.Embed()
     for item in vendor_items:
+        buiyng = 'Стоимость: '
+        for item_buy in item[2]:
+            buiyng += str(item_buy[1])+' '+vendor_emoji[item_buy[0]]+'\n'
         emoji_buy = vendor_emoji[item[0]]
-        emoji_sell = vendor_emoji[item[1]]
         if item[2] != 1:
-            emb.add_field(name=str(item[2]) + ' ' + item[0] + ' ' + emoji_buy,
-                          value='Стоимость: ' + str(item[3]) + ' ' + emoji_sell, inline=True)
+            emb.add_field(name=str(item[1]) + ' ' + item[0] + ' ' + emoji_buy,
+                          value=buiyng, inline=True)
         else:
             emb.add_field(name=item[0] + ' ' + emoji_buy,
-                          value='Стоимость: ' + str(item[3]) + ' ' + emoji_sell, inline=True)
+                          value=buiyng, inline=True)
     return emb
 
 def get_token(code_token,type_get_token):
@@ -431,5 +450,5 @@ thread = threading.Thread(target=sch)
 thread.start()
 get_token(refresh_token,'refresh_token')
 download_config_song()
-#get_vender_info('863940356')
+#get_vender_info('2190858386')
 client.run(DISCORD_BOT_TOKEN)

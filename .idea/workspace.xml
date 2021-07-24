@@ -4,10 +4,10 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="config song">
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="add auth and vendors spidi,clovis">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/welcome_song.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/welcome_song.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/emojis.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/emojis.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/token.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/token.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,34 +115,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00016" summary="Добавление испытаний">
-      <created>1626115569495</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1626115569495</updated>
-    </task>
-    <task id="LOCAL-00017" summary="Добавление испытаний">
-      <created>1626115627541</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1626115627541</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Dungeon master">
-      <created>1626263545959</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1626263545959</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Dungeon master">
-      <created>1626263692356</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1626263692356</updated>
     </task>
     <task id="LOCAL-00020" summary="Dungeon master">
       <created>1626263801267</created>
@@ -459,7 +431,35 @@
       <option name="project" value="LOCAL" />
       <updated>1626606892102</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="add auth and vendors spidi,clovis">
+      <created>1627026753601</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1627026753602</updated>
+    </task>
+    <task id="LOCAL-00066" summary="add auth and vendors spidi,clovis">
+      <created>1627073175535</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1627073175535</updated>
+    </task>
+    <task id="LOCAL-00067" summary="add auth and vendors spidi,clovis">
+      <created>1627074641446</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1627074641446</updated>
+    </task>
+    <task id="LOCAL-00068" summary="add auth and vendors spidi,clovis">
+      <created>1627074664318</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1627074664318</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -492,6 +492,7 @@
     <MESSAGE value="fix xur" />
     <MESSAGE value="Add song veil" />
     <MESSAGE value="config song" />
-    <option name="LAST_COMMIT_MESSAGE" value="config song" />
+    <MESSAGE value="add auth and vendors spidi,clovis" />
+    <option name="LAST_COMMIT_MESSAGE" value="add auth and vendors spidi,clovis" />
   </component>
 </project>
