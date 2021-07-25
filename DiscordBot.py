@@ -219,7 +219,7 @@ def sch():
     schedule.every().hours.do(hot_cache)
     while True:
         schedule.run_pending()
-        time.sleep(60)
+        time.sleep(10)
 
 def chellenge_roll():
     gc = gspread.service_account('resources/config_google.json')
@@ -455,6 +455,7 @@ def get_token(code_token,type_get_token):
 
 def hot_cache():
     print("Заполнение кэша")
+    get_token(refresh_token, 'refresh_token')
     global vendors_ids
     day = datetime.datetime.today().weekday()
     hour = datetime.datetime.hour
