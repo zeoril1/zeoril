@@ -44,7 +44,7 @@ vendor_items = []
 vendor_emoji =""
 global_xur = [('23.07.2021', '17:05')]
 name_items = [["улучшающие призмы","Улучшающая призма"],["улучшающие ядра","Улучшающее ядро"],["блеск","Блеск"],
-              ["датасети","Датасеть"],["барионную ветвь","Барионная ветвь"],["гелиевые нити","Гелиевые нити"],
+              ["датасети","Микрофазовая датасеть"],["барионную ветвь","Барионная ветвь"],["гелиевые нити","Гелиевые нити"],
               ["листья из кругометалла","Листья из кругометалла"],["осколки сумерсвета","Осколок сумерсвета"],
               ["эфирный виток","Эфирный виток"]]
 
@@ -81,6 +81,11 @@ async def on_message(message):
     if message.content.startswith('!banshe'):
         print('[command]: clovis ')
         emb = get_vender_info('672118013')
+        await message.channel.send(embed=emb)
+
+    if message.content.startswith('!ada'):
+        print('[command]: ada ')
+        emb = get_vender_info('350061650')
         await message.channel.send(embed=emb)
 
     if message.content.startswith('!xur'):
@@ -364,6 +369,8 @@ def get_vender_info(vendor_id):
         cat_index = 8
     elif '2190858386' == str(vendor_id):
         cat_index = 0
+    elif '350061650' == str(vendor_id):
+        cat_index = 1
     for cat_id in cat_vendor:
         if int(cat_id['displayCategoryIndex']) == cat_index:
             for item_index in cat_id['itemIndexes']:
@@ -383,7 +390,7 @@ def get_vender_info(vendor_id):
                 vendor_items.append([re, info_items[1], info_items[2]])
             break
     if '2190858386' != str(vendor_id):
-        emb = build_message()
+        emb = build_message(vendor_id)
         return emb
     else:
         xur_img(vendor_items)
@@ -396,7 +403,8 @@ def get_item_info(itemHash,sell_quantity,items_buy_cost):
     for id_w in Items:
         if int(id_w) == int(itemHash):
             item = Items[id_w]
-            sell = item['displayProperties']['name']
+            sell = str(item['displayProperties']['name'])
+            sell = sell.replace('"',"")
         else:
             for buy_hash in items_buy_cost:
                 if int(id_w) == int(buy_hash[0]):
@@ -404,19 +412,23 @@ def get_item_info(itemHash,sell_quantity,items_buy_cost):
                     buy_items.append([item['displayProperties']['name'],buy_hash[1]])
     return sell,sell_quantity,buy_items
 
-def build_message():
+def build_message(vendor_id):
     emb = discord.Embed()
     for item in vendor_items:
-        buiyng = 'Стоимость: '
+        buiyng = 'Стоимость:\n'
         for item_buy in item[2]:
             buiyng += str(item_buy[1])+' '+vendor_emoji[item_buy[0]]+'\n'
-        emoji_buy = vendor_emoji[item[0]]
-        if item[2] != 1:
+        if vendor_id == '350061650':
+            emoji_buy = ''
+        else:
+            emoji_buy = vendor_emoji[item[0]]
+        if item[1] != 1:
             emb.add_field(name=str(item[1]) + ' ' + item[0] + ' ' + emoji_buy,
-                          value=buiyng, inline=True)
+                          value=buiyng+'\n--------------------', inline=True)
         else:
             emb.add_field(name=item[0] + ' ' + emoji_buy,
-                          value=buiyng, inline=True)
+                          value=buiyng+'\n--------------------', inline=True)
+
     return emb
 
 def get_token(code_token,type_get_token):
