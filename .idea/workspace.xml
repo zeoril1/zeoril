@@ -4,13 +4,10 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Fix song">
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Add hot cache">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_18_07_2021_13_32_[Default_Changelist]/shelved.patch" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/XUR.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/XUR_result.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/token.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/token.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vendor.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,20 +115,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00024" summary="Dungeon master">
-      <created>1626265415606</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1626265415606</updated>
-    </task>
-    <task id="LOCAL-00025" summary="Dungeon master">
-      <created>1626265735012</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1626265735012</updated>
     </task>
     <task id="LOCAL-00026" summary="Dungeon master">
       <created>1626266181564</created>
@@ -462,7 +445,21 @@
       <option name="project" value="LOCAL" />
       <updated>1627206372700</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="Add hot cache">
+      <created>1627211673979</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1627211673979</updated>
+    </task>
+    <task id="LOCAL-00074" summary="Add hot cache">
+      <created>1627211708407</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1627211708407</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -498,6 +495,7 @@
     <MESSAGE value="add auth and vendors spidi,clovis" />
     <MESSAGE value="Update vendors sell items message. Add vendor Ada-1" />
     <MESSAGE value="Fix song" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix song" />
+    <MESSAGE value="Add hot cache" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add hot cache" />
   </component>
 </project>

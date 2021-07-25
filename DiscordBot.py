@@ -73,6 +73,10 @@ async def on_voice_state_update(member, before, after):
 
 @client.event
 async def on_message(message):
+    if message.content.startswith('!test'):
+        hot_cache()
+        await message.channel.send('123')
+
     if message.content.startswith('!configupdate'):
         print('[command]: configupdate ')
         download_config_song()
