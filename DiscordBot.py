@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import discord
-import textwrap
 import schedule
 import datetime
 import requests
@@ -13,6 +12,7 @@ from discord import FFmpegPCMAudio, Emoji
 from io import BytesIO
 from mutagen.mp3 import MP3
 from PIL import Image, ImageDraw, ImageFont
+import ast
 import os
 cookies = []
 token = ''
@@ -42,6 +42,7 @@ list_prew = []
 music_welcome = []
 vendor_items = []
 vendor_emoji =""
+vendors_ids = ['863940356','672118013','350061650','2190858386']
 x=0
 global_xur = [('23.07.2021', '17:05')]
 name_items = [["улучшающие призмы","Улучшающая призма"],["улучшающие ядра","Улучшающее ядро"],["блеск","Блеск"],
@@ -79,26 +80,22 @@ async def on_message(message):
 
     if message.content.startswith('!spider'):
         print('[command]: spider ')
-        emb = get_vender_info('863940356')
+        emb = build_message('863940356')
         await message.channel.send(embed=emb)
 
     if message.content.startswith('!banshe'):
         print('[command]: clovis ')
-        emb = get_vender_info('672118013')
+        emb = build_message('672118013')
         await message.channel.send(embed=emb)
 
     if message.content.startswith('!ada'):
         print('[command]: ada ')
-        emb = get_vender_info('350061650')
+        emb = build_message('350061650')
         await message.channel.send(embed=emb)
 
     if message.content.startswith('!xur'):
         print('[command]: xur ')
-        get_vender_info('2190858386')
-        await message.channel.send(file=discord.File('resources/XUR_result.png'))
-        '''print('[command]: xur ')
-        Xur()
-        await message.channel.send(file=discord.File('resources/XUR_result.png'))'''
+        await message.channel.send(file=discord.File('resources/Vendors/XUR_result.png'))
 
     if message.content.startswith('!roll'):
         print('[command]: roll ')
@@ -214,23 +211,11 @@ def items_filler():
         else:
             y = 1
 
-def auto_xur():
-    global global_xur
-    date = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
-    for i in global_xur:
-        runTime = i[0] + " " + i[1]
-        if i and date == str(runTime):
-            get_vender_info('2190858386')
-            webhook = discord.Webhook.from_url(
-                Discord_webhook,
-                adapter=discord.RequestsWebhookAdapter())
-            webhook.send(file=discord.File('resources/XUR_result.png'))
-
 def sch():
-    schedule.every().minutes.do(auto_xur)
+    schedule.every().hours.do(hot_cache)
     while True:
         schedule.run_pending()
-        time.sleep(1)
+        time.sleep(60)
 
 def chellenge_roll():
     gc = gspread.service_account('resources/config_google.json')
@@ -292,7 +277,7 @@ def get_info():
 def xur_img(vendor_items):
     items_filler()
     global list_h, list_w, list_t, list_we, yp, ys, yt
-    im1 = Image.open('resources/XUR.png')
+    im1 = Image.open('resources/Vendors/XUR.png')
     for item in vendor_items:
         info = []
         x=0
@@ -350,7 +335,7 @@ def xur_img(vendor_items):
                     x = 4
         if x == 4:
             print (item[0]+' не найдено')
-    im1.save('resources/XUR_result.png')
+    im1.save('resources/Vendors/XUR_result.png')
     print("Готово")
 
 def get_vender_info(vendor_id):
@@ -394,8 +379,8 @@ def get_vender_info(vendor_id):
                 vendor_items.append([re, info_items[1], info_items[2]])
             break
     if '2190858386' != str(vendor_id):
-        emb = build_message(vendor_id)
-        return emb
+        #emb = build_message(vendor_id)
+        return vendor_items
     else:
         xur_img(vendor_items)
 
@@ -417,6 +402,8 @@ def get_item_info(itemHash,sell_quantity,items_buy_cost):
     return sell,sell_quantity,buy_items
 
 def build_message(vendor_id):
+    vendor_items = open('resources/Vendors/' + vendor_id + '.txt','r').read()
+    vendor_items = ast.literal_eval(vendor_items)
     emb = discord.Embed()
     for item in vendor_items:
         buiyng = 'Стоимость:\n'
@@ -462,9 +449,25 @@ def get_token(code_token,type_get_token):
     with open('resources/token.txt', 'w') as f:
         f.write(refresh_token)
 
+def hot_cache():
+    print("Заполнение кэша")
+    global vendors_ids
+    day = datetime.datetime.today().weekday()
+    hour = datetime.datetime.hour
+    for vendor_id in vendors_ids:
+        if vendor_id == '2190858386' and (day !=2 or day !=3):
+            if (day == 1 and hour > 20) or  (day == 4 and hour < 20):
+                x=0
+            else:
+               cache = get_vender_info(vendor_id)
+               print(cache)
+        else:
+            cache = get_vender_info(vendor_id)
+            with open('resources/Vendors/' + vendor_id + '.txt', 'w+') as f:
+                f.write(str(cache))
+
 thread = threading.Thread(target=sch)
 thread.start()
 get_token(refresh_token,'refresh_token')
 download_config_song()
-#get_vender_info('2190858386')
 client.run(DISCORD_BOT_TOKEN)

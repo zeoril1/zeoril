@@ -4,12 +4,11 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="add auth and vendors spidi,clovis">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Fix song">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/zeoril.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/zeoril.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/emojis.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/emojis.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/XUR.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/XUR_result.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/token.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/token.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vendor.json" afterDir="false" />
     </list>
@@ -119,20 +118,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00022" summary="Dungeon master">
-      <created>1626264372093</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1626264372093</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Dungeon master">
-      <created>1626264379404</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1626264379404</updated>
     </task>
     <task id="LOCAL-00024" summary="Dungeon master">
       <created>1626265415606</created>
@@ -463,7 +448,21 @@
       <option name="project" value="LOCAL" />
       <updated>1627108252814</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="Update vendors sell items message. Add vendor Ada-1">
+      <created>1627205654054</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1627205654054</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Fix song">
+      <created>1627206372700</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1627206372700</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -497,6 +496,8 @@
     <MESSAGE value="Add song veil" />
     <MESSAGE value="config song" />
     <MESSAGE value="add auth and vendors spidi,clovis" />
-    <option name="LAST_COMMIT_MESSAGE" value="add auth and vendors spidi,clovis" />
+    <MESSAGE value="Update vendors sell items message. Add vendor Ada-1" />
+    <MESSAGE value="Fix song" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix song" />
   </component>
 </project>
