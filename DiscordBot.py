@@ -456,7 +456,7 @@ def hot_cache():
     hour = datetime.datetime.hour
     for vendor_id in vendors_ids:
         if vendor_id == '2190858386' and (day !=2 or day !=3):
-            if (day == 1 and hour > 20) or  (day == 4 and hour < 20):
+            if (day == 1 and hour > 17) or  (day == 4 and hour < 17):
                 x=0
             else:
                cache = get_vender_info(vendor_id)
