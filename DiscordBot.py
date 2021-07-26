@@ -61,7 +61,7 @@ async def on_ready():
 @client.event
 async def on_voice_state_update(member, before, after):
     global x
-    if before.channel != after.channel and discord.voice_client is not None and after.channel is not None and x==0:
+    if before.channel != after.channel and discord.voice_client is not None and after.channel is not None:
         x=1
         return_song = play_song(member.id)
         if return_song[0] > 0:
