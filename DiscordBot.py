@@ -68,8 +68,8 @@ async def on_voice_state_update(member, before, after):
             bot = await discord.VoiceChannel.connect(member.voice.channel)
             bot.play(FFmpegPCMAudio(return_song[1]))
             time.sleep(return_song[0])
+            x = 0
             await bot.disconnect()
-            x=0
 
 @client.event
 async def on_message(message):
