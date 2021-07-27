@@ -133,7 +133,7 @@ def play_song(id_song):
 def download_music(music_id):
     song_url = "https://www.zeoril.ru/zaebala/"+music_id
     song = requests.get(song_url)
-    with open('music/song.mp3', 'wb', encoding="utf8") as file:
+    with open('music/song.mp3', 'wb') as file:
         file.write(song.content)
 
 def magic_ball():
