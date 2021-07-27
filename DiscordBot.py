@@ -133,7 +133,7 @@ def play_song(id_song):
 def download_music(music_id):
     song_url = "https://www.zeoril.ru/zaebala/"+music_id
     song = requests.get(song_url)
-    with open('music/song.mp3', 'wb') as file:
+    with open('music/song.mp3', 'wb', encoding="utf8") as file:
         file.write(song.content)
 
 def magic_ball():
@@ -169,7 +169,7 @@ def chellenge_update(list_con):
 def read_song():
     global music_welcome
     music_welcome = []
-    with open('resources/welcome_song.txt', 'r') as f:
+    with open('resources/welcome_song.txt', 'r', encoding="utf8") as f:
         for eachLine in f:
             a = eachLine
             a = a.split(',')
@@ -181,7 +181,7 @@ def download_config_song():
     global vendor_emoji
     song_url = "https://www.zeoril.ru/zaebala/welcome_song.txt"
     song_config = requests.get(song_url)
-    with open('resources/welcome_song.txt', 'w') as f:
+    with open('resources/welcome_song.txt', 'w', encoding="utf8") as f:
         f.write(song_config.text)
 
     with open('resources/emojis.json', 'r', encoding="utf8") as f:
@@ -195,7 +195,7 @@ def get_info():
     print(r.text)
 
 def build_message(vendor_id):
-    vendor_items = open('resources/Vendors/' + vendor_id + '.txt','r').read()
+    vendor_items = open('resources/Vendors/' + vendor_id + '.txt','r', encoding="utf8").read()
     vendor_items = ast.literal_eval(vendor_items)
     emb = discord.Embed()
     for item in vendor_items:
