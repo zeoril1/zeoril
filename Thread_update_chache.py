@@ -114,7 +114,7 @@ def get_token(code_token,type_get_token):
         f.write(refresh_token)
 
 def sch():
-    schedule.every().minutes.do(hot_cache)
+    schedule.every().hours.do(hot_cache)
     while True:
         schedule.run_pending()
         print ('123')
@@ -264,6 +264,5 @@ def get_vender_info(vendor_id):
     else:
         xur_img(vendor_items)
 
-hot_cache()
-#thread = threading.Thread(target=sch)
-#thread.start()
+thread = threading.Thread(target=sch)
+thread.start()
