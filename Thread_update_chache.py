@@ -63,7 +63,7 @@ def items_filler():
 def download_config_cookie():
     cookies_url = "https://www.zeoril.ru/zaebala/cookie.txt"
     cookies_config = requests.get(cookies_url)
-    with open('resources/cookies.txt', 'w') as f:
+    with open('resources/cookies.txt', 'w', encoding="utf8") as f:
         f.write(cookies_config.text)
     return (cookies_config.text)
 
@@ -83,7 +83,7 @@ def hot_cache():
                print(cache)
         else:
             cache = get_vender_info(vendor_id)
-            with open('resources/Vendors/' + vendor_id + '.txt', 'w+') as f:
+            with open('resources/Vendors/' + vendor_id + '.txt', 'w+', encoding="utf8") as f:
                 f.write(str(cache))
 
 def get_token(code_token,type_get_token):
@@ -110,7 +110,7 @@ def get_token(code_token,type_get_token):
         discord_hook_token,
         adapter=discord.RequestsWebhookAdapter())
     webhook.send(refresh_token)
-    with open('resources/token.txt', 'w') as f:
+    with open('resources/token.txt', 'w', encoding="utf8") as f:
         f.write(refresh_token)
 
 def sch():
