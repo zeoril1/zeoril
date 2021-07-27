@@ -471,8 +471,8 @@ def hot_cache():
             with open('resources/Vendors/' + vendor_id + '.txt', 'w+') as f:
                 f.write(str(cache))
 
-thread = threading.Thread(target=sch)
-thread.start()
+#thread = threading.Thread(target=sch)
+#thread.start()
 get_token(refresh_token,'refresh_token')
 download_config_song()
 client.run(DISCORD_BOT_TOKEN)
