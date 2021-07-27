@@ -117,7 +117,6 @@ def sch():
     schedule.every().hours.do(hot_cache)
     while True:
         schedule.run_pending()
-        print ('123')
         time.sleep(10)
 
 def get_item_info(itemHash,sell_quantity,items_buy_cost):
