@@ -61,7 +61,7 @@ async def on_ready():
 @client.event
 async def on_voice_state_update(member, before, after):
     global x
-    if before.channel != after.channel and discord.voice_client is not None and after.channel is not None and x==0:
+    if before.channel != after.channel and discord.voice_client is not None and after.channel is not None:
         x=1
         return_song = play_song(member.id)
         if return_song[0] > 0:
@@ -471,8 +471,8 @@ def hot_cache():
             with open('resources/Vendors/' + vendor_id + '.txt', 'w+') as f:
                 f.write(str(cache))
 
-thread = threading.Thread(target=sch)
-thread.start()
+#thread = threading.Thread(target=sch)
+#thread.start()
 get_token(refresh_token,'refresh_token')
 download_config_song()
 client.run(DISCORD_BOT_TOKEN)
