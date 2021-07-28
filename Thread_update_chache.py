@@ -18,7 +18,7 @@ vendor_emoji =""
 name_items = [["улучшающие призмы","Улучшающая призма"],["улучшающие ядра","Улучшающее ядро"],["блеск","Блеск"],
               ["датасети","Микрофазовая датасеть"],["барионную ветвь","Барионная ветвь"],["гелиевые нити","Гелиевые нити"],
               ["листья из кругометалла","Листья из кругометалла"],["осколки сумерсвета","Осколок сумерсвета"],
-              ["эфирный виток","Эфирный виток"]]
+              ["эфирный виток","Эфирный виток"],["ледниковую звездчатку","Ледниковая звездчатка"]]
 vendors_ids = ['863940356','672118013','350061650','2190858386']
 discord_hook_token = "https://discord.com/api/webhooks/865526515344212018/GJNKyPj9dAVLluVcA3_CZs49u52P64XLWCIa2C4t-xju0M36Uo-PQcTp_qst8XGK5xz1"
 refresh_token = 'CNiyAxKGAgAgTPqkAW/Q/jFA9CILmvKKkexfY1k5Mdt3ziztgOZShDDgAAAAqfJUVIrhhPayhelVM7LaDa3+uFFW/gwVKqPACYsewUojiliAuXDuci1tPHQUQK/pEt/kwxQJHdY3RxKFy2CtTVCZTRuWIAe1ooNtLNnVCAOdL9jKx9QkEBJkfM13ux/6kfKb2bNcR6kzhmXqfk9ybTT5pEL4rquB8udPNChwkPc/xRWk/FjNjO6NpOESY0LeGqKYd9eZqiK0wt/vLRv9/sl9rdVy8A/uYFwVf6DDN17jtrjgyHVrx82eSqNwP8fZ2JdpTutnEdng4+6g91fqY+2u0fnV1ZgwGdeBdckR4ic='
@@ -263,5 +263,6 @@ def get_vender_info(vendor_id):
     else:
         xur_img(vendor_items)
 
-thread = threading.Thread(target=sch)
-thread.start()
+hot_cache()
+#thread = threading.Thread(target=sch)
+#thread.start()
