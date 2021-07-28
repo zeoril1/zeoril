@@ -263,6 +263,5 @@ def get_vender_info(vendor_id):
     else:
         xur_img(vendor_items)
 
-hot_cache()
-#thread = threading.Thread(target=sch)
-#thread.start()
+thread = threading.Thread(target=sch)
+thread.start()

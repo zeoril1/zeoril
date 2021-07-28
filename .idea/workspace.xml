@@ -4,7 +4,9 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Fix hot chache" />
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Fix hot chache">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -55,7 +57,7 @@
       <recent name="F:\zeoril\resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Test">
+  <component name="RunManager" selected="Python.DiscordBot">
     <configuration name="DiscordBot" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="zeoril" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -111,13 +113,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00039" summary="Online resourses mew branch">
-      <created>1626440592190</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1626440592190</updated>
     </task>
     <task id="LOCAL-00040" summary="Online exotic">
       <created>1626442493207</created>
@@ -455,7 +450,14 @@
       <option name="project" value="LOCAL" />
       <updated>1627394901292</updated>
     </task>
-    <option name="localTasksCounter" value="88" />
+    <task id="LOCAL-00088" summary="Fix hot chache">
+      <created>1627468119472</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1627468119473</updated>
+    </task>
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
