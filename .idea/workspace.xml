@@ -6,6 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Fix hot chache">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Thread_update_chache.py" beforeDir="false" afterPath="$PROJECT_DIR$/Thread_update_chache.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/Vendors/350061650.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/350061650.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/Vendors/672118013.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/672118013.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/Vendors/863940356.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/863940356.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/Vendors/XUR_result.png" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/XUR_result.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/icon_buy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/icon_sell.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/token.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/token.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vendor.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +68,7 @@
       <recent name="F:\zeoril\resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.DiscordBot">
+  <component name="RunManager" selected="Python.Test">
     <configuration name="DiscordBot" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="zeoril" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -113,20 +124,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00040" summary="Online exotic">
-      <created>1626442493207</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1626442493207</updated>
-    </task>
-    <task id="LOCAL-00041" summary="Online exotic">
-      <created>1626442556410</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1626442556410</updated>
     </task>
     <task id="LOCAL-00042" summary="Online exotic">
       <created>1626443746948</created>
@@ -457,7 +454,21 @@
       <option name="project" value="LOCAL" />
       <updated>1627468119473</updated>
     </task>
-    <option name="localTasksCounter" value="89" />
+    <task id="LOCAL-00089" summary="Fix hot chache">
+      <created>1627468636399</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1627468636399</updated>
+    </task>
+    <task id="LOCAL-00090" summary="Fix hot chache">
+      <created>1627468697106</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1627468697106</updated>
+    </task>
+    <option name="localTasksCounter" value="91" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 import discord
-import schedule
-import datetime
 import requests
-import threading
 import gspread
 import time
 import json
 import random
-from discord import FFmpegPCMAudio, Emoji
-from io import BytesIO
+from discord import FFmpegPCMAudio
 from mutagen.mp3 import MP3
-from PIL import Image, ImageDraw, ImageFont
 import ast
-import os
+
 cookies = []
 token = ''
 
@@ -33,9 +28,7 @@ res = requests.get(xur_url, headers=HEADERS)
 client = discord.Client()
 
 music_welcome = []
-
-global_xur = [('23.07.2021', '17:05')]
-
+vendor_emoji = []
 
 @client.event
 async def on_ready():
@@ -46,15 +39,12 @@ async def on_ready():
 
 @client.event
 async def on_voice_state_update(member, before, after):
-    global x
     if before.channel != after.channel and discord.voice_client is not None and after.channel is not None:
-        x=1
         return_song = play_song(member.id)
         if return_song[0] > 0:
             bot = await discord.VoiceChannel.connect(member.voice.channel)
             bot.play(FFmpegPCMAudio(return_song[1]))
             time.sleep(return_song[0])
-            x = 0
             await bot.disconnect()
 
 @client.event
@@ -96,7 +86,8 @@ async def on_message(message):
     if message.content.startswith('!vote'):
         print('[command]: vote ')
         emb = discord.Embed(title=f'Голосование за рейд',
-                            description=':one: Хрустальный Чертог \n\n:two: Склеп Глубокого Камня \n\n:three: Сад Спасения \n\n:four: Последнее Желание',
+                            description=':one: Хрустальный Чертог \n\n:two: Склеп Глубокого Камня \n\n:three: Сад '
+                                        'Спасения \n\n:four: Последнее Желание',
                             colour=discord.Color.blue())
 
         mess = await message.channel.send(embed=emb)
@@ -119,6 +110,7 @@ async def on_message(message):
         elif status == 1:
             await message.channel.send('**'+list_con[1] + '** не найден')
 
+
 def play_song(id_song):
     global music_welcome
     time_sleep = 0
@@ -128,7 +120,8 @@ def play_song(id_song):
             file = MP3("music/song.mp3")
             time_sleep = file.info.length + 0.2
             break
-    return (time_sleep, "music/song.mp3")
+    return time_sleep, "music/song.mp3"
+
 
 def download_music(music_id):
     song_url = "https://www.zeoril.ru/zaebala/"+music_id
@@ -136,13 +129,16 @@ def download_music(music_id):
     with open('music/song.mp3', 'wb') as file:
         file.write(song.content)
 
+
 def magic_ball():
     answer = ['Бесспорно', 'Предрешено', 'Никаких сомнений', 'Определённо да', 'Можешь быть уверен в этом',
               'Мне кажется — «да»', 'Вероятнее всего', 'Хорошие перспективы', 'Знаки говорят — «да»', 'Да',
-              'Пока не ясно, попробуй снова', 'Спроси позже', 'Лучше не рассказывать', 'Сейчас нельзя предсказать', 'Сконцентрируйся и спроси опять',
-              'Даже не думай', 'Мой ответ — «нет»', 'По моим данным — «нет»', 'Перспективы не очень хорошие', 'Весьма сомнительно']
-    rand = random.randint(0,19)
+              'Пока не ясно, попробуй снова', 'Спроси позже', 'Лучше не рассказывать', 'Сейчас нельзя предсказать',
+              'Сконцентрируйся и спроси опять', 'Даже не думай', 'Мой ответ — «нет»', 'По моим данным — «нет»',
+              'Перспективы не очень хорошие', 'Весьма сомнительно']
+    rand = random.randint(0, 19)
     return answer[rand]
+
 
 def chellenge_roll():
     gc = gspread.service_account('resources/config_google.json')
@@ -150,21 +146,23 @@ def chellenge_roll():
     ran = random.randint(1, 87)
     weapon = wks.row_values(ran)[0]
     chellenge = wks.row_values(ran)[2]
-    EngWeapon = wks.row_values(ran)[1]
-    return (weapon,EngWeapon,chellenge)
+    engweapon = wks.row_values(ran)[1]
+    return weapon, engweapon, chellenge
+
 
 def chellenge_update(list_con):
     try:
         gc = gspread.service_account('resources/config_google.json')
         wks = gc.open("Exotic").sheet1
         cell = wks.find(list_con[1])
-        if wks.cell(cell.row,cell.col+2).value == 'Нет.':
-            wks.update_cell(cell.row,cell.col+2,list_con[2])
+        if wks.cell(cell.row, cell.col+2).value == 'Нет.':
+            wks.update_cell(cell.row, cell.col+2, list_con[2])
         else:
-            wks.update_cell(cell.row,cell.col+2,wks.cell(cell.row,cell.col+2).value+' ; '+list_con[2])
+            wks.update_cell(cell.row, cell.col+2, wks.cell(cell.row, cell.col+2).value+' ; '+list_con[2])
         return 0
     except gspread.exceptions.CellNotFound:
         return 1
+
 
 def read_song():
     global music_welcome
@@ -177,6 +175,7 @@ def read_song():
                 b = spl.split(' ', maxsplit=1)
                 music_welcome.append(b)
 
+
 def download_config_song():
     global vendor_emoji
     song_url = "https://www.zeoril.ru/zaebala/welcome_song.txt"
@@ -188,14 +187,16 @@ def download_config_song():
         vendor_emoji = json.load(f)
     read_song()
 
+
 def get_info():
     r = requests.get(
         'https://www.bungie.net/Platform/Destiny2/3/Profile/4611686018496871111/Character/2305843009565724374/Vendors/?components=400',
         headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
     print(r.text)
 
+
 def build_message(vendor_id):
-    vendor_items = open('resources/Vendors/' + vendor_id + '.txt','r', encoding="utf8").read()
+    vendor_items = open('resources/Vendors/' + vendor_id + '.txt', 'r', encoding="utf8").read()
     vendor_items = ast.literal_eval(vendor_items)
     emb = discord.Embed()
     for item in vendor_items:
@@ -214,6 +215,7 @@ def build_message(vendor_id):
                           value=buiyng+'\n--------------------', inline=True)
 
     return emb
+
 
 download_config_song()
 client.run(DISCORD_BOT_TOKEN)
