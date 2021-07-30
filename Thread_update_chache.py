@@ -14,17 +14,15 @@ list_t = []
 list_we = []
 list_prew = []
 vendor_items = []
-vendor_emoji =""
-name_items = [["улучшающие призмы","Улучшающая призма"],["улучшающие ядра","Улучшающее ядро"],["блеск","Блеск"],
-              ["датасети","Микрофазовая датасеть"],["барионную ветвь","Барионная ветвь"],["гелиевые нити","Гелиевые нити"],
-              ["листья из кругометалла","Листья из кругометалла"],["осколки сумерсвета","Осколок сумерсвета"],
-              ["эфирный виток","Эфирный виток"],["ледниковую звездчатку","Ледниковая звездчатка"]]
-vendors_ids = ['863940356','672118013','350061650','2190858386']
+vendor_emoji = ""
+name_items = []
+vendors_ids = []
 discord_hook_token = "https://discord.com/api/webhooks/865526515344212018/GJNKyPj9dAVLluVcA3_CZs49u52P64XLWCIa2C4t-xju0M36Uo-PQcTp_qst8XGK5xz1"
 refresh_token = 'CNiyAxKGAgAgTPqkAW/Q/jFA9CILmvKKkexfY1k5Mdt3ziztgOZShDDgAAAAqfJUVIrhhPayhelVM7LaDa3+uFFW/gwVKqPACYsewUojiliAuXDuci1tPHQUQK/pEt/kwxQJHdY3RxKFy2CtTVCZTRuWIAe1ooNtLNnVCAOdL9jKx9QkEBJkfM13ux/6kfKb2bNcR6kzhmXqfk9ybTT5pEL4rquB8udPNChwkPc/xRWk/FjNjO6NpOESY0LeGqKYd9eZqiK0wt/vLRv9/sl9rdVy8A/uYFwVf6DDN17jtrjgyHVrx82eSqNwP8fZ2JdpTutnEdng4+6g91fqY+2u0fnV1ZgwGdeBdckR4ic='
 
+
 def items_filler():
-    global list_h,list_w,list_t,list_w,list_prew
+    global list_h, list_w, list_t, list_w, list_prew
     m = open("resources/manifest.json", "w", encoding="utf8")
     manifest = requests.get("https://www.bungie.net/Platform/Destiny2/Manifest/")
     m.write(manifest.text)  # записываем содержимое в файл; как видите - content запроса
@@ -39,10 +37,10 @@ def items_filler():
     f.close()
 
     with open("resources/Items.json", "r", encoding="utf8") as read_file:
-        Items = json.load(read_file)
-    for id_w in Items:
+        items = json.load(read_file)
+    for id_w in items:
         try:
-            sale = Items[id_w]
+            sale = items[id_w]
             if sale['inventory']['tierTypeName'] == 'Экзотический':
                 list_prew.append(sale['displayProperties']['name'])
                 list_prew.append(sale['displayProperties']['icon'])
@@ -60,12 +58,14 @@ def items_filler():
         else:
             y = 1
 
+
 def download_config_cookie():
     cookies_url = "https://www.zeoril.ru/zaebala/cookie.txt"
     cookies_config = requests.get(cookies_url)
     with open('resources/cookies.txt', 'w', encoding="utf8") as f:
         f.write(cookies_config.text)
     return (cookies_config.text)
+
 
 def hot_cache():
     print("Заполнение кэша")
@@ -75,16 +75,18 @@ def hot_cache():
     hour = datetime.datetime.now().hour
     print(hour)
     for vendor_id in vendors_ids:
-        if vendor_id == '2190858386' and (day !=2 or day !=3):
-            if (day == 1 and hour > 17) or  (day == 4 and hour < 17):
-                x=0
+        if vendor_id == '2190858386' and (day != 2 or day != 3):
+            if (day == 1 and hour > 17) or (day == 4 and hour < 17):
+                x= 0
             else:
-               cache = get_vender_info(vendor_id)
+               cache= get_vender_info(vendor_id)
                print(cache)
         else:
             cache = get_vender_info(vendor_id)
             with open('resources/Vendors/' + vendor_id + '.txt', 'w+', encoding="utf8") as f:
                 f.write(str(cache))
+        print (vendor_id+" Готов")
+
 
 def get_token(code_token,type_get_token):
     global token,refresh_token
@@ -113,28 +115,33 @@ def get_token(code_token,type_get_token):
     with open('resources/token.txt', 'w', encoding="utf8") as f:
         f.write(refresh_token)
 
+
 def sch():
     schedule.every().hours.do(hot_cache)
     while True:
         schedule.run_pending()
         time.sleep(10)
 
-def get_item_info(itemHash,sell_quantity,items_buy_cost):
+
+def get_item_info(itemHash,sell_quantity,items_buy_cost, vendor_id):
     buy_items = []
     with open("resources/Items.json", "r", encoding="utf8") as read_file:
         Items = json.load(read_file)
     x=0
     for id_w in Items:
-        if int(id_w) == int(itemHash):
+        if int(id_w) == int(itemHash) and '2190858386' != str(vendor_id):
             item = Items[id_w]
             sell = str(item['displayProperties']['name'])
             sell = sell.replace('"',"")
+        elif '2190858386' == str(vendor_id) and int(id_w) == int(itemHash):
+            item = Items[id_w]
+            sell = str(item['displayProperties']['name'])
         else:
             for buy_hash in items_buy_cost:
                 if int(id_w) == int(buy_hash[0]):
                     item = Items[id_w]
                     buy_items.append([item['displayProperties']['name'],buy_hash[1]])
-    return sell,sell_quantity,buy_items
+    return sell, sell_quantity, buy_items
 
 def draw(item, cost, im1, yp, ys, yt):
     loadIcon = requests.get("https://www.bungie.net" + item[1])
@@ -152,6 +159,7 @@ def draw(item, cost, im1, yp, ys, yt):
     draw.text((510, ys), str(cost[1]), (0, 0, 0), font=font)
     font = ImageFont.truetype("resources/18922.otf", 70)
     draw.text((510, ys), str(cost[1]), (149, 191, 255), font=font)
+
 
 def xur_img(vendor_items):
     items_filler()
@@ -217,6 +225,7 @@ def xur_img(vendor_items):
     im1.save('resources/Vendors/XUR_result.png')
     print("Готово")
 
+
 def get_vender_info(vendor_id):
     global vendor_items
     vendor_items=[]
@@ -239,6 +248,8 @@ def get_vender_info(vendor_id):
         cat_index = 0
     elif '350061650' == str(vendor_id):
         cat_index = 1
+    elif '350061651' == str(vendor_id):
+        cat_index = 1
     for cat_id in cat_vendor:
         if int(cat_id['displayCategoryIndex']) == cat_index:
             for item_index in cat_id['itemIndexes']:
@@ -246,7 +257,7 @@ def get_vender_info(vendor_id):
                 item = vendor[str(item_index)]
                 for cost_items in item['costs']:
                     items_buy_cost.append([cost_items['itemHash'],cost_items['quantity']])
-                info_items = get_item_info(item['itemHash'], item['quantity'],items_buy_cost)
+                info_items = get_item_info(item['itemHash'], item['quantity'], items_buy_cost, vendor_id)
                 if int(str(info_items[0]).find("Купить ")) != -1:
                     re = info_items[0]
                     re = re.replace("Купить ", "")
@@ -263,5 +274,39 @@ def get_vender_info(vendor_id):
     else:
         xur_img(vendor_items)
 
+def config():
+    global name_items,vendors_ids
+    x=0
+    configs = open('resources/Vendors/config_vendors.txt', 'r', encoding="utf8").read()
+    configs_split = configs.split("\n")
+    for line in configs_split:
+        name_config = line.split("=")
+        name_config[0]=name_config[0].replace(" ", "")
+        if name_config[0] == "name":
+            config_prev = name_config[1].split(",")
+            for form in config_prev:
+                if x == 0:
+                    one = form.replace("[","")
+                    one = one.replace("]","")
+                    one = one.replace('"', "")
+                    x=1
+                elif x == 1:
+                    two = form.replace("[", "")
+                    two = two.replace("]", "")
+                    two = two.replace('"', "")
+                    name_items.append([one,two])
+                    x=0
+        elif name_config[0] == "ids":
+            config_prev = name_config[1].split(",")
+            for form in config_prev:
+                item = form.replace("[", "")
+                item = item.replace("]", "")
+                item = item.replace("'", "")
+                vendors_ids.append(item)
+    #vendor_items = ast.literal_eval(vendor_items)
+
+
+config()
+hot_cache()
 thread = threading.Thread(target=sch)
 thread.start()
