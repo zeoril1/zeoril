@@ -90,7 +90,7 @@ def hot_cache():
     print(os.listdir(path="resources/"))
 
 
-def get_token(code_token,type_get_token):
+def get_token(code_token, type_get_token):
     global token,refresh_token
     token_url = 'https://www.bungie.net/Platform/App/OAuth/Token/'
     autorization = "Basic MzcxNDg6Rlo4eDItdEFBZ2x4NjBXT1lPeUNBSXMyTTZHQ2ZHVVBMV1NDTVZrdVpBOA=="

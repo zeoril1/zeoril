@@ -72,7 +72,7 @@ async def on_message(message):
 
     if message.content.startswith('!xur'):
         print('[command]: xur ')
-        await message.channel.send(file=discord.File('resources/Vendors/XUR_result.png'))
+        await message.channel.send(file=discord.File(os.path.join(os.getcwd(),"resources\\Vendors\\XUR_result.png'")))
 
     if message.content.startswith('!roll'):
         print('[command]: roll ')
