@@ -4,13 +4,7 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Fix hot chache">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/token.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/token.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vendor.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/welcome_song.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/welcome_song.txt" afterDir="false" />
-    </list>
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Fix hot chache" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -117,13 +111,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00049" summary="fix xur">
-      <created>1626459884256</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1626459884256</updated>
     </task>
     <task id="LOCAL-00050" summary="fix xur">
       <created>1626460555069</created>
@@ -461,7 +448,14 @@
       <option name="project" value="LOCAL" />
       <updated>1627676533429</updated>
     </task>
-    <option name="localTasksCounter" value="98" />
+    <task id="LOCAL-00098" summary="Fix hot chache">
+      <created>1627677016865</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1627677016865</updated>
+    </task>
+    <option name="localTasksCounter" value="99" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
