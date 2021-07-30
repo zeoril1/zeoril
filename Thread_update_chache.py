@@ -4,7 +4,7 @@ import threading
 import datetime
 import discord
 import time
-import json
+import json, os
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 
@@ -86,6 +86,7 @@ def hot_cache():
             with open('resources/Vendors/' + vendor_id + '.txt', 'w+', encoding="utf8") as f:
                 f.write(str(cache))
         print (vendor_id+" Готов")
+    print (os.listdir(path="resources/Vendors/"))
 
 
 def get_token(code_token,type_get_token):
