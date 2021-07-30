@@ -3,7 +3,7 @@ import discord
 import requests
 import gspread
 import time
-import json
+import json, os
 import random
 from discord import FFmpegPCMAudio
 from mutagen.mp3 import MP3
