@@ -87,6 +87,7 @@ def hot_cache():
                 f.write(str(cache))
         print (vendor_id+" Готов")
     print (os.listdir(path="resources/Vendors/"))
+    print(os.listdir(path="resources/"))
 
 
 def get_token(code_token,type_get_token):
