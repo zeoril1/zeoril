@@ -85,6 +85,7 @@ def hot_cache():
             cache = get_vender_info(vendor_id)
             with open('resources/Vendors/' + vendor_id + '.txt', 'w+', encoding="utf8") as f:
                 f.write(str(cache))
+        print (vendor_id+" Готов")
 
 
 def get_token(code_token,type_get_token):
