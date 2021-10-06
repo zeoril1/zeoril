@@ -1,3 +1,2 @@
-FROM Discord
-RUN DiscordBot.py
-CMD tail -f /dev/null
+FROM Python:3
+CMD [ "python3", "DiscordBot.py"]
