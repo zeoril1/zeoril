@@ -273,8 +273,10 @@ def get_vender_info(vendor_id):
     if '2190858386' != str(vendor_id):
         #emb = build_message(vendor_id)
         return vendor_items
+        print('Vendor')
     else:
         xur_img(vendor_items)
+        print('XUR')
 
 def config():
     global name_items,vendors_ids
