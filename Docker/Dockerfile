@@ -1,2 +1,4 @@
 FROM python:3.9
-CMD [ "python", "./DiscordBot.py"]
+MKDIR discord
+COPY ./ discord
+CMD [ "python", "DiscordBot.py"]
