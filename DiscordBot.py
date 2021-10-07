@@ -2,12 +2,16 @@
 import discord
 import requests
 import gspread
+import logging
 import time
+from time import gmtime, strftime
 import json, os
 import random
 from discord import FFmpegPCMAudio
 from mutagen.mp3 import MP3
 import ast
+
+logging.basicConfig(filename="resources/logs.txt", level=logging.INFO)
 
 cookies = []
 token = ''
@@ -16,13 +20,13 @@ DISCORD_BOT_TOKEN = 'NjcyMTE5NzA1MjEyOTQ0Mzg1.XjG2QQ.vX9v5I-taWoAaBE-CfMEc1y3N0k
 Discord_webhook = "https://discord.com/api/webhooks/865537838279950366/PDHL8Y_Z_UatFOmCIm9K37ZzqqZOERc4tB-TBnCmAptk3czhl0QTImiN_3GLMWPyLwuH"
 
 HEADERS = {"X-API-Key": 'd1a68787e89b4fd1a0f6a99dca645db7'}
- 
+
 base_url = "https://www.bungie.net"
 xur_url = "https://www.bungie.net/Platform/Destiny2/Vendors/?components=402"
 
 # Send the request and store the result in res:
-print("\n\n\nConnecting to Bungie: " + base_url + "\n")
-print("Fetching data for: Xur's Inventory!")
+logging.info("Connecting to Bungie: " + base_url)
+logging.info("Fetching data for: Xur's Inventory!")
 res = requests.get(xur_url, headers=HEADERS)
 # Print the error status:
 client = discord.Client()
@@ -32,10 +36,10 @@ vendor_emoji = []
 
 @client.event
 async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
-    print('------')
+    logging.info('Logged in as')
+    logging.info(client.user.name)
+    logging.info(client.user.id)
+    logging.info('------')
 
 @client.event
 async def on_voice_state_update(member, before, after):
@@ -51,33 +55,33 @@ async def on_voice_state_update(member, before, after):
 async def on_message(message):
 
     if message.content.startswith('!configupdate'):
-        print('[command]: configupdate ')
+        logging.info('[command]: configupdate ')
         download_config_song()
         await message.channel.send('Конфиг обновлен')
 
     if message.content.startswith('!spider'):
-        print('[command]: spider ')
+        logging.info('[command]: spider ')
         emb = build_message('863940356')
         await message.channel.send(embed=emb)
 
     if message.content.startswith('!banshe'):
-        print('[command]: clovis ')
+        logging.info('[command]: clovis ')
         emb = build_message('672118013')
         await message.channel.send(embed=emb)
 
     if message.content.startswith('!ada'):
-        print('[command]: ada ')
+        logging.info('[command]: ada ')
         emb = build_message('350061650')
         await message.channel.send(embed=emb)
 
     if message.content.startswith('!xur'):
-        print('[command]: xur ')
+        logging.info('[command]: xur ')
         with open('resources/Vendors/XUR_result.png', 'rb') as f:
             picture = discord.File(f)
         await message.channel.send(file=picture)
 
     if message.content.startswith('!roll'):
-        print('[command]: roll ')
+        logging.info('[command]: roll ')
         chellenge_value = chellenge_roll()
         emb = discord.Embed(title=f'Оружие: {chellenge_value[0]} ({chellenge_value[1]}) ',
                             description=f'\n**Челлендж**:\n{chellenge_value[2]}',
@@ -86,7 +90,7 @@ async def on_message(message):
         await message.reply(embed=emb)
 
     if message.content.startswith('!vote'):
-        print('[command]: vote ')
+        logging.info('[command]: vote ')
         emb = discord.Embed(title=f'Голосование за рейд',
                             description=':one: Хрустальный Чертог \n\n:two: Склеп Глубокого Камня \n\n:three: Сад '
                                         'Спасения \n\n:four: Последнее Желание',
@@ -99,12 +103,12 @@ async def on_message(message):
         await mess.add_reaction('4️⃣')
 
     if message.content.startswith('!8 ball'):
-        print('[command]: 8 ball ')
+        logging.info('[command]: 8 ball ')
         ball = magic_ball()
         await message.channel.send(ball)
 
     if message.content.startswith('!update'):
-        print('[command]: update ')
+        logging.info('[command]: update ')
         list_con = message.content.split('|')
         status = chellenge_update(list_con)
         if status == 0:
@@ -118,18 +122,10 @@ def play_song(id_song):
     time_sleep = 0
     for list_id in music_welcome:
         if int(list_id[0]) == id_song:
-            download_music(list_id[1])
-            file = MP3("music/song.mp3")
+            file = MP3(list_id[1])
             time_sleep = file.info.length + 0.2
             break
-    return time_sleep, "music/song.mp3"
-
-
-def download_music(music_id):
-    song_url = "https://www.zeoril.ru/zaebala/"+music_id
-    song = requests.get(song_url)
-    with open('music/song.mp3', 'wb') as file:
-        file.write(song.content)
+    return time_sleep, list_id[1]
 
 
 def magic_ball():

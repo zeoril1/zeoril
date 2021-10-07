@@ -18,8 +18,7 @@ vendor_emoji = ""
 name_items = []
 vendors_ids = []
 discord_hook_token = "https://discord.com/api/webhooks/865526515344212018/GJNKyPj9dAVLluVcA3_CZs49u52P64XLWCIa2C4t-xju0M36Uo-PQcTp_qst8XGK5xz1"
-refresh_token = 'CNiyAxKGAgAgTPqkAW/Q/jFA9CILmvKKkexfY1k5Mdt3ziztgOZShDDgAAAAqfJUVIrhhPayhelVM7LaDa3+uFFW/gwVKqPACYsewUojiliAuXDuci1tPHQUQK/pEt/kwxQJHdY3RxKFy2CtTVCZTRuWIAe1ooNtLNnVCAOdL9jKx9QkEBJkfM13ux/6kfKb2bNcR6kzhmXqfk9ybTT5pEL4rquB8udPNChwkPc/xRWk/FjNjO6NpOESY0LeGqKYd9eZqiK0wt/vLRv9/sl9rdVy8A/uYFwVf6DDN17jtrjgyHVrx82eSqNwP8fZ2JdpTutnEdng4+6g91fqY+2u0fnV1ZgwGdeBdckR4ic='
-
+refresh_token = open("resources/token.txt", "r", encoding="utf8")
 
 def items_filler():
     global list_h, list_w, list_t, list_w, list_prew
@@ -109,11 +108,6 @@ def get_token(code_token, type_get_token):
     token = token.split(',')
     token = token[0]
     token = 'Bearer ' + token
-    print(token)
-    webhook = discord.Webhook.from_url(
-        discord_hook_token,
-        adapter=discord.RequestsWebhookAdapter())
-    webhook.send(refresh_token)
     with open('resources/token.txt', 'w', encoding="utf8") as f:
         f.write(refresh_token)
 
