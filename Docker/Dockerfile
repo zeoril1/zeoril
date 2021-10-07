@@ -1,3 +1,3 @@
 FROM python:3.9
-COPY ./ discord
+RUN git clone git@bitbucket.org:User/repo.git
 CMD [ "python", "DiscordBot.py"]
