@@ -234,7 +234,7 @@ def reg_users(message):
             break
     if x==0:
         values = {'ID': id.id, 'Name': id.name, 'Song': 'None'}
-        cur.execute("INSERT INTO Users (ID,Name,Song) VALUES (:ID, :Name, :Song)",values)
+        cur.execute("INSERT INTO Users (ID,Name,Song) VALUES (:ID, :Name, :Song);",values)
         conn.commit()
         update_member()
         text = 'Пользователь '+ id.name+ ' зарегистрирован'
