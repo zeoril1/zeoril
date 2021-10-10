@@ -34,6 +34,10 @@ client = discord.Client()
 music_welcome = []
 vendor_emoji = []
 
+maps = ['Алтарь пламени', 'Аномалия', 'Павшее знамя', 'Пепелище', 'Котёл', 'Конвергенция', 'Мёртвые скалы', 'Далёкие берега',
+'Бесконечная долина', 'Синий исход', 'Крепость', 'Фрагмент', 'Джавелин - 4', 'Центр города', 'Пассифика', 'Сияющие скалы',
+'Ржавая земля', 'Сумеречная Брешь', 'Вдовий двор', 'Червеприбежище']
+
 @client.event
 async def on_ready():
     logging.info('Logged in as')
@@ -53,11 +57,20 @@ async def on_voice_state_update(member, before, after):
 
 @client.event
 async def on_message(message):
-
     if message.content.startswith('!configupdate'):
         logging.info('[command]: configupdate ')
-        download_config_song()
+        read_song()
         await message.channel.send('Конфиг обновлен')
+
+    if message.content.startswith('!map'):
+        logging.info('[command]: map ')
+        map = map_random()
+        await message.channel.send(map)
+
+    if message.content.startswith('!updatusers'):
+        logging.info('[command]: updateusers ')
+        update_users()
+        await message.channel.send('Пользователи')
 
     if message.content.startswith('!spider'):
         logging.info('[command]: spider ')
@@ -116,7 +129,6 @@ async def on_message(message):
         elif status == 1:
             await message.channel.send('**'+list_con[1] + '** не найден')
 
-
 def play_song(id_song):
     global music_welcome
     time_sleep = 0
@@ -161,10 +173,11 @@ def chellenge_update(list_con):
     except gspread.exceptions.CellNotFound:
         return 1
 
-
 def read_song():
-    global music_welcome
+    global music_welcome, vendor_emoji
     music_welcome = []
+    with open('resources/emojis.json', 'r', encoding="utf8") as f:
+        vendor_emoji = json.load(f)
     with open('resources/welcome_song.txt', 'r', encoding="utf8") as f:
         for eachLine in f:
             a = eachLine
@@ -172,19 +185,6 @@ def read_song():
             for spl in a:
                 b = spl.split(' ', maxsplit=1)
                 music_welcome.append(b)
-
-
-def download_config_song():
-    global vendor_emoji
-    song_url = "https://www.zeoril.ru/zaebala/welcome_song.txt"
-    song_config = requests.get(song_url)
-    with open('resources/welcome_song.txt', 'w', encoding="utf8") as f:
-        f.write(song_config.text)
-
-    with open('resources/emojis.json', 'r', encoding="utf8") as f:
-        vendor_emoji = json.load(f)
-    read_song()
-
 
 def get_info():
     r = requests.get(
@@ -214,6 +214,19 @@ def build_message(vendor_id):
 
     return emb
 
+def update_users():
+    guilds = client.guilds
+    for guild in guilds:
+        if guild.name == 'HG team':
+            id = guild.id
+    print (id)
+    members = client.get_guild(id).roles
+    print (members)
 
-download_config_song()
+def map_random():
+    global maps
+    rand = random.randint(0,19)
+    return maps[rand]
+
+read_song()
 client.run(DISCORD_BOT_TOKEN)

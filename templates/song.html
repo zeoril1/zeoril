@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for music in to_music %}
+<table border="1">
+    <tr>
+        <td width="200px">{{music[1]}}</td>
+        <td width="800px">
+            <audio src="{{music[2]}}" controls></audio>
+        </td>
+    </tr>
+</table>
+{% endfor %}
+{% endblock %}

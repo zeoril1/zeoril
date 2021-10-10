@@ -46,3 +46,486 @@ INFO:discord.client:Cleaning up after 3 tasks.
 INFO:discord.voice_client:The voice handshake is being terminated for Channel ID 861647176715468801 (Guild ID 394939677590945804)
 INFO:discord.client:All tasks finished cancelling.
 INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-njg6",{"micros":75747,"calls":["discord-sessions-blue-prd-2-9",{"micros":74967,"calls":["start_session",{"micros":29746,"calls":["api-prd-main-1pdw",{"micros":26135,"calls":["get_user",{"micros":2358},"add_authorized_ip",{"micros":1316},"get_guilds",{"micros":5381},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":0,"calls":[]}]}]}] (Session ID: 4d2d729599190691378ddb0cac0a6e75).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-3mn0",{"micros":129233,"calls":["discord-sessions-blue-prd-2-5",{"micros":121165,"calls":["start_session",{"micros":59137,"calls":["api-prd-main-wnq9",{"micros":48744,"calls":["get_user",{"micros":4129},"add_authorized_ip",{"micros":12335},"get_guilds",{"micros":5959},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: 6cb2591e7d998ef50263260c53252d38).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-6l0g",{"micros":120663,"calls":["discord-sessions-blue-prd-2-17",{"micros":119479,"calls":["start_session",{"micros":72121,"calls":["api-prd-main-410h",{"micros":62160,"calls":["get_user",{"micros":8135},"add_authorized_ip",{"micros":3717},"get_guilds",{"micros":7223},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":277,"calls":[]}]}]}] (Session ID: d8b39f457b678dfa511dc8ae0b35200d).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-fpl0",{"micros":68976,"calls":["discord-sessions-blue-prd-2-1",{"micros":67550,"calls":["start_session",{"micros":57080,"calls":["api-prd-main-gz48",{"micros":52385,"calls":["get_user",{"micros":5444},"add_authorized_ip",{"micros":2737},"get_guilds",{"micros":5176},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":8491,"calls":[]}]}]}] (Session ID: 7884eb56e3af7285beda59eeac94c741).
+INFO:root:[command]: updateusers 
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-njg6",{"micros":99905,"calls":["discord-sessions-blue-prd-2-123",{"micros":98693,"calls":["start_session",{"micros":61572,"calls":["api-prd-main-mc56",{"micros":57673,"calls":["get_user",{"micros":7724},"add_authorized_ip",{"micros":2263},"get_guilds",{"micros":4247},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":5719,"calls":[]}]}]}] (Session ID: 488ac2f410e2dcb7c447c7dd7b6b7a6e).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-cs38",{"micros":63880,"calls":["discord-sessions-blue-prd-2-80",{"micros":62815,"calls":["start_session",{"micros":30245,"calls":["api-prd-main-s9k3",{"micros":27164,"calls":["get_user",{"micros":2428},"add_authorized_ip",{"micros":1768},"get_guilds",{"micros":5535},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":11179,"calls":[]}]}]}] (Session ID: e094bd5334820e8b364eae7d73400985).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.voice_client:Connecting to voice...
+INFO:discord.voice_client:Starting voice handshake... (connection attempt 1)
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 3 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-fpl0",{"micros":57660,"calls":["discord-sessions-blue-prd-2-123",{"micros":56475,"calls":["start_session",{"micros":38635,"calls":["api-prd-main-kmtb",{"micros":34756,"calls":["get_user",{"micros":3004},"add_authorized_ip",{"micros":2251},"get_guilds",{"micros":11682},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":7914,"calls":[]}]}]}] (Session ID: 6523edd9a576015c3bc071b6463919f1).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-zzkj",{"micros":61571,"calls":["discord-sessions-blue-prd-2-8",{"micros":60795,"calls":["start_session",{"micros":48869,"calls":["api-prd-main-dn0c",{"micros":22423,"calls":["get_user",{"micros":2505},"add_authorized_ip",{"micros":1325},"get_guilds",{"micros":2812},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: 0beb9311f73cd91f009d9e1f8402b4c2).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-s7rp",{"micros":143075,"calls":["discord-sessions-blue-prd-2-131",{"micros":141826,"calls":["start_session",{"micros":82666,"calls":["api-prd-main-w4wl",{"micros":53590,"calls":["get_user",{"micros":4411},"add_authorized_ip",{"micros":1710},"get_guilds",{"micros":11426},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":8107,"calls":[]}]}]}] (Session ID: e7b8fb882a8b6dbc469e36399e3c1dc3).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-wsrp",{"micros":67170,"calls":["discord-sessions-blue-prd-2-134",{"micros":66299,"calls":["start_session",{"micros":29352,"calls":["api-prd-main-d9ts",{"micros":25485,"calls":["get_user",{"micros":3330},"add_authorized_ip",{"micros":1225},"get_guilds",{"micros":2860},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":33346,"calls":[]}]}]}] (Session ID: b381358bb12e4e9603e677f8c8015122).
+INFO:root:[command]: updateusers 
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-4v95",{"micros":70752,"calls":["discord-sessions-blue-prd-2-111",{"micros":69556,"calls":["start_session",{"micros":61273,"calls":["api-prd-main-6lg4",{"micros":54175,"calls":["get_user",{"micros":4392},"add_authorized_ip",{"micros":1522},"get_guilds",{"micros":5875},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: 4bdce3b740233404a77f898322559502).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-fp1c",{"micros":42087,"calls":["discord-sessions-blue-prd-2-98",{"micros":40768,"calls":["start_session",{"micros":28454,"calls":["api-prd-main-4m19",{"micros":25065,"calls":["get_user",{"micros":3137},"add_authorized_ip",{"micros":1216},"get_guilds",{"micros":3273},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":10246,"calls":[]}]}]}] (Session ID: 75e7e57cb6ac162e0ebb3abbb97841b1).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-s46b",{"micros":129572,"calls":["discord-sessions-blue-prd-2-135",{"micros":127036,"calls":["start_session",{"micros":60639,"calls":["api-prd-main-185w",{"micros":57005,"calls":["get_user",{"micros":4977},"add_authorized_ip",{"micros":1909},"get_guilds",{"micros":3169},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":38116,"calls":[]}]}]}] (Session ID: 0cd633945d855b4b298d939634fbe459).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:root:[command]: update 
+INFO:discord.voice_client:Connecting to voice...
+INFO:discord.voice_client:Starting voice handshake... (connection attempt 1)
+INFO:root:[command]: updateusers 
+INFO:root:[command]: update 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 3 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-zj7v",{"micros":83731,"calls":["discord-sessions-blue-prd-2-46",{"micros":82404,"calls":["start_session",{"micros":32075,"calls":["api-prd-main-rdt6",{"micros":27529,"calls":["get_user",{"micros":4639},"add_authorized_ip",{"micros":1251},"get_guilds",{"micros":3043},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":24905,"calls":[]}]}]}] (Session ID: 93dcc52d7cdd00768d1b22d091520ba0).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:root:[command]: update 
+INFO:root:[command]: updateusers 
+INFO:root:[command]: update 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-qf84",{"micros":114830,"calls":["discord-sessions-blue-prd-2-39",{"micros":113351,"calls":["start_session",{"micros":55163,"calls":["api-prd-main-shgr",{"micros":52020,"calls":["get_user",{"micros":8090},"add_authorized_ip",{"micros":7032},"get_guilds",{"micros":9460},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":0,"calls":[]}]}]}] (Session ID: 3e2d67f175a2cfbb309ac9f16ec58c6f).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-fpb0",{"micros":160658,"calls":["discord-sessions-blue-prd-2-157",{"micros":159891,"calls":["start_session",{"micros":133869,"calls":["api-prd-main-4m19",{"micros":130003,"calls":["get_user",{"micros":2748},"add_authorized_ip",{"micros":6623},"get_guilds",{"micros":84645},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":7951,"calls":[]}]}]}] (Session ID: 69455263a671da63c31e5e1a189cd09c).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-2fk1",{"micros":70570,"calls":["discord-sessions-blue-prd-2-61",{"micros":69226,"calls":["start_session",{"micros":31600,"calls":["api-prd-main-2zbf",{"micros":28179,"calls":["get_user",{"micros":4191},"add_authorized_ip",{"micros":2315},"get_guilds",{"micros":3066},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":18370,"calls":[]}]}]}] (Session ID: c9f4220088fee2feb47d81aee7182df7).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-rf43",{"micros":76579,"calls":["discord-sessions-blue-prd-2-170",{"micros":67391,"calls":["start_session",{"micros":35586,"calls":["api-prd-main-5slw",{"micros":32695,"calls":["get_user",{"micros":3726},"add_authorized_ip",{"micros":1746},"get_guilds",{"micros":6476},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":15043,"calls":[]}]}]}] (Session ID: f0a6754b37f67c98826234a9d1ca009d).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-t6x9",{"micros":116176,"calls":["discord-sessions-blue-prd-2-108",{"micros":115363,"calls":["start_session",{"micros":52280,"calls":["api-prd-main-qmwj",{"micros":46680,"calls":["get_user",{"micros":4774},"add_authorized_ip",{"micros":1644},"get_guilds",{"micros":8177},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":35454,"calls":[]}]}]}] (Session ID: 244e0fe4255c823bd843eaedda953ace).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-ppht",{"micros":41584,"calls":["discord-sessions-blue-prd-2-162",{"micros":40203,"calls":["start_session",{"micros":31213,"calls":["api-prd-main-l609",{"micros":28095,"calls":["get_user",{"micros":2684},"add_authorized_ip",{"micros":1467},"get_guilds",{"micros":4731},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":7965,"calls":[]}]}]}] (Session ID: 3431b5e4d2ce7b517f1cccbe2a409bb9).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-g9f5",{"micros":83678,"calls":["discord-sessions-blue-prd-2-135",{"micros":82418,"calls":["start_session",{"micros":30407,"calls":["api-prd-main-pd60",{"micros":26713,"calls":["get_user",{"micros":3003},"add_authorized_ip",{"micros":1585},"get_guilds",{"micros":4216},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":31643,"calls":[]}]}]}] (Session ID: 0470def841f05473ee4cb28a0882b743).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-wjb4",{"micros":42953,"calls":["discord-sessions-blue-prd-2-58",{"micros":42152,"calls":["start_session",{"micros":27178,"calls":["api-prd-main-px03",{"micros":23957,"calls":["get_user",{"micros":2781},"add_authorized_ip",{"micros":1926},"get_guilds",{"micros":3769},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: 54833791b2b8b837cf921605b01a0854).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-8vbh",{"micros":132780,"calls":["discord-sessions-blue-prd-2-138",{"micros":131472,"calls":["start_session",{"micros":84067,"calls":["api-prd-main-bxnv",{"micros":71310,"calls":["get_user",{"micros":5217},"add_authorized_ip",{"micros":2784},"get_guilds",{"micros":11350},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":13251,"calls":[]}]}]}] (Session ID: 012905ed6f29bac53c323b2b079fdf29).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-js98",{"micros":73649,"calls":["discord-sessions-blue-prd-2-27",{"micros":72840,"calls":["start_session",{"micros":41171,"calls":["api-prd-main-gnxg",{"micros":36203,"calls":["get_user",{"micros":5596},"add_authorized_ip",{"micros":2208},"get_guilds",{"micros":5808},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":30966,"calls":[]}]}]}] (Session ID: 638fe1f03d3c4acaa6080310ecc15593).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: updateusers 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-l4r2",{"micros":47153,"calls":["discord-sessions-blue-prd-2-143",{"micros":45945,"calls":["start_session",{"micros":29681,"calls":["api-prd-main-v6vp",{"micros":25714,"calls":["get_user",{"micros":3977},"add_authorized_ip",{"micros":2052},"get_guilds",{"micros":3705},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":15437,"calls":[]}]}]}] (Session ID: d4ac0a32bf3311d487edaa0ec9c6194c).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: map 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-t7ln",{"micros":73523,"calls":["discord-sessions-blue-prd-2-44",{"micros":72610,"calls":["start_session",{"micros":58161,"calls":["api-prd-main-ljgm",{"micros":54143,"calls":["get_user",{"micros":10838},"add_authorized_ip",{"micros":3984},"get_guilds",{"micros":6989},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":8830,"calls":[]}]}]}] (Session ID: 0188744017ffcca5966bc1c5032d5729).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: map 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-whn0",{"micros":65383,"calls":["discord-sessions-blue-prd-2-118",{"micros":58388,"calls":["start_session",{"micros":43193,"calls":["api-prd-main-p106",{"micros":39343,"calls":["get_user",{"micros":6488},"add_authorized_ip",{"micros":1631},"get_guilds",{"micros":9353},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":11276,"calls":[]}]}]}] (Session ID: c0241ed5dd5e90698ef1ee6604cdda14).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: map 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-7g6p",{"micros":137454,"calls":["discord-sessions-blue-prd-2-167",{"micros":136703,"calls":["start_session",{"micros":102996,"calls":["api-prd-main-0m07",{"micros":92757,"calls":["get_user",{"micros":4111},"add_authorized_ip",{"micros":5454},"get_guilds",{"micros":9973},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":10486,"calls":[]}]}]}] (Session ID: 21c6499f08ed7189d32d803094d0fe02).
+INFO:root:[command]: map 
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-sc60",{"micros":72836,"calls":["discord-sessions-blue-prd-2-132",{"micros":72150,"calls":["start_session",{"micros":44375,"calls":["api-prd-main-713q",{"micros":41467,"calls":["get_user",{"micros":4997},"add_authorized_ip",{"micros":2611},"get_guilds",{"micros":4166},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":21527,"calls":[]}]}]}] (Session ID: c438c0474cec059ba4bda9811c84bc87).
+INFO:root:[command]: map 
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-1jq6",{"micros":86422,"calls":["discord-sessions-blue-prd-2-157",{"micros":85355,"calls":["start_session",{"micros":63122,"calls":["api-prd-main-hd1p",{"micros":58414,"calls":["get_user",{"micros":4289},"add_authorized_ip",{"micros":7976},"get_guilds",{"micros":19579},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":18819,"calls":[]}]}]}] (Session ID: cc00b561dc688ad243d89daf606d2784).
+INFO:root:[command]: map 
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: map 
+INFO:root:[command]: map 
+INFO:root:[command]: map 
+INFO:root:[command]: map 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-sc60",{"micros":60314,"calls":["discord-sessions-blue-prd-2-11",{"micros":55777,"calls":["start_session",{"micros":36047,"calls":["api-prd-main-h0w4",{"micros":32698,"calls":["get_user",{"micros":3802},"add_authorized_ip",{"micros":1347},"get_guilds",{"micros":7174},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: 3414c02ad6dac160520609463ce0233e).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: map 
+INFO:root:[command]: map 
+INFO:root:[command]: map 
+INFO:root:[command]: map 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
