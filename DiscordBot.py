@@ -10,11 +10,23 @@ import random
 from discord import FFmpegPCMAudio
 from mutagen.mp3 import MP3
 import ast
+import sqlite3
 
 logging.basicConfig(filename="resources/logs.txt", level=logging.INFO)
 
 cookies = []
+users = []
+music_welcome = []
+vendor_emoji = []
 token = ''
+
+intents = discord.Intents.default()
+intents.members = True
+
+client = discord.Client(intents=intents)
+
+conn = sqlite3.connect('resources/discord.sqlite3', check_same_thread=False)
+cur = conn.cursor()
 
 DISCORD_BOT_TOKEN = 'NjcyMTE5NzA1MjEyOTQ0Mzg1.XjG2QQ.vX9v5I-taWoAaBE-CfMEc1y3N0k'
 Discord_webhook = "https://discord.com/api/webhooks/865537838279950366/PDHL8Y_Z_UatFOmCIm9K37ZzqqZOERc4tB-TBnCmAptk3czhl0QTImiN_3GLMWPyLwuH"
@@ -31,15 +43,13 @@ res = requests.get(xur_url, headers=HEADERS)
 # Print the error status:
 client = discord.Client()
 
-music_welcome = []
-vendor_emoji = []
-
 maps = ['Алтарь пламени', 'Аномалия', 'Павшее знамя', 'Пепелище', 'Котёл', 'Конвергенция', 'Мёртвые скалы', 'Далёкие берега',
 'Бесконечная долина', 'Синий исход', 'Крепость', 'Фрагмент', 'Джавелин - 4', 'Центр города', 'Пассифика', 'Сияющие скалы',
 'Ржавая земля', 'Сумеречная Брешь', 'Вдовий двор', 'Червеприбежище']
 
 @client.event
 async def on_ready():
+    print('123')
     logging.info('Logged in as')
     logging.info(client.user.name)
     logging.info(client.user.id)
@@ -67,10 +77,10 @@ async def on_message(message):
         map = map_random()
         await message.channel.send(map)
 
-    if message.content.startswith('!updatusers'):
-        logging.info('[command]: updateusers ')
-        update_users()
-        await message.channel.send('Пользователи')
+    if message.content.startswith('!reg'):
+        logging.info('[command]: reg ')
+        text = reg_users(message)
+        await message.channel.send(text)
 
     if message.content.startswith('!spider'):
         logging.info('[command]: spider ')
@@ -214,19 +224,35 @@ def build_message(vendor_id):
 
     return emb
 
-def update_users():
-    guilds = client.guilds
-    for guild in guilds:
-        if guild.name == 'HG team':
-            id = guild.id
-    print (id)
-    members = client.get_guild(id).roles
-    print (members)
+def reg_users(message):
+    global users
+    x=0
+    id = message.author
+    for member in users:
+        if member[0] == id.id:
+            x=1
+            break
+    if x==0:
+        values = {'ID': id.id, 'Name': id.name, 'Song': 'None'}
+        cur.execute("INSERT INTO Users (ID,Name,Song) VALUES (:ID, :Name, :Song)",values)
+        conn.commit()
+        update_member()
+        text = 'Пользователь '+ id.name+ ' зарегистрирован'
+    else:
+        text = 'Пользователь '+ id.name+ ' уже зарегистрирован'
+    return text
 
 def map_random():
     global maps
     rand = random.randint(0,19)
     return maps[rand]
 
+def update_member():
+    global users
+    cur.execute("SELECT * FROM Users;")
+    users = cur.fetchall()
+    print(users)
+
 read_song()
+update_member()
 client.run(DISCORD_BOT_TOKEN)
