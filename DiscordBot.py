@@ -16,7 +16,6 @@ logging.basicConfig(filename="resources/logs.txt", level=logging.INFO)
 
 cookies = []
 users = []
-music_welcome = []
 vendor_emoji = []
 token = ''
 
@@ -69,7 +68,7 @@ async def on_voice_state_update(member, before, after):
 async def on_message(message):
     if message.content.startswith('!configupdate'):
         logging.info('[command]: configupdate ')
-        read_song()
+        config()
         await message.channel.send('Конфиг обновлен')
 
     if message.content.startswith('!map'):
@@ -140,14 +139,14 @@ async def on_message(message):
             await message.channel.send('**'+list_con[1] + '** не найден')
 
 def play_song(id_song):
-    global music_welcome
+    global users
     time_sleep = 0
-    for list_id in music_welcome:
-        if int(list_id[0]) == id_song:
-            file = MP3(list_id[1])
+    for list_id in users:
+        if int(list_id[0]) == id_song and list_id[2] != 'None':
+            file = MP3('music/'+list_id[2])
             time_sleep = file.info.length + 0.2
             break
-    return time_sleep, list_id[1]
+    return time_sleep, 'music/'+list_id[2]
 
 
 def magic_ball():
@@ -183,18 +182,10 @@ def chellenge_update(list_con):
     except gspread.exceptions.CellNotFound:
         return 1
 
-def read_song():
-    global music_welcome, vendor_emoji
-    music_welcome = []
+def config():
+    global vendor_emoji
     with open('resources/emojis.json', 'r', encoding="utf8") as f:
         vendor_emoji = json.load(f)
-    with open('resources/welcome_song.txt', 'r', encoding="utf8") as f:
-        for eachLine in f:
-            a = eachLine
-            a = a.split(',')
-            for spl in a:
-                b = spl.split(' ', maxsplit=1)
-                music_welcome.append(b)
 
 def get_info():
     r = requests.get(
@@ -253,6 +244,6 @@ def update_member():
     users = cur.fetchall()
     print(users)
 
-read_song()
+config()
 update_member()
 client.run(DISCORD_BOT_TOKEN)
