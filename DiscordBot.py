@@ -57,7 +57,7 @@ async def on_ready():
 async def on_voice_state_update(member, before, after):
     if member.id != 672119705212944385:
         return_song = play_song(member.id)
-        if return_song[0] > 0:
+        if return_song[0] > 0 and before.channel != after.channel and after.channel is not None:
             voice = discord.utils.get(client.voice_clients, guild=member.guild)
             if not voice is None:  # test if voice is None
                 if not voice.is_connected():
