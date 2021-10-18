@@ -4,12 +4,9 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Фикс музыки">
-      <change afterPath="$PROJECT_DIR$/templates/register.html" afterDir="false" />
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Сайт">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BotSite.py" beforeDir="false" afterPath="$PROJECT_DIR$/BotSite.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/discord.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/resources/discord.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,20 +120,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00061" summary="config song">
-      <created>1626606269549</created>
-      <option name="number" value="00061" />
-      <option name="presentableId" value="LOCAL-00061" />
-      <option name="project" value="LOCAL" />
-      <updated>1626606269549</updated>
-    </task>
-    <task id="LOCAL-00062" summary="config song">
-      <created>1626606401637</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1626606401637</updated>
     </task>
     <task id="LOCAL-00063" summary="config song">
       <created>1626606730417</created>
@@ -467,7 +450,21 @@
       <option name="project" value="LOCAL" />
       <updated>1634553271417</updated>
     </task>
-    <option name="localTasksCounter" value="110" />
+    <task id="LOCAL-00110" summary="Сайт">
+      <created>1634562188308</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1634562188308</updated>
+    </task>
+    <task id="LOCAL-00111" summary="Сайт">
+      <created>1634562300627</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1634562300627</updated>
+    </task>
+    <option name="localTasksCounter" value="112" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -483,7 +480,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Микро лог" />
     <MESSAGE value="XUR правки" />
     <MESSAGE value="Добавление испытаний" />
     <MESSAGE value="Dungeon master" />
@@ -508,6 +504,7 @@
     <MESSAGE value="Рандом карт" />
     <MESSAGE value="Переезд музыки из файла в бд" />
     <MESSAGE value="Фикс музыки" />
-    <option name="LAST_COMMIT_MESSAGE" value="Фикс музыки" />
+    <MESSAGE value="Сайт" />
+    <option name="LAST_COMMIT_MESSAGE" value="Сайт" />
   </component>
 </project>

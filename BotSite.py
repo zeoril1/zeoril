@@ -23,7 +23,7 @@ def index():
         message = 'Добро пожаловать, '+User[0][1]+'!'
         return render_template('index.html', message=message)
     else:
-        x=' '
+        x=''
         form = flask.Markup('<form action="/" method="post"><p><label for="username">ID в дискорде</label><input type="text" name="ID"></p>' \
                '<p><label for="password">Пароль</label><input type="password" name="password"></p><p><input type="submit" name="login">' \
                '<a href="/register">Регистрация</a></p></form>')
