@@ -4,11 +4,10 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Переезд музыки из файла в бд">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_06_10_2021_21_49_[Default_Changelist]/shelved.patch" beforeDir="false" />
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Фикс музыки">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/logs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/logs.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BotSite.py" beforeDir="false" afterPath="$PROJECT_DIR$/BotSite.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +65,7 @@
       <recent name="F:\zeoril\resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.DiscordBot">
+  <component name="RunManager" selected="Python.Test">
     <configuration name="DiscordBot" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="zeoril" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -122,20 +121,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00058" summary="config song">
-      <created>1626605737084</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
-      <option name="project" value="LOCAL" />
-      <updated>1626605737084</updated>
-    </task>
-    <task id="LOCAL-00059" summary="config song">
-      <created>1626605970280</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1626605970280</updated>
     </task>
     <task id="LOCAL-00060" summary="config song">
       <created>1626606243171</created>
@@ -466,7 +451,21 @@
       <option name="project" value="LOCAL" />
       <updated>1633869461452</updated>
     </task>
-    <option name="localTasksCounter" value="107" />
+    <task id="LOCAL-00107" summary="Переезд музыки из файла в бд">
+      <created>1634201846980</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1634201846980</updated>
+    </task>
+    <task id="LOCAL-00108" summary="Фикс музыки">
+      <created>1634212704786</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1634212704786</updated>
+    </task>
+    <option name="localTasksCounter" value="109" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -482,7 +481,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="XUR Переработка" />
     <MESSAGE value="Микро лог" />
     <MESSAGE value="XUR правки" />
     <MESSAGE value="Добавление испытаний" />
@@ -507,6 +505,7 @@
     <MESSAGE value="Перенос с сервера" />
     <MESSAGE value="Рандом карт" />
     <MESSAGE value="Переезд музыки из файла в бд" />
-    <option name="LAST_COMMIT_MESSAGE" value="Переезд музыки из файла в бд" />
+    <MESSAGE value="Фикс музыки" />
+    <option name="LAST_COMMIT_MESSAGE" value="Фикс музыки" />
   </component>
 </project>

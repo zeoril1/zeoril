@@ -1,3 +1,4 @@
+import flask
 from flask import Flask,render_template,send_from_directory
 import sqlite3
 
@@ -7,7 +8,8 @@ cur = conn.cursor()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    test = flask.Markup('')
+    return render_template('index.html', test=test)
 
 @app.route('/logs')
 def logs():
@@ -30,4 +32,4 @@ def music():
     return music_welcome
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=80, host='0.0.0.0')
