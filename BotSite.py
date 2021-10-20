@@ -2,26 +2,18 @@ import flask
 from flask import Flask,render_template,send_from_directory,session, request
 import sqlite3
 import hashlib
+import json
 
 app = Flask(__name__)
 conn = sqlite3.connect('resources/discord.sqlite3', check_same_thread=False)
 cur = conn.cursor()
-
-@app.route('/cookie/')
-def cookie():
-    res = flask.make_response("Setting a cookie")
-    res.set_cookie('foo', 'bar', max_age=60*60*24*365*2)
-    return res
-
 @app.route('/',methods=['post','get'])
 def index():
-    hash = request.cookies.get('Auth')
-    if hash:
-        sql = "SELECT Users.*, Session.ID FROM Users, Session WHERE Users.ID = Session.ID and Session.Hash = '"+hash+"';"
-        cur.execute(sql)
-        User = cur.fetchall()
+    User = check_cookie(request.cookies.get('Auth'))
+    if User != False:
         message = 'Добро пожаловать, '+User[0][1]+'!'
         return render_template('index.html', message=message)
+
     else:
         x=''
         form = flask.Markup('<form action="/" method="post"><p><label for="username">ID в дискорде</label><input type="text" name="ID"></p>' \
@@ -40,15 +32,17 @@ def index():
                 sql = "INSERT INTO Session (ID,Hash) VALUES ("+request.form.get('ID')+", '"+str(hash)+"');"
                 cur.execute(sql)
                 conn.commit()
+                rights = user_rights(User[0][0])
                 res = flask.make_response(flask.redirect('/'))
                 res.set_cookie('Auth', hash)
+                res.set_cookie('Id', str(User[0][0]))
+                res.set_cookie('Rights', str(rights))
                 return res
             else:
                 message = 'ID или пароль не верен'
                 return render_template('index.html', form=form, message=message)
         else:
             return render_template('index.html', form=form)
-
 
 @app.route('/register',methods=['post','get'])
 def register():
@@ -62,16 +56,23 @@ def register():
         cur.execute("SELECT * FROM Users WHERE ID = :Id;", values)
         User = cur.fetchall()
         if User:
-            message = User[0][0]
-        else:
-            form = flask.Markup(
-                '<form action="/register" method="post" id="reg"><input type="text" name="id" value='+request.form.get('id')+'>'
-                '<p><label for="name">Имя в дискорде</label><input type="text" name="name"></p>'
-                '<p><label for="pass">Пароль</label><input type="text" name="pass"></p>'
-                '<p><input value="Зарегистрироваться" type="submit" name="reg"></p></form>')
-            message = 'Пользователь не найден, зарегистрируйтесь'
+            print(User[0][3])
+            if User[0][3] == None:
+                message = User[0][0]
+                form = flask.Markup(
+                    '<form action="/register" method="post" id="reg"><input type="text" name="id" value=' + request.form.get(
+                        'id') + '>'
+                                '<p><label for="pass">Пароль</label><input type="text" name="pass"></p>'
+                                '<p><input value="Зарегистрироваться" type="submit" name="reg"></p></form>')
+                message = 'Пользователь найден и не зарегистрирован'
+                return render_template('register.html', form=form, message=message)
+            else:
+                message = 'Пользователь найден используйте пароль для входа'
+                return render_template('register.html', message=message)
 
-        return render_template('register.html', form=form, message=message)
+        else:
+            message = 'Пользователь не найден, зарегистрируйтесь через дискорд командой !reg'
+            return render_template('register.html', message=message)
     elif request.method == 'POST' and x[0] == 'reg':
         password = hashlib.md5(request.form.get('pass').encode('utf-8')).hexdigest()
         values = {'ID': request.form.get('id'), 'Name': request.form.get('name'), 'Song': 'None','Password': password}
@@ -101,6 +102,24 @@ def music():
     cur.execute("SELECT * FROM Users;")
     music_welcome = cur.fetchall()
     return music_welcome
+
+def check_cookie(hash):
+    if hash:
+        sql = "SELECT Users.*, Session.ID FROM Users, Session WHERE Users.ID = Session.ID and Session.Hash = '"+hash+"';"
+        cur.execute(sql)
+        User = cur.fetchall()
+        return User
+    else:
+        return False
+
+def user_rights(id_user):
+    if id_user:
+        sql = "SELECT Rights.* FROM Rights, Users_rights WHERE Users_rights.ID_user = " + str(id_user) + " AND Rights.ID = Users_rights.ID_right;"
+        cur.execute(sql)
+        rights = cur.fetchall()
+        return rights
+    else:
+        return False
 
 if __name__ == '__main__':
     app.run(port=80, host='0.0.0.0')
