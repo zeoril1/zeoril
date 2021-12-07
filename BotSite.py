@@ -13,7 +13,6 @@ def index():
     if User != False:
         message = 'Добро пожаловать, '+User[0][1]+'!'
         return render_template('index.html', message=message)
-
     else:
         x=''
         form = flask.Markup('<form action="/" method="post"><p><label for="username">ID в дискорде</label><input type="text" name="ID"></p>' \
