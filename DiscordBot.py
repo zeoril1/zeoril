@@ -21,7 +21,6 @@ token = ''
 
 intents = discord.Intents.default()
 intents.members = True
-
 client = discord.Client(intents=intents)
 
 conn = sqlite3.connect('resources/discord.sqlite3', check_same_thread=False)
@@ -40,7 +39,6 @@ logging.info("Connecting to Bungie: " + base_url)
 logging.info("Fetching data for: Xur's Inventory!")
 res = requests.get(xur_url, headers=HEADERS)
 # Print the error status:
-client = discord.Client()
 
 maps = ['Алтарь пламени', 'Аномалия', 'Павшее знамя', 'Пепелище', 'Котёл', 'Конвергенция', 'Мёртвые скалы', 'Далёкие берега',
 'Бесконечная долина', 'Синий исход', 'Крепость', 'Фрагмент', 'Джавелин - 4', 'Центр города', 'Пассифика', 'Сияющие скалы',
@@ -200,7 +198,6 @@ def get_info():
         headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
     print(r.text)
 
-
 def build_message(vendor_id):
     vendor_items = open('resources/Vendors/' + vendor_id + '.txt', 'r', encoding="utf8").read()
     vendor_items = ast.literal_eval(vendor_items)
@@ -254,3 +251,4 @@ def update_member():
 config()
 update_member()
 client.run(DISCORD_BOT_TOKEN)
+
