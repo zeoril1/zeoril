@@ -4,7 +4,10 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Добавление прав в куки" />
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Добавление прав в куки">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -117,13 +120,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00065" summary="add auth and vendors spidi,clovis">
-      <created>1627026753601</created>
-      <option name="number" value="00065" />
-      <option name="presentableId" value="LOCAL-00065" />
-      <option name="project" value="LOCAL" />
-      <updated>1627026753602</updated>
     </task>
     <task id="LOCAL-00066" summary="add auth and vendors spidi,clovis">
       <created>1627073175535</created>
@@ -461,7 +457,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638887086502</updated>
     </task>
-    <option name="localTasksCounter" value="114" />
+    <task id="LOCAL-00114" summary="Добавление прав в куки">
+      <created>1638887346335</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1638887346335</updated>
+    </task>
+    <option name="localTasksCounter" value="115" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
