@@ -57,17 +57,22 @@ async def on_voice_state_update(member, before, after):
         return_song = play_song(member.id)
         if return_song[0] > 0 and before.channel != after.channel and after.channel is not None:
             voice = discord.utils.get(client.voice_clients, guild=member.guild)
-            if not voice is None:  # test if voice is None
-                if not voice.is_connected():
+            try:
+                if not voice is None:  # test if voice is None
+                    if not voice.is_connected():
+                        music = await discord.VoiceChannel.connect(member.voice.channel)
+                        music.play(FFmpegPCMAudio(return_song[1]))
+                        time.sleep(return_song[0])
+                        await music.disconnect()
+                else:
                     music = await discord.VoiceChannel.connect(member.voice.channel)
                     music.play(FFmpegPCMAudio(return_song[1]))
                     time.sleep(return_song[0])
                     await music.disconnect()
-            else:
-                music = await discord.VoiceChannel.connect(member.voice.channel)
-                music.play(FFmpegPCMAudio(return_song[1]))
-                time.sleep(return_song[0])
-                await music.disconnect()
+            except:
+                if voice.is_connected():
+                    await music.disconnect()
+                print('Ошибка')
 
 @client.event
 async def on_message(message):
