@@ -4,6 +4,7 @@ import requests
 import gspread
 import logging
 import time
+import datetime
 from time import gmtime, strftime
 import json, os
 import random
@@ -18,6 +19,7 @@ cookies = []
 users = []
 vendor_emoji = []
 token = ''
+members_destiny =[]
 
 intents = discord.Intents.default()
 intents.members = True
@@ -52,6 +54,15 @@ async def on_ready():
     logging.info('------')
 
 @client.event
+async def on_member_join(member):
+    values = {'Name': member.display_name, 'ID': member.id}
+    cur.execute("Select * from Users where Name_discord=:Name OR ID=:ID", values)
+    user = cur.fetchall()
+    if not user:
+        cur.execute("INSERT INTO Users (ID,Name_discord) VALUES (:ID,:Name);", values)
+        conn.commit()
+
+@client.event
 async def on_voice_state_update(member, before, after):
     if member.id != 672119705212944385:
         return_song = play_song(member.id)
@@ -76,6 +87,11 @@ async def on_voice_state_update(member, before, after):
 
 @client.event
 async def on_message(message):
+    if message.content.startswith('!usersupdate'):
+        logging.info('[command]: usersupdate ')
+        update_member()
+        await message.channel.send('Пользователи обновлены')
+
     if message.content.startswith('!configupdate'):
         logging.info('[command]: configupdate ')
         config()
@@ -234,7 +250,7 @@ def reg_users(message):
             break
     if x==0:
         values = {'ID': id.id, 'Name': id.name, 'Song': 'None'}
-        cur.execute("INSERT INTO Users (ID,Name,Song) VALUES (:ID, :Name, :Song);",values)
+        cur.execute("INSERT INTO Users (ID,Name_discord,Song) VALUES (:ID, :Name, :Song);",values)
         conn.commit()
         update_member()
         text = 'Пользователь '+ id.name+ ' зарегистрирован'
@@ -247,13 +263,47 @@ def map_random():
     rand = random.randint(0,19)
     return maps[rand]
 
+def get_members():
+    global members_destiny
+    url = "https://www.bungie.net/Platform/GroupV2/4075707/members"
+    members = requests.get(url, headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
+    members_save = open("resources/members.json", "w", encoding="utf8")
+    members_save.write(members.text)  # записываем содержимое в файл; как видите - content запроса
+    members_save.close()
+    with open("resources/members.json", "r", encoding="utf8") as members_data:
+        members = json.load(members_data)
+    for member in members['Response']['results']:
+        date = datetime.datetime.utcfromtimestamp(int(member['lastOnlineStatusChange']))
+        members_destiny.append([member['destinyUserInfo']['displayName'], date])
+
 def update_member():
+    global members_destiny
+    get_members()
+    for member in client.get_all_members():
+        if not member.bot:
+            values = {'Name': member.display_name, 'ID': member.id}
+            cur.execute("Select * from Users where Name_discord=:Name OR ID=:ID", values)
+            user = cur.fetchall()
+            if not user:
+                cur.execute("INSERT INTO Users (ID,Name_discord) VALUES (:ID,:Name);", values)
+                conn.commit()
+        for user in members_destiny:
+            user_name = '%'+user[0]+'%'
+            values = {'Name': user_name, 'Last_login': user[1],'Name_game':user[0]}
+            cur.execute("Select * from Users where Name_discord LIKE :Name", values)
+            member = cur.fetchall()
+            if member:
+                cur.execute("UPDATE Users SET Last_login=:Last_login, Name_game=:Name_game WHERE ID = "+str(member[0][0]), values)
+                conn.commit()
+                print(str(member[0][0])+' '+str(user[0]))
+
+def get_users():
     global users
     cur.execute("SELECT * FROM Users;")
     users = cur.fetchall()
     print(users)
 
+get_users()
 config()
-update_member()
 client.run(DISCORD_BOT_TOKEN)
 

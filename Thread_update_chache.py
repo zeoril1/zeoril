@@ -3,6 +3,7 @@ import requests
 import threading
 import datetime
 import discord
+import sqlite3
 import time
 import json, os
 from PIL import Image, ImageDraw, ImageFont
@@ -20,6 +21,19 @@ vendors_ids = []
 discord_hook_token = "https://discord.com/api/webhooks/865526515344212018/GJNKyPj9dAVLluVcA3_CZs49u52P64XLWCIa2C4t-xju0M36Uo-PQcTp_qst8XGK5xz1"
 refresh_token = open("resources/token.txt", "r", encoding="utf8")
 
+conn = sqlite3.connect('resources/discord.sqlite3', check_same_thread=False)
+cur = conn.cursor()
+
+def update_member(Name, Last_login):
+    values = {'Name': Name, 'Last_login': Last_login}
+    cur.execute("Select * from Users where Name_game=:Name",values)
+    user = cur.fetchall()
+    if not user:
+        cur.execute("INSERT INTO Users (Name_game) VALUES (:Name);", values)
+        conn.commit()
+    cur.execute("UPDATE Users SET Last_login=:Last_login Where Name_game=:Name;", values)
+    conn.commit()
+
 def items_filler():
     global list_h, list_w, list_t, list_w, list_prew
     m = open("resources/manifest.json", "w", encoding="utf8")
@@ -30,8 +44,7 @@ def items_filler():
         manifest = json.load(mf)
     url_items = "https://www.bungie.net"+manifest['Response']['jsonWorldComponentContentPaths']['ru']['DestinyInventoryItemLiteDefinition']
     f = open("resources/Items.json", "w", encoding="utf8")
-    down_mani = requests.get(
-        url_items)  # делаем запрос
+    down_mani = requests.get(url_items)  # делаем запрос
     f.write(down_mani.text)  # записываем содержимое в файл; как видите - content запроса
     f.close()
 
@@ -58,12 +71,10 @@ def items_filler():
             y = 1
 
 
-def download_config_cookie():
-    cookies_url = "https://www.zeoril.ru/zaebala/cookie.txt"
-    cookies_config = requests.get(cookies_url)
-    with open('resources/cookies.txt', 'w', encoding="utf8") as f:
-        f.write(cookies_config.text)
-    return (cookies_config.text)
+def config_cookie():
+    with open('resources/cookies.txt', 'r', encoding="utf8") as f:
+        cookies_config=f.read()
+    return (cookies_config)
 
 
 def hot_cache():
@@ -93,7 +104,7 @@ def get_token(code_token, type_get_token):
     global token,refresh_token
     token_url = 'https://www.bungie.net/Platform/App/OAuth/Token/'
     autorization = "Basic MzcxNDg6Rlo4eDItdEFBZ2x4NjBXT1lPeUNBSXMyTTZHQ2ZHVVBMV1NDTVZrdVpBOA=="
-    cookies_bungie = download_config_cookie()
+    cookies_bungie = config_cookie()
     r = requests.post(token_url, headers={
         'Authorization': autorization,
         'Content-Type': 'application/x-www-form-urlencoded', 'cookie': cookies_bungie},
@@ -221,7 +232,6 @@ def xur_img(vendor_items):
     im1.save('resources/Vendors/XUR_result.png')
     print("Готово")
 
-
 def get_vender_info(vendor_id):
     global vendor_items
     vendor_items=[]
@@ -302,7 +312,6 @@ def config():
                 item = item.replace("'", "")
                 vendors_ids.append(item)
     #vendor_items = ast.literal_eval(vendor_items)
-
 
 config()
 hot_cache()

@@ -4,9 +4,23 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Добавление прав в куки">
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Проба фикса зависания">
+      <change afterPath="$PROJECT_DIR$/templates/not_rights.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BotSite.py" beforeDir="false" afterPath="$PROJECT_DIR$/BotSite.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Thread_update_chache.py" beforeDir="false" afterPath="$PROJECT_DIR$/Thread_update_chache.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/music/MrSandman.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/Items.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Items.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/Vendors/350061650.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/350061650.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/Vendors/672118013.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/672118013.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/Vendors/863940356.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/863940356.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/discord.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/resources/discord.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/logs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/logs.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/token.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/token.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vendor.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/song.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/song.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +66,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="JSON" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/BotSite.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Thread_update_chache.py" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -107,9 +121,31 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Theards" type="PythonConfigurationType" factoryName="Python">
+      <module name="zeoril" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\zeoril\PycharmProjects\zeoril\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Thread_update_chache.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.DiscordBot" />
       <item itemvalue="Python.Test" />
+      <item itemvalue="Python.Theards" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -120,13 +156,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00066" summary="add auth and vendors spidi,clovis">
-      <created>1627073175535</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
-      <option name="project" value="LOCAL" />
-      <updated>1627073175535</updated>
     </task>
     <task id="LOCAL-00067" summary="add auth and vendors spidi,clovis">
       <created>1627074641446</created>
@@ -464,7 +493,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638887346335</updated>
     </task>
-    <option name="localTasksCounter" value="115" />
+    <task id="LOCAL-00115" summary="Проба фикса зависания">
+      <created>1640092474221</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1640092474222</updated>
+    </task>
+    <option name="localTasksCounter" value="116" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -480,7 +516,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Добавление испытаний" />
     <MESSAGE value="Dungeon master" />
     <MESSAGE value="Song gtix, zeoril, seya, wariri" />
     <MESSAGE value="add song Nikos" />
@@ -505,6 +540,7 @@
     <MESSAGE value="Фикс музыки" />
     <MESSAGE value="Сайт" />
     <MESSAGE value="Добавление прав в куки" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавление прав в куки" />
+    <MESSAGE value="Проба фикса зависания" />
+    <option name="LAST_COMMIT_MESSAGE" value="Проба фикса зависания" />
   </component>
 </project>
