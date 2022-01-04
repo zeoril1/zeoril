@@ -3,6 +3,7 @@ from flask import Flask,render_template,send_from_directory,session, request
 import sqlite3
 import hashlib
 import json
+import os
 
 app = Flask(__name__)
 conn = sqlite3.connect('resources/discord.sqlite3', check_same_thread=False)
@@ -26,7 +27,7 @@ def index():
             cur.execute(sql)
             User = cur.fetchall()
             if User:
-                hash_text = request.form.get('password')+'session'
+                hash_text = request.form.get('password')+str(User[0][0])
                 hash = hashlib.md5(hash_text.encode('utf-8')).hexdigest()
                 sql = "INSERT INTO Session (ID,Hash) VALUES ("+request.form.get('ID')+", '"+str(hash)+"');"
                 cur.execute(sql)
@@ -55,7 +56,6 @@ def register():
         cur.execute("SELECT * FROM Users WHERE ID = :Id;", values)
         User = cur.fetchall()
         if User:
-            print(User[0][3])
             if User[0][3] == None:
                 message = User[0][0]
                 form = flask.Markup(
@@ -74,8 +74,8 @@ def register():
             return render_template('register.html', message=message)
     elif request.method == 'POST' and x[0] == 'reg':
         password = hashlib.md5(request.form.get('pass').encode('utf-8')).hexdigest()
-        values = {'ID': request.form.get('id'), 'Name': request.form.get('name'), 'Song': 'None','Password': password}
-        cur.execute("INSERT INTO Users (ID,Name,Song,Password) VALUES (:ID, :Name, :Song, :Password);", values)
+        values = {'ID': request.form.get('id'), 'Password': password}
+        cur.execute("UPDATE Users SET Password=:Password WHERE ID=:ID;", values)
         conn.commit()
         message = 'Регистрация успешно выполнена'
         return render_template('register.html', message=message)
@@ -84,23 +84,99 @@ def register():
 
 @app.route('/logs')
 def logs():
-    logger = open('resources/logs.txt', 'r', encoding="ISO-8859-1").read()
-    return render_template('logs.html', to_configs=logger)
+    rights = user_rights(request.cookies.get('Id'))
+    right = False
+    if rights != False:
+        for le in rights:
+            len = 'Admin' in le
+            if len == True:
+                right = True
+                break
+    if right == True:
+        logger = open('resources/logs.txt', 'r', encoding="ISO-8859-1").read()
+        return render_template('logs.html', to_configs=logger)
+    else:
+        logger = 'У вас нет прав на просмотр этого раздела'
+        return render_template('not_rights.html', to_configs=logger)
 
-@app.route('/song')
+@app.route('/song',methods=['post','get'])
 def song():
-    music_welcome = music()
-    return render_template('song.html', to_music=music_welcome)
+    rights = user_rights(request.cookies.get('Id'))
+    right = False
+    if rights != False:
+        for le in rights:
+            len = 'Admin' in le
+            if len == True:
+                right = True
+                break
+    if right == True:
+        for x in request.form.items():
+            y=1
+        if request.method == 'GET':
+            name = request.args.getlist('Name')
+            new_music = request.args.getlist('new_music')
+            if not new_music:
+                return music_filler(name)
+            else:
+                save_new_music(name[0], new_music[0])
+                name=[]
+                return music_filler(name)
+        else:
+            name = request.form.get('Name')
+            music = request.files['music']
+            x=0
+            if name == 'Upload' and music:
+                filename = music.filename.split('.')
+                if filename[1] == 'mp3' or filename[1] == 'MP3':
+                    for root, dirs, files in os.walk("music"):
+                        for file in files:
+                            if file == music.filename:
+                                print ('Такая песня уже есть')
+                                x=1
+                if x == 0:
+                    music.save('music',music.filename)
+            return music_filler(name)
+    else:
+        music_welcome = 'У вас нет прав на просмотр этого раздела'
+        return render_template('not_rights.html', to_configs=music_welcome)
 
 @app.route('/music/<path:filename>')
 def download_file(filename):
-    print (filename)
     return send_from_directory('music/', filename)
 
+def music_filler(name):
+    music_wel = music()
+    music_welcome = []
+    if not name:
+        name.append('Костыль')
+    for mu in music_wel:
+        if mu[1] != None and mu[0]!=name[0]:
+            mu_tmp = '<audio src="music/' + mu[1] + '" controls></audio>'
+            form = '<form method="GET" action="/song"> <button type="submit" name="Name" value="' + mu[0] + '">Изменить звук</button></form>'
+            music_welcome.append([mu[0], mu_tmp,form])
+        elif mu[0]!=name[0]:
+            mu_tmp = 'Музыка не установлена'
+            form = '<form method="GET" action="/song"> <button type="submit" name="Name" value="'+mu[0]+'">Изменить звук</button></form>'
+            music_welcome.append([mu[0], mu_tmp,form])
+        else:
+            mu_tmp ='<form method="GET" action="/song"> <select name="new_music">'
+            for root, dirs, files in os.walk("music"):
+                for filename in files:
+                    mu_tmp += '<option>'+filename+'</option>'
+            mu_tmp += '</select>'
+            form = '<button type="submit" name="Name" value="' + mu[0] + '">Сохранить звук</button></form>'
+            music_welcome.append([mu[0], mu_tmp,form])
+    return render_template('song.html', to_music=music_welcome)
+
 def music():
-    cur.execute("SELECT * FROM Users;")
+    cur.execute("SELECT Name_discord,Song FROM Users;")
     music_welcome = cur.fetchall()
     return music_welcome
+
+def save_new_music(Name, Music):
+    values = {'Name': Name, 'Music': Music}
+    cur.execute("UPDATE Users SET Song=:Music WHERE Name_discord=:Name;", values)
+    conn.commit()
 
 def check_cookie(hash):
     if hash:

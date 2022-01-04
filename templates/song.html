@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<form method="POST" action="/song" enctype=multipart/form-data><input type="file" name="music"><button type="submit" name="Name" value="Upload">Загрузить музыку</button></form>
 {% for music in to_music %}
 <table border="1">
     <tr>
-        <td width="200px">{{music[1]}}</td>
+        <td width="200px">{{music[0]}}</td>
         <td width="800px">
-            <audio src="{{music[2]}}" controls></audio>
+            {{music[1] | safe}}
+            {{music[2] | safe}}
         </td>
     </tr>
 </table>
