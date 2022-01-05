@@ -134,7 +134,9 @@ def song():
                                 print ('Такая песня уже есть')
                                 x=1
                 if x == 0:
-                    music.save('music',music.filename)
+                    save = 'music/'+music.filename
+                    print (save)
+                    music.save(save)
             return music_filler(name)
     else:
         music_welcome = 'У вас нет прав на просмотр этого раздела'

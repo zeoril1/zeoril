@@ -4,23 +4,12 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Проба фикса зависания">
-      <change afterPath="$PROJECT_DIR$/templates/not_rights.html" afterDir="false" />
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Доработка сайта">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BotSite.py" beforeDir="false" afterPath="$PROJECT_DIR$/BotSite.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread_update_chache.py" beforeDir="false" afterPath="$PROJECT_DIR$/Thread_update_chache.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/music/MrSandman.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/Items.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Items.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/Vendors/350061650.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/350061650.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/Vendors/672118013.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/672118013.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/Vendors/863940356.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/863940356.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/discord.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/resources/discord.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/logs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/logs.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/manifest.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/token.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/token.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vendor.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/song.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/song.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,13 +145,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00067" summary="add auth and vendors spidi,clovis">
-      <created>1627074641446</created>
-      <option name="number" value="00067" />
-      <option name="presentableId" value="LOCAL-00067" />
-      <option name="project" value="LOCAL" />
-      <updated>1627074641446</updated>
     </task>
     <task id="LOCAL-00068" summary="add auth and vendors spidi,clovis">
       <created>1627074664318</created>
@@ -500,7 +482,14 @@
       <option name="project" value="LOCAL" />
       <updated>1640092474222</updated>
     </task>
-    <option name="localTasksCounter" value="116" />
+    <task id="LOCAL-00116" summary="Доработка сайта">
+      <created>1641298504355</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1641298504355</updated>
+    </task>
+    <option name="localTasksCounter" value="117" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -516,7 +505,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Dungeon master" />
     <MESSAGE value="Song gtix, zeoril, seya, wariri" />
     <MESSAGE value="add song Nikos" />
     <MESSAGE value="add song dobrozhor, detorquemada, saren, Darkswatter" />
@@ -541,6 +529,7 @@
     <MESSAGE value="Сайт" />
     <MESSAGE value="Добавление прав в куки" />
     <MESSAGE value="Проба фикса зависания" />
-    <option name="LAST_COMMIT_MESSAGE" value="Проба фикса зависания" />
+    <MESSAGE value="Доработка сайта" />
+    <option name="LAST_COMMIT_MESSAGE" value="Доработка сайта" />
   </component>
 </project>
