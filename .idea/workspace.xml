@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Доработка сайта">
-      <change afterPath="$PROJECT_DIR$/static/zaebala.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/пример.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BotSite.py" beforeDir="false" afterPath="$PROJECT_DIR$/BotSite.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -68,11 +64,11 @@
       <recent name="C:\Users\zeoril1\PycharmProjects\zeoril\static" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\zeoril1\PycharmProjects\zeoril\resources" />
       <recent name="C:\Users\zeoril1\PycharmProjects\zeoril\static" />
       <recent name="C:\Users\zeoril1\PycharmProjects\zeoril\static\css" />
       <recent name="C:\Users\zeoril\PycharmProjects\zeoril\static" />
       <recent name="C:\Users\zeoril\PycharmProjects\zeoril\static\css" />
-      <recent name="C:\Users\zeoril\PycharmProjects\zeoril\templates" />
     </key>
   </component>
   <component name="RunManager" selected="Python.Test">
@@ -153,13 +149,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00068" summary="add auth and vendors spidi,clovis">
-      <created>1627074664318</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1627074664318</updated>
     </task>
     <task id="LOCAL-00069" summary="add auth and vendors spidi,clovis">
       <created>1627108175959</created>
@@ -497,7 +486,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641298504355</updated>
     </task>
-    <option name="localTasksCounter" value="117" />
+    <task id="LOCAL-00117" summary="Доработка сайта">
+      <created>1643802512228</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1643802512229</updated>
+    </task>
+    <option name="localTasksCounter" value="118" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
