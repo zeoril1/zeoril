@@ -18,7 +18,8 @@ def index():
         x=''
         form = flask.Markup('<form action="/" method="post"><p><label for="username">ID в дискорде</label><input type="text" name="ID"></p>' \
                '<p><label for="password">Пароль</label><input type="password" name="password"></p><p><input type="submit" name="login">' \
-               '<a href="/register">Регистрация</a></p></form>')
+               '<a href="/register">Регистрация</a></p></form><br>'
+                            '<img src="static/пример.png">')
         for x in request.form.items():
             y=1
         if request.method == 'POST' and x[0] == 'login':
