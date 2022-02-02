@@ -106,8 +106,7 @@ def song():
     right = False
     if rights != False:
         for le in rights:
-            len = 'Admin' in le
-            if len == True:
+            if ('Admin' in le) == True or ('Music' in le) == True:
                 right = True
                 break
     if right == True:
