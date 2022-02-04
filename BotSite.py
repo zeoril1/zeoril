@@ -8,18 +8,22 @@ import os
 app = Flask(__name__)
 conn = sqlite3.connect('resources/discord.sqlite3', check_same_thread=False)
 cur = conn.cursor()
+
 @app.route('/',methods=['post','get'])
 def index():
     User = check_cookie(request.cookies.get('Auth'))
-    if User != False:
+    user_id = request.cookies.get('Id')
+    Session = check_session(user_id)
+    if Session != False:
         message = 'Добро пожаловать, '+User[0][1]+'!'
-        return render_template('index.html', message=message)
+        header = flask.Markup('<h6>' + message + '</h6><form action="/exit" method="POST">'
+                                                 '<input type="hidden" name="exit" value="'+request.cookies.get('Id')+'">'
+                                                 ' <input type="submit" class="btn btn-warning" value="Выйти">')
+        return render_template('index.html', session=header)
     else:
         x=''
-        form = flask.Markup('<form action="/" method="post"><p><label for="username">ID в дискорде</label><input type="text" name="ID"></p>' \
-               '<p><label for="password">Пароль</label><input type="password" name="password"></p><p><input type="submit" name="login">' \
-               '<a href="/register">Регистрация</a></p></form><br>'
-                            '<img src="static/пример.png">')
+        header = flask.Markup(open('templates/header_out.html', encoding="utf-8").read())
+        form = flask.Markup(open('templates/login.html', encoding="utf-8").read())
         for x in request.form.items():
             y=1
         if request.method == 'POST' and x[0] == 'login':
@@ -43,7 +47,7 @@ def index():
                 message = 'ID или пароль не верен'
                 return render_template('index.html', form=form, message=message)
         else:
-            return render_template('index.html', form=form)
+            return render_template('index.html', form=form, session=header)
 
 @app.route('/register',methods=['post','get'])
 def register():
@@ -146,6 +150,17 @@ def song():
 def download_file(filename):
     return send_from_directory('music/', filename)
 
+@app.route('/exit',methods=['post','get'])
+def exit():
+    exit = request.form['exit']
+    sql = "DELETE FROM Session where ID=" + str(exit)
+    cur.execute(sql)
+    res = flask.make_response(flask.redirect('/'))
+    res.set_cookie('123', '1', max_age=0)
+    res.set_cookie('Id', '1', max_age=0)
+    res.set_cookie('Rights', '1', max_age=0)
+    return res
+
 def music_filler(name):
     music_wel = music()
     music_welcome = []
@@ -195,6 +210,18 @@ def user_rights(id_user):
         cur.execute(sql)
         rights = cur.fetchall()
         return rights
+    else:
+        return False
+
+def check_session(id_user):
+    if id_user:
+        sql = "SELECT COUNT(*) FROM Session WHERE ID="+id_user
+        cur.execute(sql)
+        count = cur.fetchall()
+        if int(count[0][0])>0:
+            return True
+        else:
+            return False
     else:
         return False
 

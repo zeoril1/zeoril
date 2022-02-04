@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 
+{% block header %}
+    {{session}}
+{% endblock %}
+
+{% block login %}
+    {{form}}
+{% endblock %}
 {% block content %}
     {{message}}
-	{{form}}
 {% endblock %}
