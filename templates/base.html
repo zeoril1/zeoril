@@ -22,11 +22,8 @@
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <li><a href="/logs" class="nav-link px-2 text-secondary">Логи</a></li>
           <li><a href="/song" class="nav-link px-2 text-white">Звуки</a></li>
+          <!--<li><a href="/users" class="nav-link px-2 text-secondary">Управление пользователями</a></li>-->
         </ul>
-
-        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-          <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
-        </form>
 
         {% block header %} {% endblock %}
       </div>
@@ -37,15 +34,11 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="LoginLabel">Заголовок модального окна</h5>
+        <h5 class="modal-title text-black" id="LoginLabel"><p>Вход</p></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
       </div>
       <div class="modal-body">
         {% block login %} {% endblock %}
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-        <button type="button" class="btn btn-primary">Сохранить изменения</button>
       </div>
     </div>
   </div>
@@ -60,10 +53,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
       </div>
       <div class="modal-body">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-        <button type="button" class="btn btn-primary">Сохранить изменения</button>
+        {% block register %} {% endblock %}
       </div>
     </div>
   </div>
@@ -73,6 +63,5 @@
   </header>
     <div class="container">
         {% block content %} {% endblock %}
-    </div>
     </body>
 </html>

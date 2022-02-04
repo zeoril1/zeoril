@@ -1,5 +1,5 @@
 import flask
-from flask import Flask,render_template,send_from_directory,session, request
+from flask import Flask,render_template,send_from_directory,redirect, request
 import sqlite3
 import hashlib
 import json
@@ -12,18 +12,54 @@ cur = conn.cursor()
 @app.route('/',methods=['post','get'])
 def index():
     User = check_cookie(request.cookies.get('Auth'))
-    user_id = request.cookies.get('Id')
-    Session = check_session(user_id)
+    Session = check_session(request.cookies.get('Id'))
     if Session != False:
-        message = 'Добро пожаловать, '+User[0][1]+'!'
-        header = flask.Markup('<h6>' + message + '</h6><form action="/exit" method="POST">'
+        info = get_info(' WHERE ID = '+request.cookies.get('Id'))
+        rights = user_rights(request.cookies.get('Id'))
+        right = False
+        if rights != False:
+            for le in rights:
+                if ('Admin' in le) == True or ('Music' in le) == True:
+                    right = True
+                    break
+        if request.method == 'GET' and request.args.getlist('Select'):
+            if right == True:
+                music ='<form method="GET" action="/"> <select name="new_music" class="form-select">'
+                for root, dirs, files in os.walk("music"):
+                    for filename in files:
+                        music += '<option>'+filename+'</option>'
+                music += '</select><button type="submit" name="Save" class="btn btn-primary">Сохранить</button></form>'
+            else:
+                return redirect('/',code=403)
+        elif request.method == 'GET' and request.args.getlist('Save'):
+            if right == True:
+                save_new_music(info[0][1], request.args.getlist('new_music')[0])
+                return redirect('/')
+            else:
+                return redirect('/',code=403)
+        else:
+            if right == True:
+                music ='<audio src="music/' + info[0][2] + '" controls class="h-100"></audio><form method="GET" action="/"> <button type="submit" name="Select" class="btn btn-primary">Изменить звук</button></form>'
+            else:
+                music = '<audio src="music/' + info[0][2] + '" controls></audio>'
+        message = flask.Markup('<div class="container"><div class="row p-2 mb-2 mt-2 bg-dark text-white" >'
+                               '<div class="col d-flex justify-content-center"><label for="username">ID в дискорде: </label><label for="username">'+str(info[0][0])+'</label></div></div>'
+                               '<div class="row p-2 mb-2 bg-secondary text-white">'
+                               '<div class="col d-flex justify-content-center border-end border-1"><label for="username">Имя в дискорде: </label><label for="username">'+str(info[0][1])+'</label></div>'
+                               '<div class="col d-flex justify-content-center border-start border-1"><label for="username">Имя в игре: </label><label for="username">'+str(info[0][4])+'</label></div></div>'
+                               '<div class="row p-2 mb-2 bg-secondary text-white"><div class="col d-flex justify-content-center">'
+                               +music+
+                               '</div></div></div>')
+        header_message = 'Добро пожаловать, '+User[0][1]+'!'
+        header = flask.Markup('<h6>' + header_message + '</h6><form action="/exit" method="POST">'
                                                  '<input type="hidden" name="exit" value="'+request.cookies.get('Id')+'">'
-                                                 ' <input type="submit" class="btn btn-warning" value="Выйти">')
-        return render_template('index.html', session=header)
+                                                 ' <input type="submit" class="btn btn-warning" value="Выйти"></form>')
+        return render_template('index.html', session=header, message= message)
     else:
         x=''
         header = flask.Markup(open('templates/header_out.html', encoding="utf-8").read())
         form = flask.Markup(open('templates/login.html', encoding="utf-8").read())
+        register = flask.Markup(open('templates/reg.html', encoding="utf-8").read())
         for x in request.form.items():
             y=1
         if request.method == 'POST' and x[0] == 'login':
@@ -45,47 +81,60 @@ def index():
                 return res
             else:
                 message = 'ID или пароль не верен'
-                return render_template('index.html', form=form, message=message)
+                return render_template('index.html', login=form, message=message, register = register)
         else:
-            return render_template('index.html', form=form, session=header)
+            return render_template('index.html', login=form, register = register,  session=header)
 
 @app.route('/register',methods=['post','get'])
 def register():
-    form = flask.Markup('<form action="/register" method="post"><p><label for="id">ID в дискорде</label><input type="text" name="id"></p>'
-                           '<p><input value="Проверить" type="submit" name="check"></p></form>')
-    message = ''
-    for x in request.form.items():
-        print (x[0])
-    if request.method == 'POST' and x[0] == 'check':
-        values = {'Id': request.form.get('id')}
-        cur.execute("SELECT * FROM Users WHERE ID = :Id;", values)
-        User = cur.fetchall()
-        if User:
-            if User[0][3] == None:
-                message = User[0][0]
-                form = flask.Markup(
-                    '<form action="/register" method="post" id="reg"><input type="text" name="id" value=' + request.form.get(
-                        'id') + '>'
-                                '<p><label for="pass">Пароль</label><input type="text" name="pass"></p>'
-                                '<p><input value="Зарегистрироваться" type="submit" name="reg"></p></form>')
-                message = 'Пользователь найден и не зарегистрирован'
-                return render_template('register.html', form=form, message=message)
-            else:
-                message = 'Пользователь найден используйте пароль для входа'
-                return render_template('register.html', message=message)
-
+    id = request.form.get('ID')
+    cur.execute("SELECT * FROM Users WHERE ID ="+id)
+    User = cur.fetchall()
+    if User:
+        if User[0][3] == None:
+            password = hashlib.md5(request.form.get('password').encode('utf-8')).hexdigest()
+            values = {'ID': request.form.get('id'), 'Password': password}
+            cur.execute("UPDATE Users SET Password=:Password WHERE ID=:ID;", values)
+            conn.commit()
+            message = 'Регистрация прошла успешно'
+            return render_template('register.html', message = message)
         else:
-            message = 'Пользователь не найден, зарегистрируйтесь через дискорд командой !reg'
-            return render_template('register.html', message=message)
-    elif request.method == 'POST' and x[0] == 'reg':
-        password = hashlib.md5(request.form.get('pass').encode('utf-8')).hexdigest()
-        values = {'ID': request.form.get('id'), 'Password': password}
-        cur.execute("UPDATE Users SET Password=:Password WHERE ID=:ID;", values)
-        conn.commit()
-        message = 'Регистрация успешно выполнена'
-        return render_template('register.html', message=message)
+            message = 'Пользователь найден используйте пароль для входа'
+            return render_template('register.html', message = message)
     else:
-        return render_template('register.html', form=form)
+        message = 'Зарегистрироваться могу только участника клана HG'
+        return render_template('register.html', message = message)
+
+@app.route('/users',methods=['post','get'])
+def users():
+    rights = user_rights(request.cookies.get('Id'))
+    right = False
+    if rights != False:
+        for le in rights:
+            if ('Admin' in le) == True:
+                right = True
+                break
+    if right == True:
+        where = ' '
+        users = get_info(where)
+        x=1
+        html = '<table class="table table-dark table-striped p-2 mb-2 mt-2"><thead>' \
+               '<tr><th scope="col">#</th><th scope="col">ID</th><th scope="col">Имя в дискорде</th><th scope="col">Имя в игре</th><th scope="col">Управление</th>' \
+               '</tr></thead><tbody>'
+        for ln in users:
+            html += '<tr><th scope="row">'+str(x)+'</th>' \
+                    '<td>'+str(ln[0])+'</td>' \
+                    '<td>'+str(ln[1])+'</td>' \
+                    '<td>' + str(ln[4]) + '</td>' \
+                    '<td width="10%"><form>' \
+                                          '<button class="btn mb-1 mt-1 btn-warning">Права</button>' \
+                    '<button class="btn mb-1 mt-1 btn-warning">Данные</button></form></td>'
+            x=x+1
+        html += '</tbody></table>'
+        html = flask.Markup(html)
+        return render_template('users.html', table=html)
+    else:
+        return redirect('/')
 
 @app.route('/logs')
 def logs():
@@ -110,7 +159,7 @@ def song():
     right = False
     if rights != False:
         for le in rights:
-            if ('Admin' in le) == True or ('Music' in le) == True:
+            if ('Admin' in le) == True or ('Music_ALL' in le) == True:
                 right = True
                 break
     if right == True:
@@ -220,6 +269,18 @@ def check_session(id_user):
         count = cur.fetchall()
         if int(count[0][0])>0:
             return True
+        else:
+            return False
+    else:
+        return False
+
+def get_info(Where):
+    if Where:
+        sql = "SELECT * FROM Users"+Where
+        cur.execute(sql)
+        info = cur.fetchall()
+        if info:
+            return info
         else:
             return False
     else:
