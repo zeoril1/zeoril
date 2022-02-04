@@ -1220,3 +1220,65 @@ INFO:discord.client:Cleaning up tasks.
 INFO:discord.client:Cleaning up after 1 tasks.
 INFO:discord.client:All tasks finished cancelling.
 INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-3mn0",{"micros":52891,"calls":["discord-sessions-blue-prd-2-113",{"micros":51068,"calls":["start_session",{"micros":40547,"calls":["api-prd-main-wlk8",{"micros":36843,"calls":["get_user",{"micros":2874},"add_authorized_ip",{"micros":2478},"get_guilds",{"micros":6134},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: c5e9cba9919a8a854330a924fb1dd516).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-7k1z",{"micros":115323,"calls":["discord-sessions-blue-prd-2-54",{"micros":114148,"calls":["start_session",{"micros":73148,"calls":["api-prd-main-pvxz",{"micros":68783,"calls":["get_user",{"micros":7036},"add_authorized_ip",{"micros":11488},"get_guilds",{"micros":14701},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":17721,"calls":[]}]}]}] (Session ID: f3de0d8af989b5d3a1965525154b788d).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-5hzc",{"micros":53911,"calls":["discord-sessions-blue-prd-2-11",{"micros":51973,"calls":["start_session",{"micros":33786,"calls":["api-prd-main-vl3k",{"micros":29934,"calls":["get_user",{"micros":3720},"add_authorized_ip",{"micros":1517},"get_guilds",{"micros":4465},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":7512,"calls":[]}]}]}] (Session ID: 5f1989023e9b3305a9676411986dbd44).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-2s4s",{"micros":92469,"calls":["discord-sessions-blue-prd-2-25",{"micros":71999,"calls":["start_session",{"micros":65996,"calls":["api-prd-main-0z2l",{"micros":62312,"calls":["get_user",{"micros":10628},"add_authorized_ip",{"micros":2667},"get_guilds",{"micros":5366},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":3261,"calls":[]}]}]}] (Session ID: a9a283b55c29bef132e04a61cc9bd0b6).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.voice_client:Connecting to voice...
+INFO:discord.voice_client:Starting voice handshake... (connection attempt 1)
+INFO:discord.voice_client:Voice handshake complete. Endpoint found st-pete1913.discord.media
+INFO:discord.gateway:selected the voice protocol for use (xsalsa20_poly1305_lite)
+INFO:discord.gateway:received secret key for voice connection
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 3 tasks.
+INFO:discord.voice_client:The voice handshake is being terminated for Channel ID 683569184852279313 (Guild ID 394939677590945804)
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
