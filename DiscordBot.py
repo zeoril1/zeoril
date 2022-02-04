@@ -165,14 +165,14 @@ async def on_message(message):
             await message.channel.send('**'+list_con[1] + '** не найден')
 
 def play_song(id_song):
-    global users
+    sql = "SELECT Song FROM Users WHERE ID=" + str(id_song)
+    cur.execute(sql)
+    song = cur.fetchall()
     time_sleep = 0
-    for list_id in users:
-        if int(list_id[0]) == id_song and list_id[2] != 'None':
-            file = MP3('music/'+list_id[2])
-            time_sleep = file.info.length + 0.2
-            break
-    return time_sleep, 'music/'+list_id[2]
+    if song != None:
+        file = MP3('music/'+song[0][0])
+        time_sleep = file.info.length + 0.2
+        return time_sleep, 'music/'+song[0][0]
 
 
 def magic_ball():
