@@ -90,10 +90,11 @@ def register():
     id = request.form.get('ID')
     cur.execute("SELECT * FROM Users WHERE ID ="+id)
     User = cur.fetchall()
+    print (User)
     if User:
         if User[0][3] == None:
             password = hashlib.md5(request.form.get('password').encode('utf-8')).hexdigest()
-            values = {'ID': request.form.get('id'), 'Password': password}
+            values = {'ID': request.form.get('ID'), 'Password': password}
             cur.execute("UPDATE Users SET Password=:Password WHERE ID=:ID;", values)
             conn.commit()
             message = 'Регистрация прошла успешно'
