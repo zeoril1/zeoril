@@ -1,8 +1,0 @@
-discord==1.7.3
-gspread==5.1.1
-mutagen==1.45.1
-Pillow==9.0.1
-requests==2.25.1
-schedule==1.1.0
-
-Flask==2.0.2
