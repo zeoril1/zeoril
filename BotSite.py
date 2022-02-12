@@ -14,42 +14,82 @@ def index():
     User = check_cookie(request.cookies.get('Auth'))
     Session = check_session(request.cookies.get('Id'))
     if Session != False:
-        info = get_info(' WHERE ID = '+request.cookies.get('Id'))
+        info = get_info(' Users WHERE ID = '+request.cookies.get('Id'))
         rights = user_rights(request.cookies.get('Id'))
-        right = False
+        right_music = False
+        right_music_down = False
         if rights != False:
             for le in rights:
-                if ('Admin' in le) == True or ('Music' in le) == True:
-                    right = True
+                if ('Admin' in le)  == True:
+                    right_music = True
+                    right_music_down = True
                     break
+                if  ('Music' in le) == True:
+                    right_music = True
+                if ('Admin' in le) == True or ('Music_down' in le) == True:
+                    right_music_down = True
+        if request.method == 'POST':
+            music = request.files['music_down']
+            if request.form.get('Name') == 'Upload' and request.files['music_down']:
+                x=0
+                print(music.filename.split('.'))
+                filename = music.filename.split('.')
+                if filename[1] == 'mp3' or filename[1] == 'MP3':
+                    for root, dirs, files in os.walk("music"):
+                        for file in files:
+                            if file == music.filename:
+                                print('Такая песня уже есть')
+                                x = 1
+                if x == 0:
+                    save = 'music/' + music.filename
+                    print(save)
+                    music.save(save)
+                return redirect('/?Select=')
         if request.method == 'GET' and request.args.getlist('Select'):
-            if right == True:
-                music ='<form method="GET" action="/"> <select name="new_music" class="form-select">'
+            if right_music == True and right_music_down == True:
+                music = '<div class="col d-flex justify-content-center">' \
+                        '<form method="GET" action="/"> <select name="new_music" class="form-select">'
                 for root, dirs, files in os.walk("music"):
                     for filename in files:
-                        music += '<option>'+filename+'</option>'
-                music += '</select><button type="submit" name="Save" class="btn btn-primary">Сохранить</button></form>'
+                        music += '<option>' + filename + '</option>'
+                music += '</select><button type="submit" name="Save" class="btn btn-primary">Сохранить</button></form></div>'
+                music += '<div class="col d-flex justify-content-center">' \
+                         '<form method="POST" action="/" enctype="multipart/form-data"> <input type="file" name="music_down">' \
+                         '<button type="submit" name="Name" value="Upload">Загрузить музыку</button></form></div>'
+            elif right_music == True:
+                music = '<div class="col d-flex justify-content-center">' \
+                        '<form method="GET" action="/"> <select name="new_music" class="form-select">'
+                for root, dirs, files in os.walk("music"):
+                    for filename in files:
+                        music += '<option>' + filename + '</option>'
+                music += '</select><button type="submit" name="Save" class="btn btn-primary">Сохранить</button></form></div>'
             else:
                 return redirect('/',code=403)
         elif request.method == 'GET' and request.args.getlist('Save'):
-            if right == True:
+            if right_music == True:
                 save_new_music(info[0][1], request.args.getlist('new_music')[0])
                 return redirect('/')
             else:
                 return redirect('/',code=403)
         else:
-            if right == True:
-                music ='<audio src="music/' + info[0][2] + '" controls class="h-100"></audio><form method="GET" action="/"> <button type="submit" name="Select" class="btn btn-primary">Изменить звук</button></form>'
+            if right_music == True and info[0][2] != None:
+                music = '<div class="col d-flex justify-content-center"><audio src="music/' + info[0][2] + '" controls class="h-100"></audio>' \
+                         '<form method="GET" action="/"> <button type="submit" name="Select" class="btn btn-primary">Изменить звук</button></form></div>'
+            elif info[0][2] != None:
+                music = '<div class="col d-flex justify-content-center"><audio src="music/' + info[0][2] + '" controls></audio></div>'
+            elif right_music == True and info[0][2] == None:
+                music = '<div class="col d-flex justify-content-center">' \
+                        '<form method="GET" action="/"> <button type="submit" name="Select" class="btn btn-primary">Изменить звук</button></form></div>'
             else:
-                music = '<audio src="music/' + info[0][2] + '" controls></audio>'
+                music = '<div class="col d-flex justify-content-center">Музыка не установлена</div>'
         message = flask.Markup('<div class="container"><div class="row p-2 mb-2 mt-2 bg-dark text-white" >'
                                '<div class="col d-flex justify-content-center"><label for="username">ID в дискорде: </label><label for="username">'+str(info[0][0])+'</label></div></div>'
                                '<div class="row p-2 mb-2 bg-secondary text-white">'
                                '<div class="col d-flex justify-content-center border-end border-1"><label for="username">Имя в дискорде: </label><label for="username">'+str(info[0][1])+'</label></div>'
                                '<div class="col d-flex justify-content-center border-start border-1"><label for="username">Имя в игре: </label><label for="username">'+str(info[0][4])+'</label></div></div>'
-                               '<div class="row p-2 mb-2 bg-secondary text-white"><div class="col d-flex justify-content-center">'
+                               '<div class="row p-2 mb-2 bg-secondary text-white">'
                                +music+
-                               '</div></div></div>')
+                               '</div></div>')
         header_message = 'Добро пожаловать, '+User[0][1]+'!'
         header = flask.Markup('<h6>' + header_message + '</h6><form action="/exit" method="POST">'
                                                  '<input type="hidden" name="exit" value="'+request.cookies.get('Id')+'">'
@@ -64,13 +104,14 @@ def index():
             y=1
         if request.method == 'POST' and x[0] == 'login':
             password = hashlib.md5(request.form.get('password').encode('utf-8')).hexdigest()
-            sql = "SELECT * FROM Users WHERE ID = "+request.form.get('ID')+" and Password = '"+password+"';"
+            sql = "SELECT * FROM Users WHERE Login = '"+str(request.form.get('Login'))+"' and Password = '"+password+"';"
+            print(sql)
             cur.execute(sql)
             User = cur.fetchall()
             if User:
                 hash_text = request.form.get('password')+str(User[0][0])
                 hash = hashlib.md5(hash_text.encode('utf-8')).hexdigest()
-                sql = "INSERT INTO Session (ID,Hash) VALUES ("+request.form.get('ID')+", '"+str(hash)+"');"
+                sql = "INSERT INTO Session (ID,Hash) VALUES ("+str(User[0][0])+", '"+str(hash)+"');"
                 cur.execute(sql)
                 conn.commit()
                 rights = user_rights(User[0][0])
@@ -94,8 +135,8 @@ def register():
     if User:
         if User[0][3] == None:
             password = hashlib.md5(request.form.get('password').encode('utf-8')).hexdigest()
-            values = {'ID': request.form.get('ID'), 'Password': password}
-            cur.execute("UPDATE Users SET Password=:Password WHERE ID=:ID;", values)
+            values = {'ID': request.form.get('ID'), 'Password': password, 'Login': request.form.get('Login')}
+            cur.execute("UPDATE Users SET Password=:Password, Login=:Login WHERE ID=:ID;", values)
             conn.commit()
             message = 'Регистрация прошла успешно'
             return render_template('register.html', message = message)
@@ -115,27 +156,91 @@ def users():
             if ('Admin' in le) == True:
                 right = True
                 break
-    if right == True:
-        where = ' '
-        users = get_info(where)
-        x=1
-        html = '<table class="table table-dark table-striped p-2 mb-2 mt-2"><thead>' \
-               '<tr><th scope="col">#</th><th scope="col">ID</th><th scope="col">Имя в дискорде</th><th scope="col">Имя в игре</th><th scope="col">Управление</th>' \
-               '</tr></thead><tbody>'
-        for ln in users:
-            html += '<tr><th scope="row">'+str(x)+'</th>' \
-                    '<td>'+str(ln[0])+'</td>' \
-                    '<td>'+str(ln[1])+'</td>' \
-                    '<td>' + str(ln[4]) + '</td>' \
-                    '<td width="10%"><form>' \
-                                          '<button class="btn mb-1 mt-1 btn-warning">Права</button>' \
-                    '<button class="btn mb-1 mt-1 btn-warning">Данные</button></form></td>'
-            x=x+1
-        html += '</tbody></table>'
-        html = flask.Markup(html)
-        return render_template('users.html', table=html)
+    if request.method == 'POST':
+        if request.form.get('right') == 'right':
+            where = ' Users u INNER JOIN Users_rights ur ON u.ID = ur.ID_user INNER JOIN Rights r on ur.ID_right = r.ID WHERE u.ID = '+request.form['ID']
+            users = get_info(where)
+            where = ' Rights'
+            rights = get_info(where)
+            html = '<p><label for="user">Пользователь: </label> '+str(users[0][1])+'</p>' \
+                   '<table class="table table-dark table-striped p-2 mb-2 mt-2"><thead>' \
+                   '<tr><th scope="col">#</th><th scope="col">Название права</th><th scope="col">Управление</th></thead><tbody>' \
+                   '<form action="/users" method="post"><input type="hidden" name="ID" value="'+str(users[0][0])+'">'
+            y=1
+            for ln in rights:
+                html += '<tr><th scope="row">'+str(y)+'</th>' \
+                        '<td>'+str(ln[2])+'</td>'
+                i=0
+                j =len(users)
+                for lr in users:
+                    i=i+1
+                    if lr[10] == ln[0]:
+                        html += '<td><input type="checkbox" id="'+ln[0]+'" name="'+ln[0]+'" checked></td>'
+                        break
+                    elif i == j:
+                        html += '<td><input type="checkbox" id="'+ln[0]+'" name="'+ln[0]+'"></td>'
+                y = y + 1
+            html += '<button type="submit" name="new_rights" class="btn mb-1 mt-1 btn-warning" value="save">Сохранить изменения</button></form></table>'
+            html = flask.Markup(html)
+            return render_template('users.html', table=html)
+        elif request.form.get('new_rights') == 'save':
+            ID = request.form.get('ID')
+            where = 'Users_rights WHERE ID_user = "' + ID + '"'
+            rights = get_info(where)
+            rights_new = request.form.items()
+            for x in rights_new:
+                i = 0
+                if x[0] != "new_rights" and x[0] != "ID":
+                    for y in rights:
+                        if y[1] == x[0]:
+                            i = 1
+                            rights.remove(y)
+                if i == 0:
+                    sql = "INSERT INTO Users_rights (ID_right,ID_user) VALUES ('"+ x[0] +"', "+ID+")"
+                    cur.execute(sql)
+                    conn.commit()
+            if rights:
+                for x in rights:
+                    sql = "DELETE FROM Users_rights WHERE ID_right = '"+x[1]+"' and ID_user = "+ID
+                    cur.execute(sql)
+                    conn.commit()
+            return redirect('users')
+
     else:
-        return redirect('/')
+        if right == True:
+            where = ' Users '
+            users = get_info(where)
+            x=1
+            html = '<table class="table table-dark table-striped p-2 mb-2 mt-2"><thead>' \
+                   '<tr><th scope="col">#</th><th scope="col">ID</th><th scope="col">Имя в дискорде</th><th scope="col">Имя в игре</th><th scope="col">Управление</th>' \
+                   '</tr></thead><tbody>'
+            for ln in users:
+                html += '<tr><th scope="row">'+str(x)+'</th>' \
+                        '<td>'+str(ln[0])+'</td>' \
+                        '<td>'+str(ln[1])+'</td>' \
+                        '<td>' + str(ln[4]) + '</td>' \
+                        '<td width="10%"><form action="/users" method="post">' \
+                        '<input type="hidden" name="ID" value="'+str(ln[0])+'">' \
+                        '<button type="submit" name="right" class="btn mb-1 mt-1 btn-warning" value="right">Права</button>' \
+                        '<button type="submit" name="profile" class="btn mb-1 mt-1 btn-warning">Данные</button></form></td>'
+                x=x+1
+            html += '</tbody></table>'
+            html = flask.Markup(html)
+            return render_template('users.html', table=html)
+        else:
+            where = ' Users WHERE Login is null'
+            users = get_info(where)
+            x = 1
+            html = '<table class="table table-dark table-striped p-2 mb-2 mt-2"><thead>' \
+                   '<tr><th scope="col">#</th><th scope="col">ID</th><th scope="col">Имя в дискорде</th>' \
+                   '</tr></thead><tbody>'
+            for ln in users:
+                html += '<tr><th scope="row">' + str(x) + '</th><td>' + str(ln[0]) + '</td>' \
+                        '<td width="10%">' + str(ln[1]) + '</td>'
+                x = x + 1
+            html += '</tbody></table>'
+            html = flask.Markup(html)
+            return render_template('users.html', table=html)
 
 @app.route('/logs')
 def logs():
@@ -277,7 +382,7 @@ def check_session(id_user):
 
 def get_info(Where):
     if Where:
-        sql = "SELECT * FROM Users"+Where
+        sql = "SELECT * FROM "+Where
         cur.execute(sql)
         info = cur.fetchall()
         if info:

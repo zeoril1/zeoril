@@ -27,14 +27,14 @@ client = discord.Client(intents=intents)
 
 conn = sqlite3.connect('resources/discord.sqlite3', check_same_thread=False)
 cur = conn.cursor()
+cur.execute("SELECT * FROM Configs WHERE ID=1;")
+configs = cur.fetchall()
 
-DISCORD_BOT_TOKEN = 'NjcyMTE5NzA1MjEyOTQ0Mzg1.XjG2QQ.vX9v5I-taWoAaBE-CfMEc1y3N0k'
+DISCORD_BOT_TOKEN = configs[0][1]
 Discord_webhook = "https://discord.com/api/webhooks/865537838279950366/PDHL8Y_Z_UatFOmCIm9K37ZzqqZOERc4tB-TBnCmAptk3czhl0QTImiN_3GLMWPyLwuH"
-
-HEADERS = {"X-API-Key": 'd1a68787e89b4fd1a0f6a99dca645db7'}
-
-base_url = "https://www.bungie.net"
-xur_url = "https://www.bungie.net/Platform/Destiny2/Vendors/?components=402"
+HEADERS = {"X-API-Key": str(configs[0][2])}
+base_url = configs[0][3]
+xur_url = configs[0][4]
 
 # Send the request and store the result in res:
 logging.info("Connecting to Bungie: " + base_url)
