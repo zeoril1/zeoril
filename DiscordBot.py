@@ -12,6 +12,7 @@ from discord import FFmpegPCMAudio
 from mutagen.mp3 import MP3
 import ast
 import sqlite3
+import aiohttp
 
 logging.basicConfig(filename="resources/logs.txt", level=logging.INFO)
 
@@ -61,6 +62,13 @@ async def on_member_join(member):
     if not user:
         cur.execute("INSERT INTO Users (ID,Name_discord) VALUES (:ID,:Name);", values)
         conn.commit()
+
+@client.event
+async def on_member_remove(member):
+    async with aiohttp.ClientSession() as session:
+        webhook = discord.Webhook.from_url(Discord_webhook, adapter=discord.AsyncWebhookAdapter(session))
+        Text = member.display_name+' покинул нас, Милорд'
+        await webhook.send(Text)
 
 @client.event
 async def on_voice_state_update(member, before, after):
