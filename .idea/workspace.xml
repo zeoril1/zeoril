@@ -4,7 +4,8 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="req">
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Бот, ливнувшие">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BotSite.py" beforeDir="false" afterPath="$PROJECT_DIR$/BotSite.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -148,20 +149,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00074" summary="Add hot cache">
-      <created>1627211708407</created>
-      <option name="number" value="00074" />
-      <option name="presentableId" value="LOCAL-00074" />
-      <option name="project" value="LOCAL" />
-      <updated>1627211708407</updated>
-    </task>
-    <task id="LOCAL-00075" summary="Add hot cache">
-      <created>1627215668227</created>
-      <option name="number" value="00075" />
-      <option name="presentableId" value="LOCAL-00075" />
-      <option name="project" value="LOCAL" />
-      <updated>1627215668228</updated>
     </task>
     <task id="LOCAL-00076" summary="Add hot cache">
       <created>1627219859194</created>
@@ -492,7 +479,21 @@
       <option name="project" value="LOCAL" />
       <updated>1644652760551</updated>
     </task>
-    <option name="localTasksCounter" value="123" />
+    <task id="LOCAL-00123" summary="Бот, ливнувшие">
+      <created>1644916368833</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1644916368833</updated>
+    </task>
+    <task id="LOCAL-00124" summary="Бот, ливнувшие">
+      <created>1644916444917</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1644916444917</updated>
+    </task>
+    <option name="localTasksCounter" value="125" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -507,7 +508,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add song Nikos" />
     <MESSAGE value="add song dobrozhor, detorquemada, saren, Darkswatter" />
     <MESSAGE value="update items_filler(), add download manifest" />
     <MESSAGE value="Add auto posting xur" />
@@ -532,6 +532,7 @@
     <MESSAGE value="Проба фикса зависания" />
     <MESSAGE value="Доработка сайта" />
     <MESSAGE value="req" />
-    <option name="LAST_COMMIT_MESSAGE" value="req" />
+    <MESSAGE value="Бот, ливнувшие" />
+    <option name="LAST_COMMIT_MESSAGE" value="Бот, ливнувшие" />
   </component>
 </project>
