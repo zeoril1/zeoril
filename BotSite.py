@@ -1,317 +1,396 @@
-# -*- coding: utf-8 -*-
-import discord
-import requests
-import gspread
-import logging
-import time
-import datetime
-from time import gmtime, strftime
-import json, os
-import random
-from discord import FFmpegPCMAudio
-from mutagen.mp3 import MP3
-import ast
+import flask
+from flask import Flask,render_template,send_from_directory,redirect, request
 import sqlite3
-import aiohttp
+import hashlib
+import json
+import os
 
-logging.basicConfig(filename="resources/logs.txt", level=logging.INFO)
-
-cookies = []
-users = []
-vendor_emoji = []
-token = ''
-members_destiny =[]
-
-intents = discord.Intents.default()
-intents.members = True
-client = discord.Client(intents=intents)
-
+app = Flask(__name__)
 conn = sqlite3.connect('resources/discord.sqlite3', check_same_thread=False)
 cur = conn.cursor()
 
-DISCORD_BOT_TOKEN = 'NjcyMTE5NzA1MjEyOTQ0Mzg1.XjG2QQ.vX9v5I-taWoAaBE-CfMEc1y3N0k'
-Discord_webhook = "https://discord.com/api/webhooks/943063839015067690/OftJxg_MMHlgssbNvQCpaVL8YbpX5eVqAswVv8-MA317XgpSxincSeY-f_9iRB_E1Ro8"
-
-HEADERS = {"X-API-Key": 'd1a68787e89b4fd1a0f6a99dca645db7'}
-
-base_url = "https://www.bungie.net"
-xur_url = "https://www.bungie.net/Platform/Destiny2/Vendors/?components=402"
-
-# Send the request and store the result in res:
-logging.info("Connecting to Bungie: " + base_url)
-logging.info("Fetching data for: Xur's Inventory!")
-res = requests.get(xur_url, headers=HEADERS)
-# Print the error status:
-
-maps = ['Алтарь пламени', 'Аномалия', 'Павшее знамя', 'Пепелище', 'Котёл', 'Конвергенция', 'Мёртвые скалы', 'Далёкие берега',
-'Бесконечная долина', 'Синий исход', 'Крепость', 'Фрагмент', 'Джавелин - 4', 'Центр города', 'Пассифика', 'Сияющие скалы',
-'Ржавая земля', 'Сумеречная Брешь', 'Вдовий двор', 'Червеприбежище']
-
-@client.event
-async def on_ready():
-    logging.info('Logged in as')
-    logging.info(client.user.name)
-    logging.info(client.user.id)
-    logging.info('------')
-
-@client.event
-async def on_member_join(member):
-    values = {'Name': member.display_name, 'ID': member.id}
-    cur.execute("Select * from Users where Name_discord=:Name OR ID=:ID", values)
-    user = cur.fetchall()
-    if not user:
-        cur.execute("INSERT INTO Users (ID,Name_discord) VALUES (:ID,:Name);", values)
-        conn.commit()
-
-@client.event
-async def on_member_remove(member):
-    async with aiohttp.ClientSession() as session:
-        webhook = discord.Webhook.from_url(Discord_webhook, adapter=discord.AsyncWebhookAdapter(session))
-        Text = member.display_name+' покинул нас, Милорд'
-        await webhook.send(Text)
-
-@client.event
-async def on_voice_state_update(member, before, after):
-    if member.id != 672119705212944385:
-        return_song = play_song(member.id)
-        if return_song[0] > 0 and before.channel != after.channel and after.channel is not None:
-            voice = discord.utils.get(client.voice_clients, guild=member.guild)
-            try:
-                if not voice is None:  # test if voice is None
-                    if not voice.is_connected():
-                        music = await discord.VoiceChannel.connect(member.voice.channel)
-                        music.play(FFmpegPCMAudio(return_song[1]))
-                        time.sleep(return_song[0])
-                        await music.disconnect()
-                else:
-                    music = await discord.VoiceChannel.connect(member.voice.channel)
-                    music.play(FFmpegPCMAudio(return_song[1]))
-                    time.sleep(return_song[0])
-                    await music.disconnect()
-            except:
-                if voice.is_connected():
-                    await music.disconnect()
-                print('Ошибка')
-
-@client.event
-async def on_message(message):
-    if message.content.startswith('!usersupdate'):
-        logging.info('[command]: usersupdate ')
-        update_member()
-        await message.channel.send('Пользователи обновлены')
-
-    if message.content.startswith('!configupdate'):
-        logging.info('[command]: configupdate ')
-        config()
-        await message.channel.send('Конфиг обновлен')
-
-    if message.content.startswith('!map'):
-        logging.info('[command]: map ')
-        map = map_random()
-        await message.channel.send(map)
-
-    if message.content.startswith('!reg'):
-        logging.info('[command]: reg ')
-        text = reg_users(message)
-        await message.channel.send(text)
-
-    if message.content.startswith('!spider'):
-        logging.info('[command]: spider ')
-        emb = build_message('863940356')
-        await message.channel.send(embed=emb)
-
-    if message.content.startswith('!banshe'):
-        logging.info('[command]: clovis ')
-        emb = build_message('672118013')
-        await message.channel.send(embed=emb)
-
-    if message.content.startswith('!ada'):
-        logging.info('[command]: ada ')
-        emb = build_message('350061650')
-        await message.channel.send(embed=emb)
-
-    if message.content.startswith('!xur'):
-        logging.info('[command]: xur ')
-        with open('resources/Vendors/XUR_result.png', 'rb') as f:
-            picture = discord.File(f)
-        await message.channel.send(file=picture)
-
-    if message.content.startswith('!roll'):
-        logging.info('[command]: roll ')
-        chellenge_value = chellenge_roll()
-        emb = discord.Embed(title=f'Оружие: {chellenge_value[0]} ({chellenge_value[1]}) ',
-                            description=f'\n**Челлендж**:\n{chellenge_value[2]}',
-                            colour=discord.Color.blue())
-
-        await message.reply(embed=emb)
-
-    if message.content.startswith('!vote'):
-        logging.info('[command]: vote ')
-        emb = discord.Embed(title=f'Голосование за рейд',
-                            description=':one: Хрустальный Чертог \n\n:two: Склеп Глубокого Камня \n\n:three: Сад '
-                                        'Спасения \n\n:four: Последнее Желание',
-                            colour=discord.Color.blue())
-
-        mess = await message.channel.send(embed=emb)
-        await mess.add_reaction('1️⃣')
-        await mess.add_reaction('2️⃣')
-        await mess.add_reaction('3️⃣')
-        await mess.add_reaction('4️⃣')
-
-    if message.content.startswith('!8 ball'):
-        logging.info('[command]: 8 ball ')
-        ball = magic_ball()
-        await message.channel.send(ball)
-
-    if message.content.startswith('!update'):
-        logging.info('[command]: update ')
-        list_con = message.content.split('|')
-        status = chellenge_update(list_con)
-        if status == 0:
-            await message.channel.send('Для **' + list_con[1] + '** добавлено испытание **'+list_con[2]+'**')
-        elif status == 1:
-            await message.channel.send('**'+list_con[1] + '** не найден')
-
-def play_song(id_song):
-    global users
-    time_sleep = 0
-    for list_id in users:
-        if int(list_id[0]) == id_song and list_id[2] != 'None':
-            file = MP3('music/'+list_id[2])
-            time_sleep = file.info.length + 0.2
-            break
-    return time_sleep, 'music/'+list_id[2]
-
-
-def magic_ball():
-    answer = ['Бесспорно', 'Предрешено', 'Никаких сомнений', 'Определённо да', 'Можешь быть уверен в этом',
-              'Мне кажется — «да»', 'Вероятнее всего', 'Хорошие перспективы', 'Знаки говорят — «да»', 'Да',
-              'Пока не ясно, попробуй снова', 'Спроси позже', 'Лучше не рассказывать', 'Сейчас нельзя предсказать',
-              'Сконцентрируйся и спроси опять', 'Даже не думай', 'Мой ответ — «нет»', 'По моим данным — «нет»',
-              'Перспективы не очень хорошие', 'Весьма сомнительно']
-    rand = random.randint(0, 19)
-    return answer[rand]
-
-
-def chellenge_roll():
-    gc = gspread.service_account('resources/config_google.json')
-    wks = gc.open("Exotic").sheet1
-    ran = random.randint(1, 87)
-    weapon = wks.row_values(ran)[0]
-    chellenge = wks.row_values(ran)[2]
-    engweapon = wks.row_values(ran)[1]
-    return weapon, engweapon, chellenge
-
-
-def chellenge_update(list_con):
-    try:
-        gc = gspread.service_account('resources/config_google.json')
-        wks = gc.open("Exotic").sheet1
-        cell = wks.find(list_con[1])
-        if wks.cell(cell.row, cell.col+2).value == 'Нет.':
-            wks.update_cell(cell.row, cell.col+2, list_con[2])
+@app.route('/',methods=['post','get'])
+def index():
+    User = check_cookie(request.cookies.get('Auth'))
+    Session = check_session(request.cookies.get('Id'))
+    if Session != False:
+        info = get_info(' Users WHERE ID = '+request.cookies.get('Id'))
+        rights = user_rights(request.cookies.get('Id'))
+        right_music = False
+        right_music_down = False
+        if rights != False:
+            for le in rights:
+                if ('Admin' in le)  == True:
+                    right_music = True
+                    right_music_down = True
+                    break
+                if  ('Music' in le) == True:
+                    right_music = True
+                if ('Admin' in le) == True or ('Music_down' in le) == True:
+                    right_music_down = True
+        if request.method == 'POST':
+            music = request.files['music_down']
+            if request.form.get('Name') == 'Upload' and request.files['music_down']:
+                x=0
+                print(music.filename.split('.'))
+                filename = music.filename.split('.')
+                if filename[1] == 'mp3' or filename[1] == 'MP3':
+                    for root, dirs, files in os.walk("music"):
+                        for file in files:
+                            if file == music.filename:
+                                print('Такая песня уже есть')
+                                x = 1
+                if x == 0:
+                    save = 'music/' + music.filename
+                    print(save)
+                    music.save(save)
+                return redirect('/?Select=')
+        if request.method == 'GET' and request.args.getlist('Select'):
+            if right_music == True and right_music_down == True:
+                music = '<div class="col d-flex justify-content-center">' \
+                        '<form method="GET" action="/"> <select name="new_music" class="form-select">'
+                for root, dirs, files in os.walk("music"):
+                    for filename in files:
+                        music += '<option>' + filename + '</option>'
+                music += '</select><button type="submit" name="Save" class="btn btn-primary">Сохранить</button></form></div>'
+                music += '<div class="col d-flex justify-content-center">' \
+                         '<form method="POST" action="/" enctype="multipart/form-data"> <input type="file" name="music_down">' \
+                         '<button type="submit" name="Name" value="Upload">Загрузить музыку</button></form></div>'
+            elif right_music == True:
+                music = '<div class="col d-flex justify-content-center">' \
+                        '<form method="GET" action="/"> <select name="new_music" class="form-select">'
+                for root, dirs, files in os.walk("music"):
+                    for filename in files:
+                        music += '<option>' + filename + '</option>'
+                music += '</select><button type="submit" name="Save" class="btn btn-primary">Сохранить</button></form></div>'
+            else:
+                return redirect('/',code=403)
+        elif request.method == 'GET' and request.args.getlist('Save'):
+            if right_music == True:
+                save_new_music(info[0][1], request.args.getlist('new_music')[0])
+                return redirect('/')
+            else:
+                return redirect('/',code=403)
         else:
-            wks.update_cell(cell.row, cell.col+2, wks.cell(cell.row, cell.col+2).value+' ; '+list_con[2])
-        return 0
-    except gspread.exceptions.CellNotFound:
-        return 1
-
-def config():
-    global vendor_emoji
-    with open('resources/emojis.json', 'r', encoding="utf8") as f:
-        vendor_emoji = json.load(f)
-
-def get_info():
-    r = requests.get(
-        'https://www.bungie.net/Platform/Destiny2/3/Profile/4611686018496871111/Character/2305843009565724374/Vendors/?components=400',
-        headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
-    print(r.text)
-
-def build_message(vendor_id):
-    vendor_items = open('resources/Vendors/' + vendor_id + '.txt', 'r', encoding="utf8").read()
-    vendor_items = ast.literal_eval(vendor_items)
-    emb = discord.Embed()
-    for item in vendor_items:
-        buiyng = 'Стоимость:\n'
-        for item_buy in item[2]:
-            buiyng += str(item_buy[1])+' '+vendor_emoji[item_buy[0]]+'\n'
-        if vendor_id == '350061650':
-            emoji_buy = ''
-        else:
-            emoji_buy = vendor_emoji[item[0]]
-        if item[1] != 1:
-            emb.add_field(name=str(item[1]) + ' ' + item[0] + ' ' + emoji_buy,
-                          value=buiyng+'\n--------------------', inline=True)
-        else:
-            emb.add_field(name=item[0] + ' ' + emoji_buy,
-                          value=buiyng+'\n--------------------', inline=True)
-
-    return emb
-
-def reg_users(message):
-    global users
-    x=0
-    id = message.author
-    for member in users:
-        if member[0] == id.id:
-            x=1
-            break
-    if x==0:
-        values = {'ID': id.id, 'Name': id.name, 'Song': 'None'}
-        cur.execute("INSERT INTO Users (ID,Name_discord,Song) VALUES (:ID, :Name, :Song);",values)
-        conn.commit()
-        update_member()
-        text = 'Пользователь '+ id.name+ ' зарегистрирован'
+            if right_music == True and info[0][2] != None:
+                music = '<div class="col d-flex justify-content-center"><audio src="music/' + info[0][2] + '" controls class="h-100"></audio>' \
+                         '<form method="GET" action="/"> <button type="submit" name="Select" class="btn btn-primary">Изменить звук</button></form></div>'
+            elif info[0][2] != None:
+                music = '<div class="col d-flex justify-content-center"><audio src="music/' + info[0][2] + '" controls></audio></div>'
+            elif right_music == True and info[0][2] == None:
+                music = '<div class="col d-flex justify-content-center">' \
+                        '<form method="GET" action="/"> <button type="submit" name="Select" class="btn btn-primary">Изменить звук</button></form></div>'
+            else:
+                music = '<div class="col d-flex justify-content-center">Музыка не установлена</div>'
+        message = flask.Markup('<div class="container"><div class="row p-2 mb-2 mt-2 bg-dark text-white" >'
+                               '<div class="col d-flex justify-content-center"><label for="username">ID в дискорде: </label><label for="username">'+str(info[0][0])+'</label></div></div>'
+                               '<div class="row p-2 mb-2 bg-secondary text-white">'
+                               '<div class="col d-flex justify-content-center border-end border-1"><label for="username">Имя в дискорде: </label><label for="username">'+str(info[0][1])+'</label></div>'
+                               '<div class="col d-flex justify-content-center border-start border-1"><label for="username">Имя в игре: </label><label for="username">'+str(info[0][4])+'</label></div></div>'
+                               '<div class="row p-2 mb-2 bg-secondary text-white">'
+                               +music+
+                               '</div></div>')
+        header_message = 'Добро пожаловать, '+User[0][1]+'!'
+        header = flask.Markup('<h6>' + header_message + '</h6><form action="/exit" method="POST">'
+                                                 '<input type="hidden" name="exit" value="'+request.cookies.get('Id')+'">'
+                                                 ' <input type="submit" class="btn btn-warning" value="Выйти"></form>')
+        return render_template('index.html', session=header, message= message)
     else:
-        text = 'Пользователь '+ id.name+ ' уже зарегистрирован'
-    return text
-
-def map_random():
-    global maps
-    rand = random.randint(0,19)
-    return maps[rand]
-
-def get_members():
-    global members_destiny
-    url = "https://www.bungie.net/Platform/GroupV2/4075707/members"
-    members = requests.get(url, headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
-    members_save = open("resources/members.json", "w", encoding="utf8")
-    members_save.write(members.text)  # записываем содержимое в файл; как видите - content запроса
-    members_save.close()
-    with open("resources/members.json", "r", encoding="utf8") as members_data:
-        members = json.load(members_data)
-    for member in members['Response']['results']:
-        date = datetime.datetime.utcfromtimestamp(int(member['lastOnlineStatusChange']))
-        members_destiny.append([member['destinyUserInfo']['displayName'], date])
-
-def update_member():
-    global members_destiny
-    get_members()
-    for member in client.get_all_members():
-        if not member.bot:
-            values = {'Name': member.display_name, 'ID': member.id}
-            cur.execute("Select * from Users where Name_discord=:Name OR ID=:ID", values)
-            user = cur.fetchall()
-            if not user:
-                cur.execute("INSERT INTO Users (ID,Name_discord) VALUES (:ID,:Name);", values)
+        x=''
+        header = flask.Markup(open('templates/header_out.html', encoding="utf-8").read())
+        form = flask.Markup(open('templates/login.html', encoding="utf-8").read())
+        register = flask.Markup(open('templates/reg.html', encoding="utf-8").read())
+        for x in request.form.items():
+            y=1
+        if request.method == 'POST' and x[0] == 'login':
+            password = hashlib.md5(request.form.get('password').encode('utf-8')).hexdigest()
+            sql = "SELECT * FROM Users WHERE Login = '"+str(request.form.get('Login'))+"' and Password = '"+password+"';"
+            print(sql)
+            cur.execute(sql)
+            User = cur.fetchall()
+            if User:
+                hash_text = request.form.get('password')+str(User[0][0])
+                hash = hashlib.md5(hash_text.encode('utf-8')).hexdigest()
+                sql = "INSERT INTO Session (ID,Hash) VALUES ("+str(User[0][0])+", '"+str(hash)+"');"
+                cur.execute(sql)
                 conn.commit()
-        for user in members_destiny:
-            user_name = '%'+user[0]+'%'
-            values = {'Name': user_name, 'Last_login': user[1],'Name_game':user[0]}
-            cur.execute("Select * from Users where Name_discord LIKE :Name", values)
-            member = cur.fetchall()
-            if member:
-                cur.execute("UPDATE Users SET Last_login=:Last_login, Name_game=:Name_game WHERE ID = "+str(member[0][0]), values)
-                conn.commit()
-                print(str(member[0][0])+' '+str(user[0]))
+                rights = user_rights(User[0][0])
+                res = flask.make_response(flask.redirect('/'))
+                res.set_cookie('Auth', hash)
+                res.set_cookie('Id', str(User[0][0]))
+                res.set_cookie('Rights', str(rights))
+                return res
+            else:
+                message = 'ID или пароль не верен'
+                return render_template('index.html', login=form, message=message, register = register)
+        else:
+            return render_template('index.html', login=form, register = register,  session=header)
 
-def get_users():
-    global users
-    cur.execute("SELECT * FROM Users;")
-    users = cur.fetchall()
-    print(users)
+@app.route('/register',methods=['post','get'])
+def register():
+    id = request.form.get('ID')
+    cur.execute("SELECT * FROM Users WHERE ID ="+id)
+    User = cur.fetchall()
+    print (User)
+    if User:
+        if User[0][3] == None:
+            password = hashlib.md5(request.form.get('password').encode('utf-8')).hexdigest()
+            values = {'ID': request.form.get('ID'), 'Password': password, 'Login': request.form.get('Login')}
+            cur.execute("UPDATE Users SET Password=:Password, Login=:Login WHERE ID=:ID;", values)
+            conn.commit()
+            message = 'Регистрация прошла успешно'
+            return render_template('register.html', message = message)
+        else:
+            message = 'Пользователь найден используйте пароль для входа'
+            return render_template('register.html', message = message)
+    else:
+        message = 'Зарегистрироваться могу только участника клана HG'
+        return render_template('register.html', message = message)
 
-get_users()
-config()
-client.run(DISCORD_BOT_TOKEN)
+@app.route('/users',methods=['post','get'])
+def users():
+    rights = user_rights(request.cookies.get('Id'))
+    right = False
+    if rights != False:
+        for le in rights:
+            if ('Admin' in le) == True:
+                right = True
+                break
+    if request.method == 'POST':
+        if request.form.get('right') == 'right':
+            where = ' Users u INNER JOIN Users_rights ur ON u.ID = ur.ID_user INNER JOIN Rights r on ur.ID_right = r.ID WHERE u.ID = '+request.form['ID']
+            users = get_info(where)
+            where = ' Rights'
+            rights = get_info(where)
+            html = '<p><label for="user">Пользователь: </label> '+str(users[0][1])+'</p>' \
+                   '<table class="table table-dark table-striped p-2 mb-2 mt-2"><thead>' \
+                   '<tr><th scope="col">#</th><th scope="col">Название права</th><th scope="col">Управление</th></thead><tbody>' \
+                   '<form action="/users" method="post"><input type="hidden" name="ID" value="'+str(users[0][0])+'">'
+            y=1
+            for ln in rights:
+                html += '<tr><th scope="row">'+str(y)+'</th>' \
+                        '<td>'+str(ln[2])+'</td>'
+                i=0
+                j =len(users)
+                for lr in users:
+                    i=i+1
+                    if lr[10] == ln[0]:
+                        html += '<td><input type="checkbox" id="'+ln[0]+'" name="'+ln[0]+'" checked></td>'
+                        break
+                    elif i == j:
+                        html += '<td><input type="checkbox" id="'+ln[0]+'" name="'+ln[0]+'"></td>'
+                y = y + 1
+            html += '<button type="submit" name="new_rights" class="btn mb-1 mt-1 btn-warning" value="save">Сохранить изменения</button></form></table>'
+            html = flask.Markup(html)
+            return render_template('users.html', table=html)
+        elif request.form.get('new_rights') == 'save':
+            ID = request.form.get('ID')
+            where = 'Users_rights WHERE ID_user = "' + ID + '"'
+            rights = get_info(where)
+            rights_new = request.form.items()
+            for x in rights_new:
+                i = 0
+                if x[0] != "new_rights" and x[0] != "ID":
+                    for y in rights:
+                        if y[1] == x[0]:
+                            i = 1
+                            rights.remove(y)
+                if i == 0:
+                    sql = "INSERT INTO Users_rights (ID_right,ID_user) VALUES ('"+ x[0] +"', "+ID+")"
+                    cur.execute(sql)
+                    conn.commit()
+            if rights:
+                for x in rights:
+                    sql = "DELETE FROM Users_rights WHERE ID_right = '"+x[1]+"' and ID_user = "+ID
+                    cur.execute(sql)
+                    conn.commit()
+            return redirect('users')
 
+    else:
+        if right == True:
+            where = ' Users '
+            users = get_info(where)
+            x=1
+            html = '<table class="table table-dark table-striped p-2 mb-2 mt-2"><thead>' \
+                   '<tr><th scope="col">#</th><th scope="col">ID</th><th scope="col">Имя в дискорде</th><th scope="col">Имя в игре</th><th scope="col">Управление</th>' \
+                   '</tr></thead><tbody>'
+            for ln in users:
+                html += '<tr><th scope="row">'+str(x)+'</th>' \
+                        '<td>'+str(ln[0])+'</td>' \
+                        '<td>'+str(ln[1])+'</td>' \
+                        '<td>' + str(ln[4]) + '</td>' \
+                        '<td width="10%"><form action="/users" method="post">' \
+                        '<input type="hidden" name="ID" value="'+str(ln[0])+'">' \
+                        '<button type="submit" name="right" class="btn mb-1 mt-1 btn-warning" value="right">Права</button>' \
+                        '<button type="submit" name="profile" class="btn mb-1 mt-1 btn-warning">Данные</button></form></td>'
+                x=x+1
+            html += '</tbody></table>'
+            html = flask.Markup(html)
+            return render_template('users.html', table=html)
+        else:
+            where = ' Users WHERE Login is null'
+            users = get_info(where)
+            x = 1
+            html = '<table class="table table-dark table-striped p-2 mb-2 mt-2"><thead>' \
+                   '<tr><th scope="col">#</th><th scope="col">ID</th><th scope="col">Имя в дискорде</th>' \
+                   '</tr></thead><tbody>'
+            for ln in users:
+                html += '<tr><th scope="row">' + str(x) + '</th><td>' + str(ln[0]) + '</td>' \
+                        '<td width="10%">' + str(ln[1]) + '</td>'
+                x = x + 1
+            html += '</tbody></table>'
+            html = flask.Markup(html)
+            return render_template('users.html', table=html)
+
+@app.route('/logs')
+def logs():
+    rights = user_rights(request.cookies.get('Id'))
+    right = False
+    if rights != False:
+        for le in rights:
+            len = 'Admin' in le
+            if len == True:
+                right = True
+                break
+    if right == True:
+        logger = open('resources/logs.txt', 'r', encoding="ISO-8859-1").read()
+        return render_template('logs.html', to_configs=logger)
+    else:
+        logger = 'У вас нет прав на просмотр этого раздела'
+        return render_template('not_rights.html', to_configs=logger)
+
+@app.route('/song',methods=['post','get'])
+def song():
+    rights = user_rights(request.cookies.get('Id'))
+    right = False
+    if rights != False:
+        for le in rights:
+            if ('Admin' in le) == True or ('Music_ALL' in le) == True:
+                right = True
+                break
+    if right == True:
+        for x in request.form.items():
+            y=1
+        if request.method == 'GET':
+            name = request.args.getlist('Name')
+            new_music = request.args.getlist('new_music')
+            if not new_music:
+                return music_filler(name)
+            else:
+                save_new_music(name[0], new_music[0])
+                name=[]
+                return music_filler(name)
+        else:
+            name = request.form.get('Name')
+            music = request.files['music']
+            x=0
+            if name == 'Upload' and music:
+                filename = music.filename.split('.')
+                if filename[1] == 'mp3' or filename[1] == 'MP3':
+                    for root, dirs, files in os.walk("music"):
+                        for file in files:
+                            if file == music.filename:
+                                print ('Такая песня уже есть')
+                                x=1
+                if x == 0:
+                    save = 'music/'+music.filename
+                    print (save)
+                    music.save(save)
+            return music_filler(name)
+    else:
+        music_welcome = 'У вас нет прав на просмотр этого раздела'
+        return render_template('not_rights.html', to_configs=music_welcome)
+
+@app.route('/music/<path:filename>')
+def download_file(filename):
+    return send_from_directory('music/', filename)
+
+@app.route('/exit',methods=['post','get'])
+def exit():
+    exit = request.form['exit']
+    sql = "DELETE FROM Session where ID=" + str(exit)
+    cur.execute(sql)
+    res = flask.make_response(flask.redirect('/'))
+    res.set_cookie('123', '1', max_age=0)
+    res.set_cookie('Id', '1', max_age=0)
+    res.set_cookie('Rights', '1', max_age=0)
+    return res
+
+def music_filler(name):
+    music_wel = music()
+    music_welcome = []
+    if not name:
+        name.append('Костыль')
+    for mu in music_wel:
+        if mu[1] != None and mu[0]!=name[0]:
+            mu_tmp = '<audio src="music/' + mu[1] + '" controls></audio>'
+            form = '<form method="GET" action="/song"> <button type="submit" name="Name" value="' + mu[0] + '">Изменить звук</button></form>'
+            music_welcome.append([mu[0], mu_tmp,form])
+        elif mu[0]!=name[0]:
+            mu_tmp = 'Музыка не установлена'
+            form = '<form method="GET" action="/song"> <button type="submit" name="Name" value="'+mu[0]+'">Изменить звук</button></form>'
+            music_welcome.append([mu[0], mu_tmp,form])
+        else:
+            mu_tmp ='<form method="GET" action="/song"> <select name="new_music">'
+            for root, dirs, files in os.walk("music"):
+                for filename in files:
+                    mu_tmp += '<option>'+filename+'</option>'
+            mu_tmp += '</select>'
+            form = '<button type="submit" name="Name" value="' + mu[0] + '">Сохранить звук</button></form>'
+            music_welcome.append([mu[0], mu_tmp,form])
+    return render_template('song.html', to_music=music_welcome)
+
+def music():
+    cur.execute("SELECT Name_discord,Song FROM Users;")
+    music_welcome = cur.fetchall()
+    return music_welcome
+
+def save_new_music(Name, Music):
+    values = {'Name': Name, 'Music': Music}
+    cur.execute("UPDATE Users SET Song=:Music WHERE Name_discord=:Name;", values)
+    conn.commit()
+
+def check_cookie(hash):
+    if hash:
+        sql = "SELECT Users.*, Session.ID FROM Users, Session WHERE Users.ID = Session.ID and Session.Hash = '"+hash+"';"
+        cur.execute(sql)
+        User = cur.fetchall()
+        return User
+    else:
+        return False
+
+def user_rights(id_user):
+    if id_user:
+        sql = "SELECT Rights.* FROM Rights, Users_rights WHERE Users_rights.ID_user = " + str(id_user) + " AND Rights.ID = Users_rights.ID_right;"
+        cur.execute(sql)
+        rights = cur.fetchall()
+        return rights
+    else:
+        return False
+
+def check_session(id_user):
+    if id_user:
+        sql = "SELECT COUNT(*) FROM Session WHERE ID="+id_user
+        cur.execute(sql)
+        count = cur.fetchall()
+        if int(count[0][0])>0:
+            return True
+        else:
+            return False
+    else:
+        return False
+
+def get_info(Where):
+    if Where:
+        sql = "SELECT * FROM "+Where
+        cur.execute(sql)
+        info = cur.fetchall()
+        if info:
+            return info
+        else:
+            return False
+    else:
+        return False
+
+if __name__ == '__main__':
+    app.run(port=80, host='0.0.0.0')
