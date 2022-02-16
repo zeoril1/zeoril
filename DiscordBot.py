@@ -24,6 +24,7 @@ members_destiny =[]
 
 intents = discord.Intents.default()
 intents.members = True
+intents.messages = True
 client = discord.Client(intents=intents)
 
 conn = sqlite3.connect('resources/discord.sqlite3', check_same_thread=False)
@@ -32,7 +33,7 @@ cur.execute("SELECT * FROM Configs WHERE ID=1;")
 configs = cur.fetchall()
 
 DISCORD_BOT_TOKEN = configs[0][1]
-Discord_webhook = "https://discord.com/api/webhooks/865537838279950366/PDHL8Y_Z_UatFOmCIm9K37ZzqqZOERc4tB-TBnCmAptk3czhl0QTImiN_3GLMWPyLwuH"
+Discord_webhook = "https://discord.com/api/webhooks/943063839015067690/OftJxg_MMHlgssbNvQCpaVL8YbpX5eVqAswVv8-MA317XgpSxincSeY-f_9iRB_E1Ro8"
 HEADERS = {"X-API-Key": str(configs[0][2])}
 base_url = configs[0][3]
 xur_url = configs[0][4]
@@ -172,12 +173,28 @@ async def on_message(message):
         elif status == 1:
             await message.channel.send('**'+list_con[1] + '** не найден')
 
+    else:
+        sql = "INSERT INTO Messages (ID,ID_user,Date) VALUES (" + str(message.id) + ", " + str(message.author.id) + ", '" + str(message.created_at) + "');"
+        cur.execute(sql)
+        conn.commit()
+
+@client.event
+async def on_raw_message_delete(message):
+    sql = "SELECT COUNT(*) FROM Messages WHERE ID=" + str(message.message_id)
+    cur.execute(sql)
+    count = cur.fetchall()
+    if int(count[0][0]) > 0:
+        sql = "DELETE FROM Messages WHERE ID = " + str(message.message_id)
+        cur.execute(sql)
+        conn.commit()
+
 def play_song(id_song):
     sql = "SELECT Song FROM Users WHERE ID=" + str(id_song)
     cur.execute(sql)
     song = cur.fetchall()
     time_sleep = 0
     if song != None:
+        print(id_song+' '+song)
         file = MP3('music/'+song[0][0])
         time_sleep = file.info.length + 0.2
         return time_sleep, 'music/'+song[0][0]
