@@ -111,11 +111,6 @@ async def on_message(message):
         map = map_random()
         await message.channel.send(map)
 
-    if message.content.startswith('!reg'):
-        logging.info('[command]: reg ')
-        text = reg_users(message)
-        await message.channel.send(text)
-
     if message.content.startswith('!spider'):
         logging.info('[command]: spider ')
         emb = build_message('863940356')

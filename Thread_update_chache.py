@@ -17,7 +17,7 @@ list_prew = []
 vendor_items = []
 vendor_emoji = ""
 name_items = []
-vendors_ids = []
+vandors_idname = []
 discord_hook_token = "https://discord.com/api/webhooks/865526515344212018/GJNKyPj9dAVLluVcA3_CZs49u52P64XLWCIa2C4t-xju0M36Uo-PQcTp_qst8XGK5xz1"
 refresh_token = open("resources/token.txt", "r", encoding="utf8")
 
@@ -43,12 +43,12 @@ def items_filler():
     with open("resources/manifest.json", "r", encoding="utf8") as mf:
         manifest = json.load(mf)
     url_items = "https://www.bungie.net"+manifest['Response']['jsonWorldComponentContentPaths']['ru']['DestinyInventoryItemLiteDefinition']
-    f = open("resources/Items.json", "w", encoding="utf8")
+    f = open("resources/Vendors/Items.json", "w", encoding="utf8")
     down_mani = requests.get(url_items)  # делаем запрос
     f.write(down_mani.text)  # записываем содержимое в файл; как видите - content запроса
     f.close()
 
-    with open("resources/Items.json", "r", encoding="utf8") as read_file:
+    with open("resources/Vendors/Items.json", "r", encoding="utf8") as read_file:
         items = json.load(read_file)
     for id_w in items:
         try:
@@ -70,34 +70,30 @@ def items_filler():
         else:
             y = 1
 
-
 def config_cookie():
     with open('resources/cookies.txt', 'r', encoding="utf8") as f:
         cookies_config=f.read()
     return (cookies_config)
 
-
 def hot_cache():
     print("Заполнение кэша")
-    get_token(refresh_token, 'refresh_token')
-    global vendors_ids
+    global vandors_idname
     day = datetime.datetime.today().weekday()
     hour = datetime.datetime.now().hour
-    print(hour)
-    for vendor_id in vendors_ids:
-        if vendor_id == '2190858386' and (day != 2 or day != 3):
-            if (day == 1 and hour > 17) or (day == 4 and hour < 17):
-                x= 0
+    for vendor_id in vandors_idname:
+        if vendor_id[1] == 'Зур' and (day != 2 or day != 3):
+            if (day == 1 and hour < 17) or (day == 4 and hour > 17) or day == 5 or day == 6 or day == 7:
+                cache = get_vender_info(vendor_id)
+                with open('resources/Vendors/' + vendor_id[0] + '.txt', 'w+', encoding="utf8") as f:
+                    f.write(str(cache))
+                    print(vendor_id[1] + " Готов")
             else:
-               cache= get_vender_info(vendor_id)
-               print(cache)
+                print('Зура нет')
         else:
             cache = get_vender_info(vendor_id)
-            with open('resources/Vendors/' + vendor_id + '.txt', 'w+', encoding="utf8") as f:
+            with open('resources/Vendors/' + vendor_id[0] + '.txt', 'w+', encoding="utf8") as f:
                 f.write(str(cache))
-        print (vendor_id+" Готов")
-    print (os.listdir(path="resources/Vendors/"))
-    print(os.listdir(path="resources/"))
+            print(vendor_id[1] + " Готов")
 
 
 def get_token(code_token, type_get_token):
@@ -122,17 +118,15 @@ def get_token(code_token, type_get_token):
     with open('resources/token.txt', 'w', encoding="utf8") as f:
         f.write(refresh_token)
 
-
 def sch():
     schedule.every().hours.do(hot_cache)
     while True:
         schedule.run_pending()
         time.sleep(10)
 
-
 def get_item_info(itemHash,sell_quantity,items_buy_cost, vendor_id):
     buy_items = []
-    with open("resources/Items.json", "r", encoding="utf8") as read_file:
+    with open("resources/Vendors/Items.json", "r", encoding="utf8") as read_file:
         Items = json.load(read_file)
     x=0
     for id_w in Items:
@@ -166,7 +160,6 @@ def draw(item, cost, im1, yp, ys, yt):
     draw.text((510, ys), str(cost[1]), (0, 0, 0), font=font)
     font = ImageFont.truetype("resources/18922.otf", 70)
     draw.text((510, ys), str(cost[1]), (149, 191, 255), font=font)
-
 
 def xur_img(vendor_items):
     items_filler()
@@ -233,29 +226,28 @@ def xur_img(vendor_items):
     print("Готово")
 
 def get_vender_info(vendor_id):
-    global vendor_items
-    vendor_items=[]
+    global vandors_idname
+    vendor_items= []
     items_buy_cost=[]
+    url = 'https://www.bungie.net/Platform/Destiny2/3/Profile/4611686018496871111/Character/2305843009565724374/Vendors/'+str(vendor_id[0])+'/?components=402,401'
     r = requests.get(
-        'https://www.bungie.net/Platform/Destiny2/3/Profile/4611686018496871111/Character/2305843009565724374/Vendors/'+str(vendor_id)+'/?components=402,401',
+        url,
         headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
-    vendor_save = open("resources/vendor.json", "w", encoding="utf8")
+    vendor_save = open("resources/Vendors/vendor.json", "w", encoding="utf8")
     vendor_save.write(r.text)  # записываем содержимое в файл; как видите - content запроса
     vendor_save.close()
-    with open("resources/vendor.json", "r", encoding="utf8") as vendor_data:
+    with open("resources/Vendors/vendor.json", "r", encoding="utf8") as vendor_data:
         vendor = json.load(vendor_data)
     cat_vendor = vendor['Response']['categories']['data']['categories']
     vendor = vendor['Response']['sales']['data']
-    if '863940356' == str(vendor_id):
-        cat_index = 3
-    elif '672118013' == str(vendor_id):
+    if 'Паук' == str(vendor_id[1]):
+        cat_index = 4
+    elif 'Банши-44' == str(vendor_id[1]):
         cat_index = 8
-    elif '2190858386' == str(vendor_id):
+    elif 'Зур' == str(vendor_id[1]):
         cat_index = 0
-    elif '350061650' == str(vendor_id):
-        cat_index = 1
-    elif '350061651' == str(vendor_id):
-        cat_index = 1
+    elif 'Ада-1' == str(vendor_id[1]):
+        cat_index = 2
     for cat_id in cat_vendor:
         if int(cat_id['displayCategoryIndex']) == cat_index:
             for item_index in cat_id['itemIndexes']:
@@ -274,46 +266,54 @@ def get_vender_info(vendor_id):
                     re = info_items[0]
                 vendor_items.append([re, info_items[1], info_items[2]])
             break
-    if '2190858386' != str(vendor_id):
+    if 'Зур' != str(vendor_id[1]):
         #emb = build_message(vendor_id)
+        print(vendor_items)
         return vendor_items
-        print('Vendor')
     else:
         xur_img(vendor_items)
         print('XUR')
 
-def config():
-    global name_items,vendors_ids
-    x=0
-    configs = open('resources/Vendors/config_vendors.txt', 'r', encoding="utf8").read()
-    configs_split = configs.split("\n")
-    for line in configs_split:
-        name_config = line.split("=")
-        name_config[0]=name_config[0].replace(" ", "")
-        if name_config[0] == "name":
-            config_prev = name_config[1].split(",")
-            for form in config_prev:
-                if x == 0:
-                    one = form.replace("[","")
-                    one = one.replace("]","")
-                    one = one.replace('"', "")
-                    x=1
-                elif x == 1:
-                    two = form.replace("[", "")
-                    two = two.replace("]", "")
-                    two = two.replace('"', "")
-                    name_items.append([one,two])
-                    x=0
-        elif name_config[0] == "ids":
-            config_prev = name_config[1].split(",")
-            for form in config_prev:
-                item = form.replace("[", "")
-                item = item.replace("]", "")
-                item = item.replace("'", "")
-                vendors_ids.append(item)
-    #vendor_items = ast.literal_eval(vendor_items)
+def get_manifest():
+    url = 'https://www.bungie.net/Platform/Destiny2/Manifest/'
+    print (token)
+    manifest = requests.get(
+        url,
+        headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
+    m = open("resources/manifest.json", "w", encoding="utf8")
+    m.write(manifest.text)  # записываем содержимое в файл; как видите - content запроса
+    m.close()
 
-config()
+def get_vendors():
+    with open("resources/manifest.json", "r", encoding="utf8") as vendors_url:
+        vendors = json.load(vendors_url)
+    vendors_url = vendors['Response']['jsonWorldComponentContentPaths']['ru']['DestinyVendorDefinition']
+    url = 'https://www.bungie.net'+vendors_url
+    vendors_data = requests.get(
+        url,
+        headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
+    m = open("resources/Vendors/vendors.json", "w", encoding="utf8")
+    m.write(vendors_data.text)
+    m.close()
+
+def get_vendors_ids():
+    with open("resources/Vendors/vendors.json", "r", encoding="utf8") as vendors_data:
+        vendors = json.load(vendors_data)
+    with open("resources/Vendors/Vendors_name.txt", "r", encoding="utf8") as f:
+        vendors_names = f.read().splitlines()
+    vendors_ids = open("resources/Vendors/Vendors_ids.txt", "w", encoding="utf8")
+    for vendor in vendors:
+        for vendor_name in vendors_names:
+            if vendors[vendor]['displayProperties']['name'] == vendor_name and vendors[vendor]['vendorProgressionType'] == 0 and vendors[vendor]['enabled'] !=False:
+                vandors_idname.append([vendor,vendor_name])
+                vendors_ids.write(vendor+'\n')
+    print(vandors_idname)
+    vendors_ids.close()
+
+get_token(refresh_token, 'refresh_token')
+get_manifest()
+get_vendors()
+get_vendors_ids()
 hot_cache()
 thread = threading.Thread(target=sch)
 thread.start()
