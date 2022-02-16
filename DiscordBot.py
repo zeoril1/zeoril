@@ -174,7 +174,7 @@ async def on_message(message):
             await message.channel.send('**'+list_con[1] + '** не найден')
 
     else:
-        sql = "INSERT INTO Messages (ID,ID_user,Date) VALUES (" + str(message.id) + ", " + str(message.author.id) + ", '" + str(message.created_at) + "');"
+        sql = "INSERT INTO Messages (ID,ID_user,Date, ID_channel) VALUES (" + str(message.id) + ", " + str(message.author.id) + ", '" + str(message.created_at) + "', " + str(message.channel.id) + ");"
         cur.execute(sql)
         conn.commit()
 
@@ -194,7 +194,7 @@ def play_song(id_song):
     song = cur.fetchall()
     time_sleep = 0
     if song != None:
-        print(id_song+' '+song)
+        print(str(id_song)+' '+str(song))
         file = MP3('music/'+song[0][0])
         time_sleep = file.info.length + 0.2
         return time_sleep, 'music/'+song[0][0]

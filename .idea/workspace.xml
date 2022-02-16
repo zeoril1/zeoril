@@ -4,7 +4,7 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Бот, ливнувшие">
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="вебхук, счетчик сообщений">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/discord.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/resources/discord.sqlite3" afterDir="false" />
@@ -151,13 +151,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00079" summary="Add hot cache">
-      <created>1627375177773</created>
-      <option name="number" value="00079" />
-      <option name="presentableId" value="LOCAL-00079" />
-      <option name="project" value="LOCAL" />
-      <updated>1627375177773</updated>
     </task>
     <task id="LOCAL-00080" summary="Fix hot chache">
       <created>1627392950289</created>
@@ -495,7 +488,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644948288050</updated>
     </task>
-    <option name="localTasksCounter" value="128" />
+    <task id="LOCAL-00128" summary="вебхук, счетчик сообщений">
+      <created>1645006715551</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1645006715551</updated>
+    </task>
+    <option name="localTasksCounter" value="129" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -510,7 +510,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add song dobrozhor, detorquemada, saren, Darkswatter" />
     <MESSAGE value="update items_filler(), add download manifest" />
     <MESSAGE value="Add auto posting xur" />
     <MESSAGE value="Online resourses mew branch" />
@@ -535,6 +534,7 @@
     <MESSAGE value="Доработка сайта" />
     <MESSAGE value="req" />
     <MESSAGE value="Бот, ливнувшие" />
-    <option name="LAST_COMMIT_MESSAGE" value="Бот, ливнувшие" />
+    <MESSAGE value="вебхук, счетчик сообщений" />
+    <option name="LAST_COMMIT_MESSAGE" value="вебхук, счетчик сообщений" />
   </component>
 </project>
