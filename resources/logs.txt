@@ -1598,3 +1598,33 @@ INFO:discord.client:Cleaning up tasks.
 INFO:discord.client:Cleaning up after 1 tasks.
 INFO:discord.client:All tasks finished cancelling.
 INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-6zdt",{"micros":103519,"calls":["discord-sessions-green-prd-2-117",{"micros":102568,"calls":["start_session",{"micros":30133,"calls":["api-prd-main-81hn",{"micros":26838,"calls":["get_user",{"micros":3182},"add_authorized_ip",{"micros":1389},"get_guilds",{"micros":3325},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":46375,"calls":[]}]}]}] (Session ID: e93212cdd5ea395b6da541f776c7818f).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-8m7k",{"micros":98445,"calls":["discord-sessions-green-prd-2-174",{"micros":94278,"calls":["start_session",{"micros":55646,"calls":["api-prd-main-g40t",{"micros":28985,"calls":["get_user",{"micros":4157},"add_authorized_ip",{"micros":1552},"get_guilds",{"micros":2768},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: 3fa0f1e5335b0103e2cfc8a2d30fab62).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
