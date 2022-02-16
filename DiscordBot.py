@@ -188,10 +188,11 @@ def play_song(id_song):
     cur.execute(sql)
     song = cur.fetchall()
     time_sleep = 0
-    if song[0][0] != None:
-        file = MP3('music/'+song[0][0])
-        time_sleep = file.info.length + 0.2
-        return time_sleep, 'music/'+song[0][0]
+    if song:
+        if song[0][0] != None:
+            file = MP3('music/'+song[0][0])
+            time_sleep = file.info.length + 0.2
+            return time_sleep, 'music/'+song[0][0]
 
 
 def magic_ball():
