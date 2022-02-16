@@ -4,20 +4,9 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Правка проигрывания музыки">
-      <change afterPath="$PROJECT_DIR$/info.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/Vendors/Vendors_ids.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/Vendors/Vendors_name.txt" afterDir="false" />
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Починка вендоров">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread_update_chache.py" beforeDir="false" afterPath="$PROJECT_DIR$/Thread_update_chache.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/Vendors/672118013.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/672118013.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/Vendors/config_vendors.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/config_vendors.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/logs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/logs.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/members.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/members.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/token.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/token.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vendor.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,11 +64,11 @@
       <recent name="C:\Users\zeoril1\PycharmProjects\zeoril\static" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\zeoril1\PycharmProjects\zeoril\resources\Vendors" />
       <recent name="C:\Users\zeoril1\PycharmProjects\zeoril\static" />
       <recent name="C:\Users\zeoril1\PycharmProjects\zeoril\resources" />
       <recent name="C:\Users\zeoril1\PycharmProjects\zeoril\static\css" />
       <recent name="C:\Users\zeoril\PycharmProjects\zeoril\static" />
-      <recent name="C:\Users\zeoril\PycharmProjects\zeoril\static\css" />
     </key>
   </component>
   <component name="RunManager" selected="Python.Theards">
@@ -182,13 +171,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00082" summary="Fix hot chache">
-      <created>1627393330904</created>
-      <option name="number" value="00082" />
-      <option name="presentableId" value="LOCAL-00082" />
-      <option name="project" value="LOCAL" />
-      <updated>1627393330904</updated>
     </task>
     <task id="LOCAL-00083" summary="Fix hot chache">
       <created>1627393729028</created>
@@ -526,7 +508,14 @@
       <option name="project" value="LOCAL" />
       <updated>1645025440060</updated>
     </task>
-    <option name="localTasksCounter" value="131" />
+    <task id="LOCAL-00131" summary="Починка вендоров">
+      <created>1645037262281</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
+      <option name="project" value="LOCAL" />
+      <updated>1645037262281</updated>
+    </task>
+    <option name="localTasksCounter" value="132" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -541,7 +530,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Online resourses mew branch" />
     <MESSAGE value="Online exotic" />
     <MESSAGE value="Fix" />
     <MESSAGE value="Update song Халик" />
@@ -566,6 +554,7 @@
     <MESSAGE value="вебхук, счетчик сообщений" />
     <MESSAGE value="счетчик сообщений" />
     <MESSAGE value="Правка проигрывания музыки" />
-    <option name="LAST_COMMIT_MESSAGE" value="Правка проигрывания музыки" />
+    <MESSAGE value="Починка вендоров" />
+    <option name="LAST_COMMIT_MESSAGE" value="Починка вендоров" />
   </component>
 </project>
