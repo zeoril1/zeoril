@@ -1628,3 +1628,133 @@ INFO:discord.client:Cleaning up tasks.
 INFO:discord.client:Cleaning up after 1 tasks.
 INFO:discord.client:All tasks finished cancelling.
 INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-c6n8",{"micros":72726,"calls":["discord-sessions-green-prd-2-74",{"micros":59414,"calls":["start_session",{"micros":31622,"calls":["api-prd-main-bc7k",{"micros":26531,"calls":["get_user",{"micros":2893},"add_authorized_ip",{"micros":1541},"get_guilds",{"micros":5245},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":3,"calls":[]},"presence_connect",{"micros":18152,"calls":[]}]}]}] (Session ID: 8f8e8b12e0773dc92ebbfc0bf4f85027).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-zzkj",{"micros":83475,"calls":["discord-sessions-green-prd-2-109",{"micros":77625,"calls":["start_session",{"micros":55339,"calls":["api-prd-main-fnkt",{"micros":49991,"calls":["get_user",{"micros":5407},"add_authorized_ip",{"micros":3385},"get_guilds",{"micros":6115},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":3,"calls":[]},"presence_connect",{"micros":13028,"calls":[]}]}]}] (Session ID: ea76a361b5a789158c4e9f49520c3eb3).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-8vbh",{"micros":87517,"calls":["discord-sessions-green-prd-2-29",{"micros":84458,"calls":["start_session",{"micros":52342,"calls":["api-prd-main-9290",{"micros":49185,"calls":["get_user",{"micros":4873},"add_authorized_ip",{"micros":2567},"get_guilds",{"micros":9218},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":3,"calls":[]},"presence_connect",{"micros":6499,"calls":[]}]}]}] (Session ID: 77d0b58ce1d3319d25d76fc563b8761d).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-3skz",{"micros":80578,"calls":["discord-sessions-green-prd-2-1",{"micros":76234,"calls":["start_session",{"micros":31761,"calls":["api-prd-main-7ph5",{"micros":27970,"calls":["get_user",{"micros":2680},"add_authorized_ip",{"micros":2559},"get_guilds",{"micros":3514},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: 3bdada16a8eb1744582c5ca5bafeb8e6).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-0v55",{"micros":97949,"calls":["discord-sessions-green-prd-2-94",{"micros":96260,"calls":["start_session",{"micros":71374,"calls":["api-prd-main-v9df",{"micros":67818,"calls":["get_user",{"micros":6299},"add_authorized_ip",{"micros":5586},"get_guilds",{"micros":8250},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":405,"calls":[]}]}]}] (Session ID: 66243dfafa562a0e2de0629fdca02b84).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-s6fh",{"micros":66571,"calls":["discord-sessions-green-prd-2-43",{"micros":65718,"calls":["start_session",{"micros":30875,"calls":["api-prd-main-01sc",{"micros":27945,"calls":["get_user",{"micros":2721},"add_authorized_ip",{"micros":1567},"get_guilds",{"micros":4078},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":25,"calls":[]},"presence_connect",{"micros":27518,"calls":[]}]}]}] (Session ID: e52182a2d5290d8b2bdef149dec5f5a6).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-xmx0",{"micros":67028,"calls":["discord-sessions-green-prd-2-172",{"micros":66214,"calls":["start_session",{"micros":40279,"calls":["api-prd-main-9290",{"micros":33572,"calls":["get_user",{"micros":3573},"add_authorized_ip",{"micros":1523},"get_guilds",{"micros":7257},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: a7ae6f0fa9ecb0903605d54f5a6e359c).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-8hsl",{"micros":41781,"calls":["discord-sessions-green-prd-2-123",{"micros":40324,"calls":["start_session",{"micros":27368,"calls":["api-prd-main-ff7r",{"micros":23466,"calls":["get_user",{"micros":3351},"add_authorized_ip",{"micros":1417},"get_guilds",{"micros":2994},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":8938,"calls":[]}]}]}] (Session ID: 2186f22b0fa35dda0a032d3623323e00).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-w5jn",{"micros":104935,"calls":["discord-sessions-green-prd-2-147",{"micros":104009,"calls":["start_session",{"micros":74022,"calls":["api-prd-main-4v5n",{"micros":69888,"calls":["get_user",{"micros":7221},"add_authorized_ip",{"micros":1393},"get_guilds",{"micros":5168},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":8528,"calls":[]}]}]}] (Session ID: c084cbfb696fa7e9ad939ee266b99e2b).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------

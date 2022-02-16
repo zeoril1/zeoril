@@ -75,7 +75,7 @@ async def on_member_remove(member):
 async def on_voice_state_update(member, before, after):
     if member.id != 672119705212944385:
         return_song = play_song(member.id)
-        if return_song[0] > 0 and before.channel != after.channel and after.channel is not None:
+        if return_song != None and before.channel != after.channel and after.channel is not None:
             voice = discord.utils.get(client.voice_clients, guild=member.guild)
             try:
                 if not voice is None:  # test if voice is None
@@ -193,8 +193,7 @@ def play_song(id_song):
     cur.execute(sql)
     song = cur.fetchall()
     time_sleep = 0
-    if song != None:
-        print(str(id_song)+' '+str(song))
+    if song[0][0] != None:
         file = MP3('music/'+song[0][0])
         time_sleep = file.info.length + 0.2
         return time_sleep, 'music/'+song[0][0]
@@ -265,24 +264,6 @@ def build_message(vendor_id):
 
     return emb
 
-def reg_users(message):
-    global users
-    x=0
-    id = message.author
-    for member in users:
-        if member[0] == id.id:
-            x=1
-            break
-    if x==0:
-        values = {'ID': id.id, 'Name': id.name, 'Song': 'None'}
-        cur.execute("INSERT INTO Users (ID,Name_discord,Song) VALUES (:ID, :Name, :Song);",values)
-        conn.commit()
-        update_member()
-        text = 'Пользователь '+ id.name+ ' зарегистрирован'
-    else:
-        text = 'Пользователь '+ id.name+ ' уже зарегистрирован'
-    return text
-
 def map_random():
     global maps
     rand = random.randint(0,19)
@@ -322,13 +303,6 @@ def update_member():
                 conn.commit()
                 print(str(member[0][0])+' '+str(user[0]))
 
-def get_users():
-    global users
-    cur.execute("SELECT * FROM Users;")
-    users = cur.fetchall()
-    print(users)
-
-get_users()
 config()
 client.run(DISCORD_BOT_TOKEN)
 
