@@ -4,14 +4,20 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="счетчик сообщений">
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Правка проигрывания музыки">
       <change afterPath="$PROJECT_DIR$/info.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/Vendors/Vendors_ids.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/Vendors/Vendors_name.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/discord.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/resources/discord.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Thread_update_chache.py" beforeDir="false" afterPath="$PROJECT_DIR$/Thread_update_chache.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/Vendors/672118013.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/672118013.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/Vendors/config_vendors.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/Vendors/config_vendors.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/logs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/logs.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/manifest.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/members.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/members.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/token.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/token.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vendor.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +66,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="JSON" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/info.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Thread_update_chache.py" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -76,7 +82,7 @@
       <recent name="C:\Users\zeoril\PycharmProjects\zeoril\static\css" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.DiscordBot">
+  <component name="RunManager" selected="Python.Theards">
     <configuration name="DiscordBot" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="zeoril" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -126,9 +132,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\zeoril\PycharmProjects\zeoril\venv\Scripts\python.exe" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Thread_update_chache.py" />
@@ -176,13 +182,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00081" summary="Fix hot chache">
-      <created>1627393083278</created>
-      <option name="number" value="00081" />
-      <option name="presentableId" value="LOCAL-00081" />
-      <option name="project" value="LOCAL" />
-      <updated>1627393083278</updated>
     </task>
     <task id="LOCAL-00082" summary="Fix hot chache">
       <created>1627393330904</created>
@@ -520,7 +519,14 @@
       <option name="project" value="LOCAL" />
       <updated>1645008143875</updated>
     </task>
-    <option name="localTasksCounter" value="130" />
+    <task id="LOCAL-00130" summary="Правка проигрывания музыки">
+      <created>1645025440059</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1645025440060</updated>
+    </task>
+    <option name="localTasksCounter" value="131" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -535,7 +541,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add auto posting xur" />
     <MESSAGE value="Online resourses mew branch" />
     <MESSAGE value="Online exotic" />
     <MESSAGE value="Fix" />
@@ -560,6 +565,7 @@
     <MESSAGE value="Бот, ливнувшие" />
     <MESSAGE value="вебхук, счетчик сообщений" />
     <MESSAGE value="счетчик сообщений" />
-    <option name="LAST_COMMIT_MESSAGE" value="счетчик сообщений" />
+    <MESSAGE value="Правка проигрывания музыки" />
+    <option name="LAST_COMMIT_MESSAGE" value="Правка проигрывания музыки" />
   </component>
 </project>
