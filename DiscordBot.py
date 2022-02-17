@@ -305,7 +305,7 @@ def update_member():
                 print(str(member[0][0])+' '+str(user[0]))
 
 def stats_message(member):
-    cur.execute("Select count(*) from Users WHERE ID = "+str(member.author.id))
+    cur.execute("Select count(*) from Users WHERE ID_user = "+str(member.author.id))
     members = cur.fetchall()
     emb = discord.Embed()
     if members:
