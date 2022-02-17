@@ -151,6 +151,7 @@ def register():
 def users():
     rights = user_rights(request.cookies.get('Id'))
     right = False
+    test = 0
     if rights != False:
         for le in rights:
             if ('Admin' in le) == True:
@@ -160,25 +161,33 @@ def users():
         if request.form.get('right') == 'right':
             where = ' Users u INNER JOIN Users_rights ur ON u.ID = ur.ID_user INNER JOIN Rights r on ur.ID_right = r.ID WHERE u.ID = '+request.form['ID']
             users = get_info(where)
+            if users == False:
+                where = ' Users WHERE ID = ' + request.form['ID']
+                users = get_info(where)
+                test = 1
             where = ' Rights'
             rights = get_info(where)
+            print(users)
             html = '<p><label for="user">Пользователь: </label> '+str(users[0][1])+'</p>' \
                    '<table class="table table-dark table-striped p-2 mb-2 mt-2"><thead>' \
                    '<tr><th scope="col">#</th><th scope="col">Название права</th><th scope="col">Управление</th></thead><tbody>' \
                    '<form action="/users" method="post"><input type="hidden" name="ID" value="'+str(users[0][0])+'">'
             y=1
-            for ln in rights:
+            for ln in rights :
                 html += '<tr><th scope="row">'+str(y)+'</th>' \
                         '<td>'+str(ln[2])+'</td>'
                 i=0
                 j =len(users)
-                for lr in users:
-                    i=i+1
-                    if lr[10] == ln[0]:
-                        html += '<td><input type="checkbox" id="'+ln[0]+'" name="'+ln[0]+'" checked></td>'
-                        break
-                    elif i == j:
-                        html += '<td><input type="checkbox" id="'+ln[0]+'" name="'+ln[0]+'"></td>'
+                if test == 0:
+                    for lr in users:
+                        i=i+1
+                        if lr[10] == ln[0]:
+                            html += '<td><input type="checkbox" id="'+ln[0]+'" name="'+ln[0]+'" checked></td>'
+                            break
+                        elif i == j:
+                            html += '<td><input type="checkbox" id="'+ln[0]+'" name="'+ln[0]+'"></td>'
+                else:
+                    html += '<td><input type="checkbox" id="' + ln[0] + '" name="' + ln[0] + '"></td>'
                 y = y + 1
             html += '<button type="submit" name="new_rights" class="btn mb-1 mt-1 btn-warning" value="save">Сохранить изменения</button></form></table>'
             html = flask.Markup(html)
@@ -191,11 +200,12 @@ def users():
             for x in rights_new:
                 i = 0
                 if x[0] != "new_rights" and x[0] != "ID":
-                    for y in rights:
-                        if y[1] == x[0]:
-                            i = 1
-                            rights.remove(y)
-                if i == 0:
+                    if rights == True:
+                        for y in rights:
+                            if y[1] == x[0]:
+                                i = 1
+                                rights.remove(y)
+                if i == 0 and x[0] != "new_rights" and x[0] != "ID":
                     sql = "INSERT INTO Users_rights (ID_right,ID_user) VALUES ('"+ x[0] +"', "+ID+")"
                     cur.execute(sql)
                     conn.commit()
