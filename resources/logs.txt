@@ -1970,3 +1970,151 @@ INFO:discord.client:Cleaning up tasks.
 INFO:discord.client:Cleaning up after 1 tasks.
 INFO:discord.client:All tasks finished cancelling.
 INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:root:Connecting to Bungie: https://www.bungie.net
+INFO:root:Fetching data for: Xur's Inventory!
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-mn84",{"micros":62348,"calls":["discord-sessions-blue-prd-2-131",{"micros":61189,"calls":["start_session",{"micros":54450,"calls":["api-prd-main-p1xn",{"micros":51257,"calls":["get_user",{"micros":5735},"add_authorized_ip",{"micros":3842},"get_guilds",{"micros":8697},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":2,"calls":[]}]}]}] (Session ID: 1b7d58aa17bde5243be39433672d36f3).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-1nq9",{"micros":76686,"calls":["discord-sessions-blue-prd-2-33",{"micros":75676,"calls":["start_session",{"micros":39876,"calls":["discord-api-6b968698d8-7znsm",{"micros":33190,"calls":["get_user",{"micros":3708},"add_authorized_ip",{"micros":2024},"get_guilds",{"micros":4505},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: 773fa98fa35377f54b3fa14bbe53a015).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:root:[command]: xur 
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-nrpr",{"micros":91198,"calls":["discord-sessions-blue-prd-2-164",{"micros":86270,"calls":["start_session",{"micros":31778,"calls":["api-prd-main-xlzz",{"micros":28479,"calls":["get_user",{"micros":3615},"add_authorized_ip",{"micros":1373},"get_guilds",{"micros":3431},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: d1243209c323bc18ba49620f9178230d).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-9r13",{"micros":67504,"calls":["discord-sessions-blue-prd-2-36",{"micros":66199,"calls":["start_session",{"micros":31452,"calls":["api-prd-main-gljr",{"micros":27054,"calls":["get_user",{"micros":3407},"add_authorized_ip",{"micros":2419},"get_guilds",{"micros":3668},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":27488,"calls":[]}]}]}] (Session ID: bd54c7bc0bff12787c3dfff7090c62b5).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-5ztz",{"micros":72240,"calls":["discord-sessions-blue-prd-2-142",{"micros":70977,"calls":["start_session",{"micros":57138,"calls":["api-prd-main-6k39",{"micros":53035,"calls":["get_user",{"micros":9092},"add_authorized_ip",{"micros":3177},"get_guilds",{"micros":6166},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":8555,"calls":[]}]}]}] (Session ID: f897bda22b61d51aebe565704d12ff06).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-fwlz",{"micros":119099,"calls":["discord-sessions-blue-prd-2-165",{"micros":113788,"calls":["start_session",{"micros":99920,"calls":["api-prd-main-pdbv",{"micros":89773,"calls":["get_user",{"micros":11766},"add_authorized_ip",{"micros":4460},"get_guilds",{"micros":24364},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":4355,"calls":[]}]}]}] (Session ID: 3fa55dbe03465024a1ec726508f5fbc1).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-58gq",{"micros":99858,"calls":["discord-sessions-blue-prd-2-51",{"micros":98486,"calls":["start_session",{"micros":34470,"calls":["api-prd-main-qxxp",{"micros":29904,"calls":["get_user",{"micros":3326},"add_authorized_ip",{"micros":1344},"get_guilds",{"micros":7119},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":24660,"calls":[]}]}]}] (Session ID: d272c3fec6c2a614c78060a89bc4e60f).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-7052",{"micros":94262,"calls":["discord-sessions-blue-prd-2-68",{"micros":92890,"calls":["start_session",{"micros":64858,"calls":["api-prd-main-qxxp",{"micros":60139,"calls":["get_user",{"micros":6399},"add_authorized_ip",{"micros":3409},"get_guilds",{"micros":10995},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":3867,"calls":[]}]}]}] (Session ID: 92b3bc9333479f2238568e1b917ddc8d).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-7052",{"micros":112391,"calls":["discord-sessions-blue-prd-2-73",{"micros":108315,"calls":["start_session",{"micros":49713,"calls":["api-prd-main-0nwd",{"micros":44553,"calls":["get_user",{"micros":8550},"add_authorized_ip",{"micros":1589},"get_guilds",{"micros":5686},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":2,"calls":[]}]}]}] (Session ID: ffa0aa2653bcad7a230869725421f723).
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 3 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-9526",{"micros":44059,"calls":["discord-sessions-blue-prd-2-154",{"micros":41597,"calls":["start_session",{"micros":28237,"calls":["api-prd-main-rx1h",{"micros":24860,"calls":["get_user",{"micros":2425},"add_authorized_ip",{"micros":1206},"get_guilds",{"micros":3737},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":12344,"calls":[]}]}]}] (Session ID: ad8c1f4f42726f69e1f725002988384e).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-jbps",{"micros":87455,"calls":["discord-sessions-blue-prd-2-153",{"micros":86678,"calls":["start_session",{"micros":39013,"calls":["api-prd-main-kr3r",{"micros":33252,"calls":["get_user",{"micros":3190},"add_authorized_ip",{"micros":1513},"get_guilds",{"micros":3753},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":25563,"calls":[]}]}]}] (Session ID: c1fe90c993461627f1fca04f50146d1e).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.

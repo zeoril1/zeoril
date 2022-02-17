@@ -119,7 +119,7 @@ def get_token(code_token, type_get_token):
         f.write(refresh_token)
 
 def sch():
-    schedule.every().hours.do(hot_cache)
+    schedule.every().hours.do(start)
     while True:
         schedule.run_pending()
         time.sleep(10)
@@ -310,10 +310,18 @@ def get_vendors_ids():
     print(vandors_idname)
     vendors_ids.close()
 
-get_token(refresh_token, 'refresh_token')
-get_manifest()
-get_vendors()
-get_vendors_ids()
-hot_cache()
+def start():
+    print ('Старт')
+    get_token(refresh_token, 'refresh_token')
+    print('Токен')
+    get_manifest()
+    print('Манифест')
+    get_vendors()
+    print('Вендоры')
+    get_vendors_ids()
+    print('Id')
+    hot_cache()
+    print('Кеш')
+
 thread = threading.Thread(target=sch)
 thread.start()

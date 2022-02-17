@@ -29,20 +29,15 @@ client = discord.Client(intents=intents)
 
 conn = sqlite3.connect('resources/discord.sqlite3', check_same_thread=False)
 cur = conn.cursor()
-cur.execute("SELECT * FROM Configs WHERE ID=1;")
-configs = cur.fetchall()
 
-DISCORD_BOT_TOKEN = configs[0][1]
 Discord_webhook = "https://discord.com/api/webhooks/943063839015067690/OftJxg_MMHlgssbNvQCpaVL8YbpX5eVqAswVv8-MA317XgpSxincSeY-f_9iRB_E1Ro8"
-HEADERS = {"X-API-Key": str(configs[0][2])}
-base_url = configs[0][3]
-xur_url = configs[0][4]
+cur.execute("SELECT value FROM Configs WHERE Name='DISCORD_BOT_TOKEN';")
+DISCORD_BOT_TOKEN = cur.fetchall()[0][0]
+cur.execute("SELECT value FROM Configs WHERE Name='HEADERS';")
+HEADERS = {"X-API-Key": str(cur.fetchall()[0][0])}
+cur.execute("SELECT value FROM Configs WHERE Name='base_url';")
+base_url = cur.fetchall()[0][0]
 
-# Send the request and store the result in res:
-logging.info("Connecting to Bungie: " + base_url)
-logging.info("Fetching data for: Xur's Inventory!")
-res = requests.get(xur_url, headers=HEADERS)
-# Print the error status:
 
 maps = ['Алтарь пламени', 'Аномалия', 'Павшее знамя', 'Пепелище', 'Котёл', 'Конвергенция', 'Мёртвые скалы', 'Далёкие берега',
 'Бесконечная долина', 'Синий исход', 'Крепость', 'Фрагмент', 'Джавелин - 4', 'Центр города', 'Пассифика', 'Сияющие скалы',
@@ -128,9 +123,18 @@ async def on_message(message):
 
     if message.content.startswith('!xur'):
         logging.info('[command]: xur ')
-        with open('resources/Vendors/XUR_result.png', 'rb') as f:
-            picture = discord.File(f)
-        await message.channel.send(file=picture)
+        day = datetime.datetime.today().weekday()
+        hour = datetime.datetime.now().hour
+        if (day != 2 or day != 3):
+            if (day == 1 and hour < 17) or (day == 4 and hour > 17) or day == 5 or day == 6 or day == 7:
+                with open('resources/Vendors/XUR_result.png', 'rb') as f:
+                    picture = discord.File(f)
+                await message.channel.send(file=picture)
+            else:
+                await message.channel.send('Зура нет')
+        else:
+            await message.channel.send('Зура нет')
+
 
     if message.content.startswith('!stats'):
         logging.info('[command]: stats ')
