@@ -132,6 +132,11 @@ async def on_message(message):
             picture = discord.File(f)
         await message.channel.send(file=picture)
 
+    if message.content.startswith('!stats'):
+        logging.info('[command]: stats ')
+        emb = stats_message(message)
+        await message.channel.send(embed=emb)
+
     if message.content.startswith('!roll'):
         logging.info('[command]: roll ')
         chellenge_value = chellenge_roll()
@@ -298,6 +303,17 @@ def update_member():
                 cur.execute("UPDATE Users SET Last_login=:Last_login, Name_game=:Name_game WHERE ID = "+str(member[0][0]), values)
                 conn.commit()
                 print(str(member[0][0])+' '+str(user[0]))
+
+def stats_message(member):
+    cur.execute("Select count(*) from Users WHERE ID = "+str(member.author.id))
+    members = cur.fetchall()
+    emb = discord.Embed()
+    if members:
+        emb.add_field(name=str(member.author),value='Вы написали: '+str(members[0][0])+' сообщений\n--------------------', inline=True)
+        return emb
+    else:
+        emb.add_field(name=str(member.author), value='Вы написали: 0 сообщений\n--------------------', inline=True)
+        return emb
 
 config()
 client.run(DISCORD_BOT_TOKEN)
