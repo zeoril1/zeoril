@@ -3,6 +3,7 @@ import requests
 import threading
 import datetime
 import discord
+import re
 import sqlite3
 import time
 import json, os
@@ -115,6 +116,7 @@ def get_token(code_token, type_get_token):
     token = token.split(',')
     token = token[0]
     token = 'Bearer ' + token
+    print(token)
     with open('resources/token.txt', 'w', encoding="utf8") as f:
         f.write(refresh_token)
 
@@ -276,7 +278,6 @@ def get_vender_info(vendor_id):
 
 def get_manifest():
     url = 'https://www.bungie.net/Platform/Destiny2/Manifest/'
-    print (token)
     manifest = requests.get(
         url,
         headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
@@ -310,6 +311,86 @@ def get_vendors_ids():
     print(vandors_idname)
     vendors_ids.close()
 
+def get_activitys():
+    url = 'https://www.bungie.net/Platform/Destiny2/Milestones/'
+    activitys = requests.get(
+        url,
+        headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
+    m = open("resources/activitys.json", "w", encoding="utf8")
+    m.write(activitys.text)  # записываем содержимое в файл; как видите - content запроса
+    m.close()
+
+def get_activitys_2():
+    url = 'https://www.bungie.net/Platform/Destiny2/3/Profile/4611686018496871111/Character/2305843009565724374/?components=204'
+    activitys = requests.get(
+        url,
+        headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
+    m = open("resources/activitys_2.json", "w", encoding="utf8")
+    m.write(activitys.text)  # записываем содержимое в файл; как видите - content запроса
+    m.close()
+
+def get_activitys_manifest():
+    with open("resources/manifest.json", "r", encoding="utf8") as activitys_manifest:
+        activitys_manifest = json.load(activitys_manifest)
+    activitys_manifest_url = activitys_manifest['Response']['jsonWorldComponentContentPaths']['ru']['DestinyActivityDefinition']
+    url = 'https://www.bungie.net'+activitys_manifest_url
+    activitys_manifest = requests.get(
+        url,
+        headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
+    m = open("resources/activitys_manifest.json", "w", encoding="utf8")
+    m.write(activitys_manifest.text)  # записываем содержимое в файл; как видите - content запроса
+    m.close()
+
+
+def activitys():
+    with open("resources/activitys.json", "r", encoding="utf8") as activitys:
+        activitys = json.load(activitys)
+    with open("resources/activitys_manifest.json", "r", encoding="utf8") as activitys_manifest:
+        activitys_manifest = json.load(activitys_manifest)
+    for activity in activitys['Response']:
+        url = 'https://www.bungie.net/Platform/Destiny2/Milestones/' + activity + '/content'
+        activities = requests.get(
+            url,
+            headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
+        print (activities.text)
+        print(activity)
+        if activitys['Response'][activity].get('activities'):
+            id = activitys['Response'][activity]['activities'][0]['activityHash']
+            print (id)
+
+def activitys_2():
+    x=0
+    with open("resources/activitys_2.json", "r", encoding="utf8") as activitys:
+        activitys = json.load(activitys)
+    with open("resources/activitys_manifest.json", "r", encoding="utf8") as activitys_manifest:
+        activitys_manifest = json.load(activitys_manifest)
+    print (activitys['Response']['activities']['data']['availableActivities'])
+    for activity in activitys['Response']['activities']['data']['availableActivities']:
+        id = activity['activityHash']
+        pr = activitys_manifest[str(id)]
+        #pr = activitys_manifest[]
+        name = pr['displayProperties']['name']
+        print (name + ' ' + str(id))
+        if name == 'Сумрачный налет: Грандмастер': # Сумрачный налет
+            print(id)
+            print (pr)
+        elif name == 'Полое логово' or name == r'Управление инерцией': # ПВП
+            print (pr['displayProperties']['description']+ '       '+pr['displayProperties']['name'])
+            print('------------------')
+        elif re.match(r'Имперская охота:', name) and x == 0: # Имперская охота
+            x=1
+            print (pr['displayProperties']['description']+ '       '+pr['displayProperties']['name'])
+            print('------------------')
+        elif re.match(r'Симуляция:', name):
+            print (pr['displayProperties']['description']+ '       '+pr['displayProperties']['name'])
+            print('------------------')
+        elif  re.match(r'Хрустальный чертог', name):
+            print (pr['displayProperties']['description']+ '       '+pr['displayProperties']['name'])
+            print('------------------')
+        else:
+            print (pr['displayProperties']['description']+ '       '+pr['displayProperties']['name'])
+            print('------------------')
+
 def start():
     print ('Старт')
     get_token(refresh_token, 'refresh_token')
@@ -323,5 +404,24 @@ def start():
     hot_cache()
     print('Кеш')
 
-thread = threading.Thread(target=sch)
-thread.start()
+def test():
+    with open("resources/manifest.json", "r", encoding="utf8") as activitys_manifest:
+        activitys_manifest = json.load(activitys_manifest)
+    activitys_manifest_url = activitys_manifest['Response']['jsonWorldComponentContentPaths']['ru'][
+        'DestinyInventoryItemDefinition']
+    url = 'https://www.bungie.net' + activitys_manifest_url
+    activitys_manifest = requests.get(
+        url,
+        headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
+    m = open("resources/items_full.json", "w", encoding="utf8")
+    m.write(activitys_manifest.text)  # записываем содержимое в файл; как видите - content запроса
+    m.close()
+
+get_token(refresh_token, 'refresh_token')
+get_manifest()
+get_activitys_2()
+get_activitys_manifest()
+activitys_2()
+test()
+#thread = threading.Thread(target=sch)
+#thread.start()
