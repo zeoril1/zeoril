@@ -235,46 +235,7 @@ def get_vender_info(vendor_id):
     r = requests.get(
         url,
         headers={'X-API-Key': 'b55da1ccd2534f28b913020fe9a91001', 'Authorization': token})
-    vendor_save = open("resources/Vendors/vendor.json", "w", encoding="utf8")
-    vendor_save.write(r.text)  # записываем содержимое в файл; как видите - content запроса
-    vendor_save.close()
-    with open("resources/Vendors/vendor.json", "r", encoding="utf8") as vendor_data:
-        vendor = json.load(vendor_data)
-    cat_vendor = vendor['Response']['categories']['data']['categories']
-    vendor = vendor['Response']['sales']['data']
-    if 'Паук' == str(vendor_id[1]):
-        cat_index = 4
-    elif 'Банши-44' == str(vendor_id[1]):
-        cat_index = 8
-    elif 'Зур' == str(vendor_id[1]):
-        cat_index = 0
-    elif 'Ада-1' == str(vendor_id[1]):
-        cat_index = 2
-    for cat_id in cat_vendor:
-        if int(cat_id['displayCategoryIndex']) == cat_index:
-            for item_index in cat_id['itemIndexes']:
-                items_buy_cost = []
-                item = vendor[str(item_index)]
-                for cost_items in item['costs']:
-                    items_buy_cost.append([cost_items['itemHash'],cost_items['quantity']])
-                info_items = get_item_info(item['itemHash'], item['quantity'], items_buy_cost, vendor_id)
-                if int(str(info_items[0]).find("Купить ")) != -1:
-                    re = info_items[0]
-                    re = re.replace("Купить ", "")
-                    for name in name_items:
-                        if name[0] == re:
-                            re = name[1]
-                else:
-                    re = info_items[0]
-                vendor_items.append([re, info_items[1], info_items[2]])
-            break
-    if 'Зур' != str(vendor_id[1]):
-        #emb = build_message(vendor_id)
-        print(vendor_items)
-        return vendor_items
-    else:
-        xur_img(vendor_items)
-        print('XUR')
+    return r
 
 def get_manifest():
     url = 'https://www.bungie.net/Platform/Destiny2/Manifest/'
@@ -304,11 +265,13 @@ def get_vendors_ids():
         vendors_names = f.read().splitlines()
     vendors_ids = open("resources/Vendors/Vendors_ids.txt", "w", encoding="utf8")
     for vendor in vendors:
-        for vendor_name in vendors_names:
-            if vendors[vendor]['displayProperties']['name'] == vendor_name and vendors[vendor]['vendorProgressionType'] == 0 and vendors[vendor]['enabled'] !=False:
-                vandors_idname.append([vendor,vendor_name])
-                vendors_ids.write(vendor+'\n')
-    print(vandors_idname)
+        if vendors[vendor]['enabled'] == True and vendors[vendor]['displayProperties']['name'] == 'Банши-44':
+            print(vendor)
+        #for vendor_name in vendors_names:
+            #if vendors[vendor]['displayProperties']['name'] == vendor_name and vendors[vendor]['vendorProgressionType'] == 0 and vendors[vendor]['enabled'] !=False:
+                #print(vendors[vendor])
+                #vandors_idname.append([vendor,vendor_name])
+                #vendors_ids.write(vendor+'\n')
     vendors_ids.close()
 
 def get_activitys():
@@ -419,9 +382,10 @@ def test():
 
 get_token(refresh_token, 'refresh_token')
 get_manifest()
-get_activitys_2()
-get_activitys_manifest()
-activitys_2()
-test()
+get_vendors_ids()
+#get_activitys_2()
+#get_activitys_manifest()
+#activitys_2()
+#test()
 #thread = threading.Thread(target=sch)
 #thread.start()
