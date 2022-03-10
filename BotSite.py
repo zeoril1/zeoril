@@ -136,7 +136,9 @@ def register():
         if User[0][3] == None:
             password = hashlib.md5(request.form.get('password').encode('utf-8')).hexdigest()
             values = {'ID': request.form.get('ID'), 'Password': password, 'Login': request.form.get('Login')}
-            cur.execute("UPDATE Users SET Password=:Password, Login=:Login WHERE ID=:ID;", values)
+            sql = "UPDATE Users SET Password=:Password, Login=:Login WHERE ID=:ID;", values
+            print (sql)
+            cur.execute(sql)
             conn.commit()
             message = 'Регистрация прошла успешно'
             return render_template('register.html', message = message)
