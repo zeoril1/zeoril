@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import discord
-from discord.commands import Option
 from discord import FFmpegPCMAudio
 from PIL import Image, ImageDraw, ImageFont
 import logging
