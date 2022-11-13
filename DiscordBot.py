@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 import discord
-from discord.commands import Option
 from discord import FFmpegPCMAudio
 from PIL import Image, ImageDraw, ImageFont
 import logging
@@ -22,8 +20,13 @@ users = []
 vendor_emoji = []
 members_destiny =[]
 
-bot = discord.Bot()
-math = bot.create_group("math", "Commands related to mathematics.")  # create a slash command group
+intents = discord.Intents.default()
+intents.members = True
+intents.messages = True
+
+bot = discord.Client(intents=intents)
+
+'''math = bot.create_group("math", "Commands related to mathematics.")  # create a slash command group'''
 
 conn = sqlite3.connect('resources/discord.sqlite3', check_same_thread=False)
 cur = conn.cursor()
@@ -47,7 +50,7 @@ async def slow_func(channel, send=None, delay=1):
         send = channel.send
     await send('some text')
 
-@bot.slash_command(name="atc", guild_ids=[394939677590945804])
+'''@bot.slash_command(name="atc", guild_ids=[394939677590945804])
 async def atc(ctx, delay:int=1):
     await ctx.defer()
     await slow_func(ctx.channel, send=ctx.followup.send, delay=delay)
@@ -144,13 +147,13 @@ async def get_vendors(ctx: discord.AutocompleteContext):
 
 @property
 def respond(self):
-    return self.interaction.response.send_message
+    return self.interaction.response.send_message'''
 
 @bot.event
 async def on_ready():
     print(f"We have logged in as {bot.user}")
 
-@bot.slash_command(guild_ids=[394939677590945804,294888360600666112], name=f"map", description=f"Заролить карту")
+'''@bot.slash_command(guild_ids=[394939677590945804,294888360600666112], name=f"map", description=f"Заролить карту")
 async def map(ctx):
     map = map_random()
     await ctx.respond(map)
@@ -171,7 +174,7 @@ async def venders(ctx: discord.ApplicationContext,vender: Option(str, "Выбе�
     cur.execute("Select ID,Name from Vendors WHERE Name ='"+str(vender)+"'")
     x = cur.fetchall()[0]
     await ctx.defer()
-    await build_vendors(x,ctx, delay=10)
+    await build_vendors(x,ctx, delay=10)'''
 
 
 @bot.event
@@ -181,7 +184,7 @@ async def on_voice_state_update(member, before, after):
         if return_song != None and before.channel != after.channel and after.channel is not None:
             voice = discord.utils.get(bot.voice_clients, guild=member.guild)
             try:
-                if not voice is None:  # test if voice is None
+                if voice != None:  # test if voice is None
                     if not voice.is_connected():
                         music = await discord.VoiceChannel.connect(member.voice.channel)
                         music.play(FFmpegPCMAudio(return_song[1]))
@@ -197,7 +200,7 @@ async def on_voice_state_update(member, before, after):
                     await music.disconnect()
                 print('Ошибка')
 
-@bot.event
+'''@bot.event
 async def on_member_join(member):
     values = {'Name': member.display_name, 'ID': member.id}
     cur.execute("Select * from Users where Name_discord=:Name OR ID=:ID", values)
@@ -211,7 +214,7 @@ async def on_member_remove(member):
     async with aiohttp.ClientSession() as session:
         webhook = discord.Webhook.from_url(Discord_webhook, adapter=discord.AsyncWebhookAdapter(session))
         Text = member.display_name+' покинул нас, Милорд'
-        await webhook.send(Text)
+        await webhook.send(Text)'''
 
 def play_song(id_song):
     sql = "SELECT Song FROM Users WHERE ID=" + str(id_song)
@@ -224,7 +227,7 @@ def play_song(id_song):
             time_sleep = file.info.length + 0.2
             return time_sleep, 'music/'+song[0][0]
 
-def map_random():
+'''def map_random():
     global maps
     rand = random.randint(0,19)
     return maps[rand]
@@ -238,7 +241,7 @@ def stats_message(member):
         return emb
     else:
         emb.add_field(name=str(member.author), value='Вы написали: 0 сообщений\n--------------------', inline=True)
-        return emb
+        return emb'''
 
 def start():
     bot.run(DISCORD_BOT_TOKEN)

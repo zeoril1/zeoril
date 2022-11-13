@@ -5622,3 +5622,85 @@ INFO:discord.client:Cleaning up tasks.
 INFO:discord.client:Cleaning up after 1 tasks.
 INFO:discord.client:All tasks finished cancelling.
 INFO:discord.client:Closing the event loop.
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-main-wgk4",{"micros":123422,"calls":["discord-sessions-blue-prd-2-140",{"micros":122171,"calls":["start_session",{"micros":102659,"calls":["discord-api-7fbf95f445-xt2q5",{"micros":99348,"calls":["get_user",{"micros":9655},"add_authorized_ip",{"micros":1418},"get_guilds",{"micros":64604},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: 25e863d9ecc5adb74d717aac1ef8f845).
+INFO:discord.client:Received signal to terminate bot and event loop.
+INFO:discord.client:Cleaning up tasks.
+INFO:discord.client:Cleaning up after 1 tasks.
+INFO:discord.client:All tasks finished cancelling.
+INFO:discord.client:Closing the event loop.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-us-east1-d-rqf0",{"micros":157045,"calls":["id_created",{"micros":1414,"calls":[]},"session_lookup_time",{"micros":338,"calls":[]},"session_lookup_finished",{"micros":16,"calls":[]},"discord-sessions-blue-prd-2-3",{"micros":154201,"calls":["start_session",{"micros":110439,"calls":["discord-api-8557cddd79-n9xpb",{"micros":100143,"calls":["get_user",{"micros":37090},"get_guilds",{"micros":8914},"send_scheduled_deletion_message",{"micros":13},"guild_join_requests",{"micros":171},"authorized_ip_coro",{"micros":14}]}]},"starting_guild_connect",{"micros":64,"calls":[]},"presence_started",{"micros":261,"calls":[]},"guilds_started",{"micros":110,"calls":[]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":43298,"calls":[]},"connect_finished",{"micros":43303,"calls":[]},"build_ready",{"micros":20,"calls":[]},"optimize_ready",{"micros":1,"calls":[]},"split_ready",{"micros":0,"calls":[]},"clean_ready",{"micros":1,"calls":[]}]}]}] (Session ID: f0ed695488342982d9c896dfde266918).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-us-east1-c-d4zd",{"micros":171221,"calls":["id_created",{"micros":1737,"calls":[]},"session_lookup_time",{"micros":429,"calls":[]},"session_lookup_finished",{"micros":14,"calls":[]},"discord-sessions-blue-prd-2-17",{"micros":167791,"calls":["start_session",{"micros":102191,"calls":["discord-api-8557cddd79-6htnq",{"micros":97305,"calls":["get_user",{"micros":16033},"get_guilds",{"micros":24236},"send_scheduled_deletion_message",{"micros":12},"guild_join_requests",{"micros":3},"authorized_ip_coro",{"micros":8}]}]},"starting_guild_connect",{"micros":52,"calls":[]},"presence_started",{"micros":13861,"calls":[]},"guilds_started",{"micros":150,"calls":[]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":51506,"calls":[]},"connect_finished",{"micros":51512,"calls":[]},"build_ready",{"micros":22,"calls":[]},"optimize_ready",{"micros":1,"calls":[]},"split_ready",{"micros":0,"calls":[]},"clean_ready",{"micros":1,"calls":[]}]}]}] (Session ID: 8acdfacb3b42c8333946f3430e4bbc7b).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-us-east1-c-q879",{"micros":137399,"calls":["id_created",{"micros":1616,"calls":[]},"session_lookup_time",{"micros":375,"calls":[]},"session_lookup_finished",{"micros":12,"calls":[]},"discord-sessions-blue-prd-2-161",{"micros":134327,"calls":["start_session",{"micros":67445,"calls":["discord-api-8557cddd79-d2d89",{"micros":61425,"calls":["get_user",{"micros":13444},"get_guilds",{"micros":3904},"send_scheduled_deletion_message",{"micros":11},"guild_join_requests",{"micros":473},"authorized_ip_coro",{"micros":17}]}]},"starting_guild_connect",{"micros":75,"calls":[]},"presence_started",{"micros":342,"calls":[]},"guilds_started",{"micros":124,"calls":[]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":66300,"calls":[]},"connect_finished",{"micros":66305,"calls":[]},"build_ready",{"micros":32,"calls":[]},"optimize_ready",{"micros":1,"calls":[]},"split_ready",{"micros":1,"calls":[]},"clean_ready",{"micros":1,"calls":[]}]}]}] (Session ID: 82aa54ad53d69e979e46e67f8a23fa70).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has sent the IDENTIFY payload.
+INFO:discord.gateway:Shard ID None has connected to Gateway: ["gateway-prd-us-east1-d-4417",{"micros":135729,"calls":["id_created",{"micros":1753,"calls":[]},"session_lookup_time",{"micros":334,"calls":[]},"session_lookup_finished",{"micros":15,"calls":[]},"discord-sessions-blue-prd-2-138",{"micros":133090,"calls":["start_session",{"micros":83932,"calls":["discord-api-8557cddd79-jscfs",{"micros":79518,"calls":["get_user",{"micros":20179},"get_guilds",{"micros":11355},"send_scheduled_deletion_message",{"micros":7},"guild_join_requests",{"micros":1},"authorized_ip_coro",{"micros":7}]}]},"starting_guild_connect",{"micros":50,"calls":[]},"presence_started",{"micros":326,"calls":[]},"guilds_started",{"micros":148,"calls":[]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":48602,"calls":[]},"connect_finished",{"micros":48607,"calls":[]},"build_ready",{"micros":23,"calls":[]},"optimize_ready",{"micros":0,"calls":[]},"split_ready",{"micros":2,"calls":[]},"clean_ready",{"micros":0,"calls":[]}]}]}] (Session ID: 73d58b2d1c2c4b9c1a0fa4a03e2b07ab).
+INFO:root:Logged in as
+INFO:root:Дестени
+INFO:root:672119705212944385
+INFO:root:------
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 81f395898fd03f042a804d6d31523158).
+ERROR:discord.client:Ignoring exception in on_voice_state_update
+Traceback (most recent call last):
+  File "C:\Users\zeoril1\PycharmProjects\zeoril\DiscordBot.py", line 194, in on_voice_state_update
+    music = await discord.VoiceChannel.connect(member.voice.channel)
+  File "C:\Users\zeoril1\PycharmProjects\zeoril\venv\lib\site-packages\discord\abc.py", line 1873, in connect
+    voice: T = cls(client, self)
+  File "C:\Users\zeoril1\PycharmProjects\zeoril\venv\lib\site-packages\discord\voice_client.py", line 238, in __init__
+    raise RuntimeError("PyNaCl library needed in order to use voice")
+RuntimeError: PyNaCl library needed in order to use voice
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\zeoril1\PycharmProjects\zeoril\venv\lib\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\zeoril1\PycharmProjects\zeoril\DiscordBot.py", line 199, in on_voice_state_update
+    if voice.is_connected():
+AttributeError: 'NoneType' object has no attribute 'is_connected'
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 486baf07a9fbb12a590af9a19e29b38b).
+INFO:discord.voice_client:Connecting to voice...
+INFO:discord.voice_client:Starting voice handshake... (connection attempt 1)
+INFO:discord.voice_client:Voice handshake complete. Endpoint found st-pete7130.discord.media
+ERROR:discord.client:Ignoring exception in on_voice_state_update
+Traceback (most recent call last):
+  File "C:\Users\zeoril1\PycharmProjects\zeoril\DiscordBot.py", line 195, in on_voice_state_update
+    music.play(FFmpegPCMAudio(return_song[1]))
+  File "C:\Users\zeoril1\PycharmProjects\zeoril\venv\lib\site-packages\discord\player.py", line 289, in __init__
+    super().__init__(source, executable=executable, args=args, **subprocess_kwargs)
+  File "C:\Users\zeoril1\PycharmProjects\zeoril\venv\lib\site-packages\discord\player.py", line 166, in __init__
+    self._process = self._spawn_process(args, **kwargs)
+  File "C:\Users\zeoril1\PycharmProjects\zeoril\venv\lib\site-packages\discord\player.py", line 183, in _spawn_process
+    raise ClientException(executable + ' was not found.') from None
+discord.errors.ClientException: ffmpeg was not found.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\zeoril1\PycharmProjects\zeoril\venv\lib\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\zeoril1\PycharmProjects\zeoril\DiscordBot.py", line 199, in on_voice_state_update
+    if voice.is_connected():
+AttributeError: 'NoneType' object has no attribute 'is_connected'
+INFO:discord.voice_client:The voice handshake is being terminated for Channel ID 683569184852279313 (Guild ID 394939677590945804)

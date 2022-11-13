@@ -4,15 +4,10 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Стата">
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Новая (старая) библиотека">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread_update_chache.py" beforeDir="false" afterPath="$PROJECT_DIR$/Thread_update_chache.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/discord.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/resources/discord.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/logs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/logs.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/token.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/token.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,10 +26,11 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="develop" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
@@ -61,12 +57,14 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="JSON" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Thread_update_chache.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\zeoril1\PycharmProjects\zeoril\resources\Vendors" />
+      <recent name="C:\Users\zeoril1\PycharmProjects\zeoril\resources" />
       <recent name="C:\Users\zeoril1\PycharmProjects\zeoril\static" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -153,7 +151,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/info.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bungieapi.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -164,9 +162,9 @@
     </configuration>
     <list>
       <item itemvalue="Python.DiscordBot" />
-      <item itemvalue="Python.info" />
       <item itemvalue="Python.Test" />
       <item itemvalue="Python.Theards" />
+      <item itemvalue="Python.info" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -177,34 +175,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00088" summary="Fix hot chache">
-      <created>1627468119472</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1627468119473</updated>
-    </task>
-    <task id="LOCAL-00089" summary="Fix hot chache">
-      <created>1627468636399</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1627468636399</updated>
-    </task>
-    <task id="LOCAL-00090" summary="Fix hot chache">
-      <created>1627468697106</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
-      <option name="project" value="LOCAL" />
-      <updated>1627468697106</updated>
-    </task>
-    <task id="LOCAL-00091" summary="Fix hot chache">
-      <created>1627675107543</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1627675107543</updated>
     </task>
     <task id="LOCAL-00092" summary="Fix hot chache">
       <created>1627675201713</created>
@@ -521,8 +491,47 @@
       <option name="project" value="LOCAL" />
       <updated>1645107856763</updated>
     </task>
-    <option name="localTasksCounter" value="137" />
+    <task id="LOCAL-00137" summary="Новая библиотека">
+      <created>1646061406727</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1646061406728</updated>
+    </task>
+    <task id="LOCAL-00138" summary="Новая библиотека">
+      <created>1646061698612</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1646061698612</updated>
+    </task>
+    <task id="LOCAL-00139" summary="Новая библиотека">
+      <created>1646907044116</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1646907044116</updated>
+    </task>
+    <task id="LOCAL-00140" summary="Новая (старая) библиотека">
+      <created>1648893854466</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1648893854467</updated>
+    </task>
+    <option name="localTasksCounter" value="141" />
     <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -536,8 +545,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix" />
-    <MESSAGE value="Update song Халик" />
     <MESSAGE value="fix xur" />
     <MESSAGE value="Add song veil" />
     <MESSAGE value="config song" />
@@ -561,6 +568,8 @@
     <MESSAGE value="Правка проигрывания музыки" />
     <MESSAGE value="Починка вендоров" />
     <MESSAGE value="Стата" />
-    <option name="LAST_COMMIT_MESSAGE" value="Стата" />
+    <MESSAGE value="Новая библиотека" />
+    <MESSAGE value="Новая (старая) библиотека" />
+    <option name="LAST_COMMIT_MESSAGE" value="Новая (старая) библиотека" />
   </component>
 </project>
