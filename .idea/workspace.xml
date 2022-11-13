@@ -4,7 +4,7 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="">
+    <list default="true" id="9ec9ba05-e9a0-4960-b670-fecf338c498c" name="Default Changelist" comment="Новая (старая) библиотека">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/logs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/resources/logs.txt" afterDir="false" />
@@ -30,6 +30,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
@@ -161,9 +162,9 @@
     </configuration>
     <list>
       <item itemvalue="Python.DiscordBot" />
-      <item itemvalue="Python.info" />
       <item itemvalue="Python.Test" />
       <item itemvalue="Python.Theards" />
+      <item itemvalue="Python.info" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -174,13 +175,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625594971676</updated>
-    </task>
-    <task id="LOCAL-00091" summary="Fix hot chache">
-      <created>1627675107543</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1627675107543</updated>
     </task>
     <task id="LOCAL-00092" summary="Fix hot chache">
       <created>1627675201713</created>
@@ -518,8 +512,26 @@
       <option name="project" value="LOCAL" />
       <updated>1646907044116</updated>
     </task>
-    <option name="localTasksCounter" value="140" />
+    <task id="LOCAL-00140" summary="Новая (старая) библиотека">
+      <created>1648893854466</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1648893854467</updated>
+    </task>
+    <option name="localTasksCounter" value="141" />
     <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -533,7 +545,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Update song Халик" />
     <MESSAGE value="fix xur" />
     <MESSAGE value="Add song veil" />
     <MESSAGE value="config song" />
@@ -558,6 +569,7 @@
     <MESSAGE value="Починка вендоров" />
     <MESSAGE value="Стата" />
     <MESSAGE value="Новая библиотека" />
-    <option name="LAST_COMMIT_MESSAGE" value="Новая библиотека" />
+    <MESSAGE value="Новая (старая) библиотека" />
+    <option name="LAST_COMMIT_MESSAGE" value="Новая (старая) библиотека" />
   </component>
 </project>
