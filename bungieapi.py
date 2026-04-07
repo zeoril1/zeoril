@@ -9,7 +9,7 @@ global token
 def update_token(code_token, type_get_token):
     global token
     token_url = 'https://www.bungie.net/Platform/App/OAuth/Token/'
-    autorization = "Basic MzcxNDg6Rlo4eDItdEFBZ2x4NjBXT1lPeUNBSXMyTTZHQ2ZHVVBMV1NDTVZrdVpBOA=="
+    autorization = ""
 
     with open('resources/cookies.txt', 'r', encoding="utf8") as f:
         cookies_bungie=f.read()
