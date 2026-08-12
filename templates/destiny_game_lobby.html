@@ -1,0 +1,690 @@
+{% extends 'base.html' %}
+
+{% block title %}Лобби — Рулетка челленджей{% endblock %}
+
+{% block content %}
+    <div id="gameRoot"
+         data-user-id="{{ user['id'] }}"
+         data-lobby-id="{{ lobby['id'] }}"
+         data-csrf="{{ csrf_token() }}">
+
+        <div class="page-head fade-up d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div>
+                <h1 class="page-title">Лобби: <span class="text-gradient" id="lobbyName">{{ lobby['name'] }}</span></h1>
+                <p class="page-sub mb-0">Создатель: <strong id="ownerName">{{ lobby['owner_name'] }}</strong> · игроки по очереди жмут «Мне повезёт»</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-secondary" id="copyInviteBtn">🔗 Копировать ссылку</button>
+                <button type="button" class="btn btn-outline-light" id="leaveBtn">Выйти</button>
+            </div>
+        </div>
+
+        {% if invite_url %}
+            <div class="alert alert-info fade-up small d-none d-lg-flex align-items-center gap-2 py-2 px-3"
+                 style="word-break: break-all;">
+                <span>Ссылка для друзей:</span><code>{{ invite_url }}</code>
+            </div>
+        {% endif %}
+
+        <div class="row g-4 mt-1">
+            <!-- Колонка: игроки и управление -->
+            <div class="col-lg-4">
+                <div class="glass-card p-4 fade-up fade-up-1">
+                    <h5 class="mb-3">👥 Игроки (<span id="playersCount">0</span>)</h5>
+                    <div id="playersList" class="game-players-list mb-4"></div>
+
+                    <div class="d-flex flex-column gap-2">
+                        <button type="button" class="btn btn-primary" id="shuffleBtn">
+                            🎲 Перемешать
+                        </button>
+                        <button type="button" class="btn btn-warning btn-lg" id="luckBtn" disabled>
+                            🍀 Мне повезёт
+                        </button>
+                        <button type="button" class="btn btn-info btn-lg" id="rerollBtn" disabled>
+                            🔄 Реролл
+                        </button>
+                        <div class="text-muted small text-center" id="statusText">Загрузка…</div>
+                    </div>
+                </div>
+
+                <!-- Запросы на реролл (только для владельца) -->
+                <div class="glass-card p-4 fade-up fade-up-2 mt-4" id="rerollPanel" style="display:none;">
+                    <h5 class="mb-3">🔄 Запросы на реролл</h5>
+                    <div id="rerollList" class="d-flex flex-column gap-2"></div>
+                </div>
+
+                <!-- История -->
+                <div class="glass-card p-4 fade-up fade-up-2 mt-4">
+                    <h5 class="mb-3">📜 История</h5>
+                    <div id="historyList" class="game-history-list"></div>
+                </div>
+            </div>
+
+            <!-- Колонка: колесо + таблица -->
+            <div class="col-lg-8">
+                <div class="glass-card p-4 fade-up fade-up-1 text-center">
+                    <h5 class="mb-4">🎰 Рулетка</h5>
+
+                    <div id="wheelWrap" class="game-wheel-wrap">
+                        <div class="game-wheel-arrow"></div>
+                        <div class="game-wheel" id="gameWheel"></div>
+                    </div>
+
+                    <div id="wheelResult" class="game-result d-none mt-4 text-start"></div>
+                    <div id="wheelEmpty" class="text-muted mt-4">
+                        Ждём, когда создатель перемешает игроков и начнётся очередь 🍀
+                    </div>
+                </div>
+
+                <!-- Итоги круга (большая таблица, как на /destiny/challenges) -->
+                <div class="glass-card p-4 fade-up fade-up-2 mt-4">
+                    <h5 class="mb-3">🏆 Итоги круга</h5>
+                    <div id="roundResultsWrap" class="table-responsive">
+                        <table class="table table-dark table-striped table-sm mb-0" id="roundResultsTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">#</th>
+                                    <th scope="col">Игрок</th>
+                                    <th scope="col">Оружие</th>
+                                    <th scope="col">Solo</th>
+                                    <th scope="col">Team</th>
+                                    <th scope="col">Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roundResultsBody">
+                                <tr><td colspan="6" class="text-muted text-center">Ещё никто не крутил</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      (function () {
+        'use strict';
+
+        const root = document.getElementById('gameRoot');
+        if (!root) return;
+
+        const ME = String(root.dataset.userId);
+        const LOBBY_ID = root.dataset.lobbyId;
+        const CSRF = root.dataset.csrf;
+
+        const SPIN_SECONDS = 6.0;          // должно совпадать с серверным ROLL_ANIMATION_SECONDS
+        const WHEEL_RADIUS = 138;          // радиус по которому едут иконки
+        const ICON_SIZE = 58;
+
+        let state = {
+          order: [],
+          current_user_id: null,
+          rolling: false,
+          current_roll: null,
+          history: [],
+          round_results: [],
+          round_done: false,
+          reroll: { pending: [], active: null },
+          owner_id: null,
+          name: '',
+          owner_name: '',
+        };
+
+        let spinTimer = null;
+        let finalRot = 0;
+
+
+        // -------------------------------------------------------------
+        // Элементы
+        // -------------------------------------------------------------
+        const lobbyNameEl = document.getElementById('lobbyName');
+        const ownerNameEl = document.getElementById('ownerName');
+        const playersList = document.getElementById('playersList');
+        const playersCount = document.getElementById('playersCount');
+        const historyList = document.getElementById('historyList');
+        const statusText = document.getElementById('statusText');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const luckBtn = document.getElementById('luckBtn');
+        const rerollBtn = document.getElementById('rerollBtn');
+        const rerollPanel = document.getElementById('rerollPanel');
+        const rerollList = document.getElementById('rerollList');
+        const leaveBtn = document.getElementById('leaveBtn');
+        const copyInviteBtn = document.getElementById('copyInviteBtn');
+        const wheel = document.getElementById('gameWheel');
+        const wheelResult = document.getElementById('wheelResult');
+        const wheelEmpty = document.getElementById('wheelEmpty');
+        const roundResultsBody = document.getElementById('roundResultsBody');
+
+
+        // -------------------------------------------------------------
+        // Запросы
+        // -------------------------------------------------------------
+        function post(url, body) {
+          return fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(Object.assign({ _csrf_token: CSRF }, body || {}))
+          }).then(r => r.json().then(d => ({ status: r.status, data: d })));
+        }
+
+        function toast(msg) {
+          statusText.textContent = msg;
+          statusText.classList.add('text-danger');
+          setTimeout(() => {
+            statusText.classList.remove('text-danger');
+            updateStatus();
+          }, 2500);
+        }
+
+        // -------------------------------------------------------------
+        // Отрисовка
+        // -------------------------------------------------------------
+        function renderPlayers() {
+          playersCount.textContent = state.order.length;
+          const isOwner = String(state.owner_id) === ME;
+
+          playersList.innerHTML = state.order.map((p, i) => {
+            const isMe = String(p.id) === ME;
+            const isCurrent = String(p.id) === String(state.current_user_id);
+            let cls = 'game-player-item';
+            if (isCurrent) cls += ' current';
+            if (isMe) cls += ' me';
+            return (
+              '<div class="' + cls + '">' +
+                '<span class="game-player-pos">' + (i + 1) + '</span>' +
+                '<span class="game-player-name">' + esc(p.name) + (isMe ? ' <small>(вы)</small>' : '') + '</span>' +
+                (isCurrent ? '<span class="game-player-turn">🍀 ход</span>' : '') +
+                (String(p.id) === String(state.owner_id) ? '<span class="badge-soft">👑</span>' : '') +
+              '</div>'
+            );
+          }).join('');
+
+          lobbyNameEl.textContent = state.name;
+          ownerNameEl.textContent = state.owner_name;
+
+          const isMyTurn = !state.rolling && !state.round_done
+                           && String(state.current_user_id) === ME;
+          luckBtn.disabled = !isMyTurn;
+          luckBtn.style.display = state.round_done ? 'none' : '';
+
+          shuffleBtn.disabled = state.rolling || !isOwner;
+          shuffleBtn.title = isOwner ? '' : 'Только создатель лобби может перемешать';
+
+          // Кнопка реролла: всегда видна, активна только когда круг завершён
+          const reroll = state.reroll || { pending: [], active: null };
+          const iRequested = (reroll.pending || []).some(u => String(u) === ME);
+          const rerollRunning = Boolean(reroll.active) || (reroll.pending || []).length > 0;
+          const canReroll = state.round_done && !state.rolling && !rerollRunning && !iRequested;
+
+          rerollBtn.style.display = '';
+          rerollBtn.disabled = !canReroll;
+          if (!state.round_done) {
+            rerollBtn.title = 'Реролл доступен после завершения круга';
+            rerollBtn.textContent = '🔄 Реролл';
+          } else if (iRequested) {
+            rerollBtn.title = '';
+            rerollBtn.textContent = '⏳ Запрос отправлен';
+          } else if (reroll.active && String(reroll.active) === ME) {
+            rerollBtn.title = '';
+            rerollBtn.textContent = '🎰 Крутится…';
+          } else {
+            rerollBtn.title = '';
+            rerollBtn.textContent = '🔄 Реролл';
+          }
+
+
+          // Панель владельца для запросов реролла
+          if (isOwner) {
+            renderRerollRequests();
+          } else {
+            rerollPanel.style.display = 'none';
+          }
+
+          updateStatus();
+        }
+
+        function renderRerollRequests() {
+          const reroll = state.reroll || { pending: [], active: null };
+          const pending = reroll.pending || [];
+          if (!pending.length) {
+            rerollPanel.style.display = 'none';
+            rerollList.innerHTML = '';
+            return;
+          }
+          rerollPanel.style.display = '';
+          rerollList.innerHTML = pending.map(uid => {
+            const p = state.order.find(x => String(x.id) === String(uid));
+            const name = p ? p.name : 'Игрок';
+            const disabled = state.rolling ? 'disabled' : '';
+            return (
+              '<div class="d-flex align-items-center justify-content-between gap-2 bg-dark rounded p-2">' +
+                '<span class="small">' + esc(name) + ' хочет реролл</span>' +
+                '<span class="d-flex gap-1">' +
+                  '<button class="btn btn-sm btn-success" ' + disabled + ' data-approve="' + uid + '">✅</button>' +
+                  '<button class="btn btn-sm btn-outline-danger" ' + disabled + ' data-deny="' + uid + '">✖</button>' +
+                '</span>' +
+              '</div>'
+            );
+          }).join('');
+        }
+
+        function updateStatus() {
+          const reroll = state.reroll || { pending: [], active: null };
+          if (state.rolling) {
+            statusText.textContent = '🎰 Колесо крутится…';
+            statusText.classList.remove('text-danger');
+            return;
+          }
+          if (!state.order.length) {
+            statusText.textContent = 'В лобби никого нет';
+            statusText.classList.remove('text-danger');
+            return;
+          }
+          if (reroll.active) {
+            const p = state.order.find(x => String(x.id) === String(reroll.active));
+            statusText.textContent = '🎰 Реролл для: ' + (p ? p.name : 'игрока');
+            statusText.classList.remove('text-danger');
+            return;
+          }
+          if ((reroll.pending || []).length) {
+            statusText.textContent = '⏳ Ожидание одобрения реролла владельцем…';
+            statusText.classList.remove('text-danger');
+            return;
+          }
+          if (state.round_done) {
+            statusText.textContent = 'Круг завершён — можно запросить реролл у владельца';
+            statusText.classList.remove('text-danger');
+            return;
+          }
+          const cur = state.order.find(p => String(p.id) === String(state.current_user_id));
+          if (!cur) {
+            statusText.textContent = 'Перемешайте игроков 🎲';
+            statusText.classList.remove('text-danger');
+            return;
+          }
+          if (String(cur.id) === ME) {
+            statusText.textContent = 'Ваш ход — жмите «Мне повезёт»!';
+            statusText.classList.remove('text-danger');
+          } else {
+            statusText.textContent = 'Ходит: ' + cur.name;
+            statusText.classList.remove('text-danger');
+          }
+        }
+
+        function renderHistory() {
+          if (!state.history.length) {
+            historyList.innerHTML = '<div class="text-muted small">Пока пусто</div>';
+            return;
+          }
+          historyList.innerHTML = state.history.map(h => {
+            const d = new Date((h.ts || 0) * 1000);
+            const time = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            const icon = h.icon
+              ? '<img src="https://www.bungie.net' + h.icon + '" alt="" class="game-history-icon" onerror="this.style.display=\'none\'">'
+              : '';
+            return (
+              '<div class="game-history-item">' +
+                icon +
+                '<div class="game-history-info">' +
+                  '<div class="game-history-title">' + esc(locName(h) || 'Неизвестно') + '</div>' +
+                  '<div class="game-history-who">' + esc(h.user_name) + ' · ' + time + '</div>' +
+                  '<div class="game-history-challenge small">' + fmtChallenge(h) + '</div>' +
+                '</div>' +
+              '</div>'
+            );
+          }).join('');
+        }
+
+        // -------------------------------------------------------------
+        // Итоги круга (большая таблица, как на /destiny/challenges)
+        // -------------------------------------------------------------
+        function renderRoundResults() {
+          if (!state.round_results || !state.round_results.length) {
+            roundResultsBody.innerHTML =
+              '<tr><td colspan="6" class="text-muted text-center">Ещё никто не крутил</td></tr>';
+            return;
+          }
+          roundResultsBody.innerHTML = state.round_results.map((h, i) => {
+            const icon = h.icon
+              ? '<img src="https://www.bungie.net' + h.icon + '" alt="" style="width:34px;height:34px;border-radius:6px;object-fit:contain" onerror="this.style.display=\'none\'">'
+              : '';
+            return (
+              '<tr>' +
+                '<th scope="row" class="text-center">' + (i + 1) + '</th>' +
+                '<td><strong>' + esc(h.user_name || 'Игрок') + '</strong></td>' +
+                '<td>' +
+                  '<div class="d-flex align-items-center gap-2">' +
+                    icon +
+                    '<span>' + esc(locName(h) || 'Неизвестно') + '</span>' +
+                  '</div>' +
+                '</td>' +
+                '<td class="small">' + esc(h.solo_challenge || '—') + '</td>' +
+                '<td class="small">' + esc(h.team_challenge || '—') + '</td>' +
+                '<td class="small text-muted">' + esc(h.notes || '—') + '</td>' +
+              '</tr>'
+            );
+          }).join('');
+        }
+
+
+        // -------------------------------------------------------------
+        // Колесо
+        // -------------------------------------------------------------
+        function buildWheel(items) {
+          wheel.innerHTML = '';
+          const n = items.length;
+          items.forEach((item, i) => {
+            const angle = (i * 360) / n;
+            const el = document.createElement('div');
+            el.className = 'game-wheel-item';
+            el.style.setProperty('--a', angle + 'deg');
+            el.title = locName(item) || '';
+            if (item.icon) {
+              const img = document.createElement('img');
+              img.src = 'https://www.bungie.net' + item.icon;
+              img.alt = locName(item) || '';
+              img.onerror = function () { el.style.display = 'none'; };
+              el.appendChild(img);
+            } else {
+              el.textContent = '❔';
+            }
+            wheel.appendChild(el);
+          });
+          wheel.style.width = wheel.style.height = (WHEEL_RADIUS + ICON_SIZE) * 2 + 40 + 'px';
+        }
+
+        function spinWheel(targetHash) {
+          clearTimeout(spinTimer);
+
+          const items = state.current_roll ? state.current_roll.items : [];
+          const targetIdx = items.findIndex(it => String(it.hash) === String(targetHash));
+          if (targetIdx < 0 || items.length === 0) return;
+
+          const n = items.length;
+          const targetAngle = (targetIdx * 360) / n;
+          const spins = 5 + Math.floor(Math.random() * 3);          // 5..7 полных оборотов
+          const final = spins * 360 + (360 - targetAngle) % 360;
+          if ((360 - targetAngle) % 360 === 0) {
+            // target на нулевом секторе — добавим ещё оборот, чтобы точно покрутилось
+            finalRot = final + 360;
+          } else {
+            finalRot = final;
+          }
+
+          wheel.style.transition = 'none';
+          wheel.style.transform = 'rotate(0deg)';
+          // принудительный reflow, чтобы сброс применился до анимации
+          void wheel.offsetWidth;
+          wheel.style.transition = 'transform ' + SPIN_SECONDS + 's cubic-bezier(0.12, 0.75, 0.08, 1)';
+          wheel.style.transform = 'rotate(' + finalRot + 'deg)';
+
+          wheelEmpty.classList.add('d-none');
+          wheelResult.classList.add('d-none');
+
+          spinTimer = setTimeout(function () {
+            showResult(state.current_roll);
+          }, SPIN_SECONDS * 1000 + 200);
+        }
+
+        function showResult(roll) {
+          if (!roll) return;
+          const ch = roll.challenge || {};
+          const icon = ch.icon
+            ? '<img src="https://www.bungie.net' + ch.icon + '" alt="" class="game-result-icon">'
+            : '';
+          wheelResult.innerHTML =
+            '<div class="game-result-card">' +
+              icon +
+              '<div class="flex-grow-1">' +
+                '<div class="page-sub mb-1">Выпало для: <strong>' + esc(roll.user_name || '') + '</strong></div>' +
+                '<h4 class="mb-2">' + esc(locName(ch) || 'Неизвестно') + '</h4>' +
+                fmtChallengeHtml(ch) +
+              '</div>' +
+            '</div>';
+          wheelResult.classList.remove('d-none');
+        }
+
+        // -------------------------------------------------------------
+        // Применение состояния
+        // -------------------------------------------------------------
+        function applyState(newState) {
+          const wasRolling = state.rolling;
+          const prevRollId = state.current_roll ? state.current_roll.roll_id : null;
+          state = Object.assign(state, newState);
+
+          renderPlayers();
+          renderHistory();
+          renderRoundResults();
+
+          // Если уже идёт бросок (например, зашли во время спина или SSE разорвалось)
+          if (state.rolling && state.current_roll) {
+            if (!wasRolling || prevRollId !== state.current_roll.roll_id) {
+              buildWheel(state.current_roll.items);
+              spinWheel(state.current_roll.target_hash);
+            }
+          }
+        }
+
+        // -------------------------------------------------------------
+        // Действия
+        // -------------------------------------------------------------
+        shuffleBtn.addEventListener('click', function () {
+          shuffleBtn.disabled = true;
+          post('/destiny/game/api/shuffle', { lobby_id: LOBBY_ID })
+            .then(({ status, data }) => {
+              if (status !== 200 || !data.ok) {
+                toast((data && data.error) || 'Не удалось перемешать');
+                renderPlayers();
+              }
+            })
+            .catch(function () { toast('Ошибка сети'); renderPlayers(); });
+        });
+
+        luckBtn.addEventListener('click', function () {
+          luckBtn.disabled = true;
+          post('/destiny/game/api/roll', { lobby_id: LOBBY_ID })
+            .then(({ status, data }) => {
+              if (status !== 200 || !data.ok) {
+                toast((data && data.error) || 'Не удалось запустить рулетку');
+                luckBtn.disabled = true;
+                renderPlayers();
+              }
+              // При успехе состояние придёт по SSE (roll_start)
+            })
+            .catch(function () { toast('Ошибка сети'); renderPlayers(); });
+        });
+
+        rerollBtn.addEventListener('click', function () {
+          rerollBtn.disabled = true;
+          post('/destiny/game/api/reroll', { lobby_id: LOBBY_ID })
+            .then(({ status, data }) => {
+              if (status !== 200 || !data.ok) {
+                toast((data && data.error) || 'Не удалось запросить реролл');
+                renderPlayers();
+              } else {
+                toast('⏳ Запрос на реролл отправлен владельцу');
+              }
+            })
+            .catch(function () { toast('Ошибка сети'); renderPlayers(); });
+        });
+
+        // Одобрение/отклонение реролла владельцем (делегирование с кнопок)
+        rerollList.addEventListener('click', function (e) {
+          const approveBtn = e.target.closest('[data-approve]');
+          const denyBtn = e.target.closest('[data-deny]');
+          if (!approveBtn && !denyBtn) return;
+          const uid = approveBtn ? approveBtn.dataset.approve : denyBtn.dataset.deny;
+          post('/destiny/game/api/reroll/approve', {
+            lobby_id: LOBBY_ID,
+            user_id: uid,
+            approve: !!approveBtn,
+          }).then(({ status, data }) => {
+            if (status !== 200 || !data.ok) {
+              toast((data && data.error) || 'Не удалось обработать запрос');
+            }
+          }).catch(function () { toast('Ошибка сети'); });
+        });
+
+        leaveBtn.addEventListener('click', function () {
+          leaveBtn.disabled = true;
+          post('/destiny/game/api/leave', { lobby_id: LOBBY_ID })
+            .then(() => { window.location.href = '/destiny/game'; })
+            .catch(function () { window.location.href = '/destiny/game'; });
+        });
+
+        copyInviteBtn.addEventListener('click', function () {
+          const url = window.location.href.split('/stream')[0];
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(
+              function () { copyInviteBtn.textContent = '✅ Скопировано'; },
+              function () { copyFallback(url); }
+            );
+          } else {
+            copyFallback(url);
+          }
+          setTimeout(function () { copyInviteBtn.textContent = '🔗 Копировать ссылку'; }, 2000);
+        });
+
+        function copyFallback(text) {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); } catch (e) {}
+          document.body.removeChild(ta);
+        }
+
+        // -------------------------------------------------------------
+        // SSE
+        // -------------------------------------------------------------
+        function connectStream() {
+          const es = new EventSource('/destiny/game/' + LOBBY_ID + '/stream');
+
+          es.addEventListener('lobby', function (e) {
+            try { applyState(JSON.parse(e.data)); } catch (err) {}
+          });
+
+          es.addEventListener('turn', function (e) {
+            try {
+              const d = JSON.parse(e.data);
+              state.current_user_id = d.user_id;
+              renderPlayers();
+            } catch (err) {}
+          });
+
+          es.addEventListener('history', function (e) {
+            try {
+              state.history = JSON.parse(e.data);
+              renderHistory();
+            } catch (err) {}
+          });
+
+          es.addEventListener('round', function (e) {
+            try {
+              state.round_results = JSON.parse(e.data);
+              renderRoundResults();
+            } catch (err) {}
+          });
+
+          es.addEventListener('reroll', function (e) {
+            try {
+              const d = JSON.parse(e.data);
+              state.reroll = d;
+              renderPlayers();
+            } catch (err) {}
+          });
+
+          es.addEventListener('game_end', function (e) {
+            statusText.textContent = '🚪 Игра завершена владельцем';
+            statusText.classList.add('text-danger');
+            setTimeout(function () {
+              window.location.href = '/destiny/game';
+            }, 1500);
+          });
+
+          es.addEventListener('roll_start', function (e) {
+            try {
+              const roll = JSON.parse(e.data);
+              state.current_roll = roll;
+              state.rolling = true;
+              renderPlayers();
+              buildWheel(roll.items);
+              spinWheel(roll.target_hash);
+            } catch (err) {}
+          });
+
+          es.onerror = function () {
+            // EventSource сам переподключится; синхронизируемся дополнительно
+            fetchState();
+          };
+        }
+
+        function fetchState() {
+          fetch('/destiny/game/' + LOBBY_ID + '/state', { headers: { 'Accept': 'application/json' } })
+            .then(r => r.json())
+            .then(d => { if (d.ok && d.lobby) applyState(d.lobby); })
+            .catch(function () {});
+        }
+
+        // -------------------------------------------------------------
+        // Утилиты
+        // -------------------------------------------------------------
+        function esc(s) {
+          const div = document.createElement('div');
+          div.textContent = s == null ? '' : String(s);
+          return div.innerHTML;
+        }
+
+        // Локализованное имя предмета (уже выбрано манифестом по языку).
+        function locName(obj) {
+          return obj ? (obj.name || '') : '';
+        }
+
+        function fmtChallenge(h) {
+          const parts = [];
+          if (h.solo_challenge) parts.push('Соло: ' + h.solo_challenge);
+          if (h.team_challenge) parts.push('Тим: ' + h.team_challenge);
+          if (h.notes) parts.push('Заметки: ' + h.notes);
+          return parts.join(' · ') || 'Нет описания';
+        }
+
+        function fmtChallengeHtml(h) {
+          const block = function (label, text) {
+            return text
+              ? '<div class="mb-1"><span class="badge-soft">' + label + '</span> <span class="game-challenge-text">' + esc(text) + '</span></div>'
+              : '';
+          };
+          return block('Solo', h.solo_challenge) +
+                 block('Team', h.team_challenge) +
+                 block('Заметки', h.notes);
+        }
+
+        // начальное состояние из шаблона
+        applyState({
+          order: {{ lobby['order'] | tojson }},
+          current_user_id: {{ lobby['current_user_id'] | tojson }},
+          rolling: {{ 'true' if lobby['rolling'] else 'false' }},
+          current_roll: {{ lobby['current_roll'] | tojson }},
+          history: {{ lobby['history'] | tojson }},
+          round_results: {{ lobby['round_results'] | tojson }},
+          round_done: {{ 'true' if lobby['round_done'] else 'false' }},
+          reroll: {{ lobby['reroll'] | tojson }},
+          owner_id: {{ lobby['owner_id'] | tojson }},
+          owner_name: {{ lobby['owner_name'] | tojson }},
+          name: {{ lobby['name'] | tojson }},
+        });
+
+
+        // если бросок уже идёт — строим колесо сразу
+        if (state.rolling && state.current_roll) {
+          buildWheel(state.current_roll.items);
+          spinWheel(state.current_roll.target_hash);
+        }
+
+        connectStream();
+        setInterval(fetchState, 30000);
+      })();
+    </script>
+{% endblock %}

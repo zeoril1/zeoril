@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Игра #{{ game.id }} — Рулетка челленджей{% endblock %}
+
+{% block content %}
+    <div class="page-head fade-up d-flex justify-content-between align-items-start flex-wrap gap-2">
+        <div>
+            <h1 class="page-title">Игра <span class="text-gradient">#{{ game.id }}</span></h1>
+            <p class="page-sub mb-0">
+                Лобби: <strong>{{ game.name }}</strong> ·
+                Создатель: <strong>{{ game.owner_name or '—' }}</strong>
+            </p>
+        </div>
+        <a href="/destiny/game" class="btn btn-outline-light">← Ко всем играм</a>
+    </div>
+
+    <div class="glass-card fade-up p-4 mt-3">
+        <div class="d-flex flex-wrap gap-4 text-muted small mb-3">
+            <span>Создана: <strong>{{ game.created_at.strftime('%d.%m.%Y %H:%M') if game.created_at else '—' }}</strong></span>
+            <span>Завершена: <strong>{{ game.ended_at.strftime('%d.%m.%Y %H:%M') if game.ended_at else '—' }}</strong></span>
+            <span>Результатов: <strong>{{ game.results | length }}</strong></span>
+        </div>
+
+        {% if game.results %}
+            <div class="table-responsive">
+                <table class="table table-dark table-striped table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Игрок</th>
+                            <th scope="col">Оружие</th>
+                            <th scope="col">Solo</th>
+                            <th scope="col">Team</th>
+                            <th scope="col">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in game.results %}
+                            <tr>
+                                <th scope="row">{{ loop.index }}</th>
+                                <td><strong>{{ r.user_name or 'Игрок' }}</strong></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        {% if r.icon %}
+                                            <img src="https://www.bungie.net{{ r.icon }}"
+                                                 alt="" style="width:28px;height:28px;border-radius:6px;object-fit:contain"
+                                                 onerror="this.style.display='none'">
+                                        {% endif %}
+                                        <span>{{ r.name or 'Неизвестно' }}</span>
+                                    </div>
+                                </td>
+                                <td class="small text-muted">{{ r.solo_challenge or '—' }}</td>
+                                <td class="small text-muted">{{ r.team_challenge or '—' }}</td>
+                                <td class="small text-muted">{{ r.notes or '—' }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-muted text-center">В этой игре не было результатов.</div>
+        {% endif %}
+    </div>
+{% endblock %}

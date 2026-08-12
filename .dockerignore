@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+
+# Git
+.git/
+.gitignore
+
+# Окружение и секреты
+.env
+resources/*.txt
+resources/*.sqlite3
+resources/logs.txt
+
+# Временные файлы
+*.log
+*.md

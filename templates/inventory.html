@@ -1,0 +1,343 @@
+{% extends 'base.html' %}
+
+{% block title %}Инвентарь Destiny 2{% endblock %}
+
+{% block content %}
+    {# Общий рендер слота (оружие и броня): экипированное слева, остальное сеткой по 3 #}
+    {% macro render_slot(slot) -%}
+        <div class="weapon-slot">
+            <div class="weapon-slot-head">
+                <span class="weapon-slot-title">{{ slot['label'] }}</span>
+                <span class="weapon-slot-count text-muted small">
+                    экип: {{ slot['equipped']|length }} ·
+                    в хранилище: {{ slot['other']|length }}
+                </span>
+            </div>
+            <div class="weapon-slot-body">
+                {# Экипированный предмет — отдельная колонка слева #}
+                <div class="weapon-slot-equipped">
+                    {% if slot['equipped'] %}
+                        {% for w in slot['equipped'] %}
+                            <button type="button"
+                                    class="weapon-tile weapon-tile-equipped"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#weaponModal"
+                                    data-name="{{ w['name'] }}"
+                                    data-icon="{{ w['icon'] or '' }}"
+                                    data-tier="{{ w['tier'] or '—' }}"
+                                    data-type="{{ w['type'] or '—' }}"
+                                    data-element="{{ w['element_label'] }}"
+                                    data-ammo="{{ w['ammo_label'] }}"
+                                    data-quantity="{{ w['quantity'] }}"
+                                    data-instance="{{ w['instance'] }}"
+                                    data-hash="{{ w['hash'] }}"
+                                    data-equipped="1"
+                                    title="{{ w['name'] }}">
+                                {% if w['icon'] %}
+                                    <img src="https://www.bungie.net{{ w['icon'] }}"
+                                         alt=""
+                                         loading="lazy"
+                                         onerror="this.style.display='none'">
+                                {% else %}
+                                    <span class="weapon-tile-fallback">?</span>
+                                {% endif %}
+                                <span class="weapon-tile-star" title="Экипировано">★</span>
+                            </button>
+                        {% endfor %}
+                    {% endif %}
+                    {# Заглушки для выравнивания высоты слота по всем персонажам #}
+                    {% for _ in range(slot['equip_placeholders']) %}
+                        <div class="weapon-tile-placeholder" aria-hidden="true"></div>
+                    {% endfor %}
+                    {% if not slot['equipped'] and slot['equip_placeholders'] == 0 %}
+                        <div class="weapon-slot-empty d-flex align-items-center justify-content-center p-3">
+                            <span class="text-muted small text-center">Экипировано нет</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                {# Остальные предметы — сетка по 3 в ряд #}
+                <div class="weapon-slot-other">
+                    {% if slot['other'] or slot['other_placeholders'] %}
+                        <div class="weapon-slot-grid">
+                            {% for w in slot['other'] %}
+                                <button type="button"
+                                        class="weapon-tile"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#weaponModal"
+                                        data-name="{{ w['name'] }}"
+                                        data-icon="{{ w['icon'] or '' }}"
+                                        data-tier="{{ w['tier'] or '—' }}"
+                                        data-type="{{ w['type'] or '—' }}"
+                                        data-element="{{ w['element_label'] }}"
+                                        data-ammo="{{ w['ammo_label'] }}"
+                                        data-quantity="{{ w['quantity'] }}"
+                                        data-instance="{{ w['instance'] }}"
+                                        data-hash="{{ w['hash'] }}"
+                                        data-equipped="0"
+                                        title="{{ w['name'] }}">
+                                    {% if w['icon'] %}
+                                        <img src="https://www.bungie.net{{ w['icon'] }}"
+                                             alt=""
+                                             loading="lazy"
+                                             onerror="this.style.display='none'">
+                                    {% else %}
+                                        <span class="weapon-tile-fallback">?</span>
+                                    {% endif %}
+                                </button>
+                            {% endfor %}
+                            {# Заглушки для выравнивания высоты слота по всем персонажам #}
+                            {% for _ in range(slot['other_placeholders']) %}
+                                <div class="weapon-tile-placeholder" aria-hidden="true"></div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="weapon-slot-empty d-flex align-items-center justify-content-center p-3">
+                            <span class="text-muted small text-center">В хранилище нет</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {%- endmacro %}
+
+    <div class="page-head fade-up">
+
+        <h1 class="page-title">Инвентарь Destiny 2 — <span class="text-gradient">оружие и броня</span></h1>
+
+        <p class="page-sub">
+            {% if meta and meta.get('bungie_name') %}
+                Bungie: <strong>{{ meta['bungie_name'] }}</strong>
+            {% endif %}
+            {% if meta %}
+                · Персонажи: <strong>{{ meta['characters'] }}</strong>
+                · Оружие: <strong>{{ meta['weapons'] }}</strong>
+                · Броня: <strong>{{ meta['armor'] }}</strong>
+            {% endif %}
+
+        </p>
+    </div>
+
+    {% if error %}
+        <div class="glass-card fade-up p-4 text-center">
+            <p class="text-muted">{{ error }}</p>
+            {% if 'Bungie' in error or 'токен' in error|lower %}
+                <a href="/bungie/login" class="btn-bungie btn-sm mt-2 d-inline-flex align-items-center gap-2">
+                    <span class="bungie-ico">B</span>
+                    Привязать Bungie заново
+                </a>
+            {% endif %}
+        </div>
+    {% elif not classes %}
+        <div class="glass-card fade-up p-4 text-center">
+            <p class="text-muted mb-0">Не удалось найти предметы в инвентаре.</p>
+        </div>
+
+    {% else %}
+        <div class="row g-3 fade-up">
+            {% for cls in classes %}
+                <div class="col-12 col-xl-4">
+                    <div class="glass-card h-100 d-flex flex-column">
+                        <div class="d-flex align-items-center gap-3 p-3 border-bottom">
+                            {% if cls['emblem'] %}
+                                <img src="https://www.bungie.net{{ cls['emblem'] }}"
+                                     alt="эмблема"
+                                     style="width:48px;height:48px;border-radius:8px;object-fit:cover"
+                                     onerror="this.style.display='none'">
+                            {% endif %}
+                            <div>
+                                <h5 class="mb-0 fw-bold">{{ cls['label'] }}</h5>
+                                {% if cls['light'] %}
+                                    <small class="text-muted">Свет: {{ cls['light'] }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="p-3 d-flex flex-column gap-4 flex-grow-1">
+                            {% if cls['postmaster'] or cls['postmaster_max'] %}
+                                <div class="weapon-slot weapon-slot-postmaster">
+                                    <div class="weapon-slot-head">
+                                        <span class="weapon-slot-title">📬 Почтмейстер</span>
+                                        <span class="weapon-slot-count text-muted small">
+                                            предметов: {{ cls['postmaster']|length }}
+                                        </span>
+                                    </div>
+                                    <div class="weapon-slot-grid weapon-slot-grid-postmaster">
+                                        {% for w in cls['postmaster'] %}
+                                            <button type="button"
+                                                    class="weapon-tile"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#weaponModal"
+                                                    data-name="{{ w['name'] }}"
+                                                    data-icon="{{ w['icon'] or '' }}"
+                                                    data-tier="{{ w['tier'] or '—' }}"
+                                                    data-type="{{ w['type'] or '—' }}"
+                                                    data-element="{{ w['element_label'] }}"
+                                                    data-ammo="{{ w['ammo_label'] }}"
+                                                    data-quantity="{{ w['quantity'] }}"
+                                                    data-instance="{{ w['instance'] }}"
+                                                    data-hash="{{ w['hash'] }}"
+                                                    data-equipped="0"
+                                                    title="{{ w['name'] }}">
+                                                {% if w['icon'] %}
+                                                    <img src="https://www.bungie.net{{ w['icon'] }}"
+                                                         alt=""
+                                                         loading="lazy"
+                                                         onerror="this.style.display='none'">
+                                                {% else %}
+                                                    <span class="weapon-tile-fallback">?</span>
+                                                {% endif %}
+                                            </button>
+                                        {% endfor %}
+                                        {# Заглушки для выравнивания высоты почтмейстера по всем персонажам #}
+                                        {% for _ in range(cls['postmaster_placeholders']) %}
+                                            <div class="weapon-tile-placeholder" aria-hidden="true"></div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+
+                            {% for slot in cls['slots'] %}
+                                {{ render_slot(slot) }}
+                            {% endfor %}
+
+                            {# --- Броня: слоты Шлем / Наручи / Броня / Поножи / Классовый предмет --- #}
+                            {% for slot in cls['armor_slots'] %}
+                                {{ render_slot(slot) }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    {% endif %}
+
+    {# --- Модалка с информацией об оружии --- #}
+    <div class="modal fade" id="weaponModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title weapon-modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="weapon-modal-body d-flex gap-3">
+                        <div class="weapon-modal-icon-wrap">
+                            <img class="weapon-modal-icon" src="" alt="" onerror="this.style.display='none'">
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="weapon-modal-name-ru"></div>
+                            <table class="weapon-modal-info">
+                                <tbody>
+                                    <tr>
+                                        <td>Редкость</td>
+                                        <td class="weapon-modal-tier"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Тип</td>
+                                        <td class="weapon-modal-type"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Стихия</td>
+                                        <td class="weapon-modal-element"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Патроны</td>
+                                        <td class="weapon-modal-ammo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Количество</td>
+                                        <td class="weapon-modal-quantity"></td>
+                                    </tr>
+                                    <tr class="weapon-modal-instance-row">
+                                        <td>Instance ID</td>
+                                        <td class="weapon-modal-instance"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Статус</td>
+                                        <td class="weapon-modal-equipped"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <a class="btn btn-primary btn-sm mt-3 weapon-modal-link"
+                               href="#" target="_blank" rel="noopener">
+                                Открыть на light.gg
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      (function () {
+        const modalEl = document.getElementById('weaponModal');
+        if (!modalEl) return;
+
+        const fields = {
+          title: modalEl.querySelector('.weapon-modal-title'),
+          nameRu: modalEl.querySelector('.weapon-modal-name-ru'),
+          icon: modalEl.querySelector('.weapon-modal-icon'),
+          tier: modalEl.querySelector('.weapon-modal-tier'),
+          type: modalEl.querySelector('.weapon-modal-type'),
+          element: modalEl.querySelector('.weapon-modal-element'),
+          ammo: modalEl.querySelector('.weapon-modal-ammo'),
+          quantity: modalEl.querySelector('.weapon-modal-quantity'),
+          instance: modalEl.querySelector('.weapon-modal-instance'),
+          instanceRow: modalEl.querySelector('.weapon-modal-instance-row'),
+          equipped: modalEl.querySelector('.weapon-modal-equipped'),
+          link: modalEl.querySelector('.weapon-modal-link'),
+        };
+
+        modalEl.addEventListener('show.bs.modal', function (event) {
+          const btn = event.relatedTarget;
+          if (!btn) return;
+
+          const name = btn.getAttribute('data-name') || '';
+          const icon = btn.getAttribute('data-icon') || '';
+          const tier = btn.getAttribute('data-tier') || '—';
+          const type = btn.getAttribute('data-type') || '—';
+          const element = btn.getAttribute('data-element') || '—';
+          const ammo = btn.getAttribute('data-ammo') || '—';
+          const quantity = btn.getAttribute('data-quantity') || '';
+          const instance = btn.getAttribute('data-instance') || '';
+          const hash = btn.getAttribute('data-hash') || '';
+          const equipped = btn.getAttribute('data-equipped') === '1';
+
+          // Заголовок модалки — имя предмета (уже локализовано манифестом).
+          fields.title.textContent = name || '';
+          fields.nameRu.textContent = '';
+          fields.nameRu.style.display = 'none';
+          fields.tier.textContent = tier;
+          fields.type.textContent = type;
+          fields.element.textContent = element;
+          fields.ammo.textContent = ammo;
+          fields.quantity.textContent = quantity;
+          fields.equipped.textContent = equipped ? 'Экипировано' : 'В инвентаре';
+
+          if (icon) {
+            fields.icon.src = 'https://www.bungie.net' + icon;
+            fields.icon.style.display = '';
+          } else {
+            fields.icon.removeAttribute('src');
+            fields.icon.style.display = 'none';
+          }
+
+          if (instance) {
+            fields.instance.textContent = instance;
+            fields.instanceRow.style.display = '';
+          } else {
+            fields.instance.textContent = '';
+            fields.instanceRow.style.display = 'none';
+          }
+
+          fields.link.href = 'https://www.light.gg/db/items/' + hash;
+        });
+      })();
+    </script>
+{% endblock %}

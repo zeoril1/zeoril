@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+
+{% block title %}Destiny 2 — Челленджи{% endblock %}
+
+{% block content %}
+    <div class="page-head fade-up">
+        <h1 class="page-title">Destiny 2 — <span class="text-gradient">челленджи экзотики</span></h1>
+        <p class="page-sub">Соло-, командные челленджи и заметки для экзотического оружия</p>
+    </div>
+
+    <form method="get" action="/destiny/challenges" class="glass-card fade-up mb-4 p-3">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="limit" class="form-label">Количество записей</label>
+                <select name="limit" id="limit" class="form-select">
+                    {% for l in limits %}
+                        <option value="{{ l }}" {% if l == limit %}selected{% endif %}>{{ l }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label d-block">&nbsp;</label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="only_filled" value="1"
+                           id="only_filled" {% if only_filled %}checked{% endif %}>
+                    <label class="form-check-label" for="only_filled">
+                        Только с описаниями
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label d-block">&nbsp;</label>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary flex-fill">Применить</button>
+                    <a href="/destiny/challenges" class="btn btn-secondary">Сброс</a>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="glass-card table-card fade-up">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-3 px-3">
+            <p class="page-sub mb-0">Найдено: <strong>{{ total }}</strong></p>
+            {% if total_pages > 1 %}
+                <p class="page-sub mb-0">
+                    Страница {{ page }} из {{ total_pages }}
+                </p>
+            {% endif %}
+        </div>
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Название</th>
+                    <th scope="col">Solo Challenge</th>
+                    <th scope="col">Team Challenge</th>
+                    <th scope="col">Notes</th>
+                    {% if is_admin %}
+                        <th scope="col">Действия</th>
+                    {% endif %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in challenges %}
+                    <tr id="row-{{ item['item_hash'] }}">
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                {% if item['icon'] %}
+                                    <img src="https://www.bungie.net{{ item['icon'] }}"
+                                         alt="иконка" style="width:36px;height:36px;border-radius:8px"
+                                         onerror="this.style.display='none'">
+                                {% endif %}
+                                <div>
+                                    <strong>{{ item['name'] or '—' }}</strong>
+                                    {% if item['item_hash'] %}
+                                        <div class="text-muted small">
+                                            <a href="https://www.light.gg/db/items/{{ item['item_hash'] }}"
+                                               target="_blank" rel="noopener">
+                                                <code>{{ item['item_hash'] }}</code>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+
+                        <td class="text-wrap">
+                            <span id="solo-{{ item['item_hash'] }}">{{ item['solo_challenge'] or '—' }}</span>
+                        </td>
+                        <td class="text-wrap">
+                            <span id="team-{{ item['item_hash'] }}">{{ item['team_challenge'] or '—' }}</span>
+                        </td>
+                        <td class="text-wrap">
+                            <span id="notes-{{ item['item_hash'] }}">{{ item['notes'] or '—' }}</span>
+                        </td>
+                        {% if is_admin %}
+                            <td>
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editModal"
+                                        data-item-hash="{{ item['item_hash'] }}"
+                                        data-item-name="{{ item['name'] or '' }}"
+                                        data-solo="{{ item['solo_challenge'] or '' }}"
+                                        data-team="{{ item['team_challenge'] or '' }}"
+                                        data-notes="{{ item['notes'] or '' }}">
+                                    ✏️
+                                </button>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="{% if is_admin %}6{% else %}5{% endif %}" class="text-center text-muted py-4">
+                            Ничего не найдено. Измените фильтры.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+        {% if total_pages > 1 %}
+        <nav class="d-flex justify-content-center mt-3 pb-3" aria-label="Пагинация">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+                    <a class="page-link"
+                       href="?page={{ page - 1 }}&limit={{ limit }}&only_filled={{ 1 if only_filled else '' }}"
+                       aria-label="Назад">←</a>
+                </li>
+
+                {% set start = [1, page - 2]|max %}
+                {% set end = [total_pages, page + 2]|min %}
+                {% if start > 1 %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page=1&limit={{ limit }}&only_filled={{ 1 if only_filled else '' }}">1</a>
+                    </li>
+                    {% if start > 2 %}
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    {% endif %}
+                {% endif %}
+
+                {% for p in range(start, end + 1) %}
+                    <li class="page-item {% if p == page %}active{% endif %}">
+                        <a class="page-link"
+                           href="?page={{ p }}&limit={{ limit }}&only_filled={{ 1 if only_filled else '' }}">{{ p }}</a>
+                    </li>
+                {% endfor %}
+
+                {% if end < total_pages %}
+                    {% if end < total_pages - 1 %}
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    {% endif %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ total_pages }}&limit={{ limit }}&only_filled={{ 1 if only_filled else '' }}">{{ total_pages }}</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+                    <a class="page-link"
+                       href="?page={{ page + 1 }}&limit={{ limit }}&only_filled={{ 1 if only_filled else '' }}"
+                       aria-label="Вперёд">→</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+
+    {% if is_admin %}
+    <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Редактирование челленджа</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="page-sub mb-3" id="editTitle"></p>
+                    <div id="editError" class="alert alert-danger" style="display:none"></div>
+                    <form id="editForm">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="item_hash" id="editItemHash">
+                        <div class="mb-3">
+                            <label for="editSolo" class="form-label">Solo Challenge</label>
+                            <textarea class="form-control" name="solo_challenge" id="editSolo" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editTeam" class="form-label">Team Challenge</label>
+                            <textarea class="form-control" name="team_challenge" id="editTeam" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editNotes" class="form-label">Notes</label>
+                            <textarea class="form-control" name="notes" id="editNotes" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" id="editSave">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      (function () {
+        const modal = document.getElementById('editModal');
+        if (!modal) return;
+
+        const title = document.getElementById('editTitle');
+        const hashInput = document.getElementById('editItemHash');
+        const soloInput = document.getElementById('editSolo');
+        const teamInput = document.getElementById('editTeam');
+        const notesInput = document.getElementById('editNotes');
+        const errorBox = document.getElementById('editError');
+        const saveBtn = document.getElementById('editSave');
+
+        function showError(msg) {
+          errorBox.textContent = msg;
+          errorBox.style.display = 'block';
+        }
+
+        function hideError() {
+          errorBox.style.display = 'none';
+        }
+
+        // Заполняем форму при открытии модалки (через data-атрибуты кнопки).
+
+        modal.addEventListener('show.bs.modal', function (event) {
+          const btn = event.relatedTarget;
+          if (!btn) return;
+          hideError();
+          title.textContent = 'Оружие: ' + btn.getAttribute('data-item-name');
+          hashInput.value = btn.getAttribute('data-item-hash');
+          soloInput.value = btn.getAttribute('data-solo');
+          teamInput.value = btn.getAttribute('data-team');
+          notesInput.value = btn.getAttribute('data-notes');
+        });
+
+        saveBtn.addEventListener('click', function () {
+          hideError();
+          saveBtn.disabled = true;
+          const csrf = document.querySelector('#editForm input[name="_csrf_token"]').value;
+
+          fetch('/destiny/challenges/api/save', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              _csrf_token: csrf,
+              item_hash: hashInput.value,
+              solo_challenge: soloInput.value,
+              team_challenge: teamInput.value,
+              notes: notesInput.value
+            })
+          })
+            .then(r => r.json().then(data => ({ status: r.status, data: data })))
+            .then(({ status, data }) => {
+              if (status === 200 && data.ok) {
+                const hash = data.item_hash;
+                const setCell = (id, value) => {
+                  const el = document.getElementById(id + '-' + hash);
+                  if (el) el.textContent = value || '—';
+                };
+                setCell('solo', data.solo_challenge);
+                setCell('team', data.team_challenge);
+                setCell('notes', data.notes);
+
+                const bootstrap = window.bootstrap;
+                if (bootstrap && bootstrap.Modal) {
+                  bootstrap.Modal.getInstance(modal).hide();
+                }
+                return;
+              }
+              showError((data && data.error) || 'Не удалось сохранить изменения');
+              saveBtn.disabled = false;
+            })
+            .catch(function () {
+              showError('Ошибка сети. Попробуйте ещё раз.');
+              saveBtn.disabled = false;
+            });
+        });
+      })();
+    </script>
+    {% endif %}
+{% endblock %}
+

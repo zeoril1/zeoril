@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+    <div class="page-head text-center fade-up">
+        <h1 class="page-title">Регистрация</h1>
+        <p class="page-sub">Зарегистрироваться могут только участники клана HG</p>
+    </div>
+
+    {% if message %}
+        <div class="alert alert-info text-center fade-up" style="max-width: 480px; margin: 0 auto 24px">{{ message }}</div>
+    {% endif %}
+
+    <div class="glass-card p-4 fade-up" style="max-width: 480px; margin: 0 auto">
+        <form action="/register" method="post">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            <div class="mb-3">
+                <label for="ID" class="form-label">ID в Discord</label>
+                <input type="text" class="form-control" name="ID" id="ID" placeholder="Например, 1234567890">
+            </div>
+            <div class="mb-3">
+                <label for="Login" class="form-label">Логин</label>
+                <input type="text" class="form-control" name="Login" id="Login" placeholder="Придумайте логин">
+            </div>
+            <div class="mb-4">
+                <label for="password" class="form-label">Пароль</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="••••••••">
+            </div>
+            <button type="submit" name="register" class="btn btn-primary w-100">Зарегистрироваться</button>
+        </form>
+    </div>
+{% endblock %}

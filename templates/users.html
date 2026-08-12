@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+
+{% block title %}Управление пользователями{% endblock %}
+
+{% block content %}
+    {% if not admin %}
+        <div class="denied-wrap fade-up">
+            <div class="denied-ico">🚫</div>
+            <h1 class="page-title">У вас нет прав</h1>
+            <p class="page-sub">Этот раздел доступен только администраторам клана.</p>
+        </div>
+    {% else %}
+        <div class="page-head fade-up">
+            <h1 class="page-title">Управление <span class="text-gradient">пользователями</span></h1>
+            <p class="page-sub">Всего участников: {{ all_users|length }}</p>
+        </div>
+
+        <div class="glass-card table-card fade-up">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Имя в Discord</th>
+                        <th scope="col">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in all_users %}
+                        <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ u['id'] }}</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="{{ url_for('static', filename='zaebala.jpg') }}" class="brand-logo" style="width:28px;height:28px" alt="">
+                                    <strong>{{ u['name_discord'] }}</strong>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <button type="button"
+                                            class="btn btn-warning btn-sm rights-open-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#RightsModal"
+                                            data-user-id="{{ u['id'] }}"
+                                            data-user-name="{{ u['name_discord'] }}">Права</button>
+                                    <button type="button"
+                                            class="btn btn-outline-light btn-sm profile-open-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#ProfileModal"
+                                            data-user-id="{{ u['id'] }}"
+                                            data-user-name="{{ u['name_discord'] }}">Данные</button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    <!-- Модальное окно прав -->
+    <div class="modal fade" id="RightsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Права пользователя <span class="text-gradient" id="RightsUserName"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <div id="RightsStatus" class="alert" style="display:none"></div>
+                    <div id="RightsList" class="rights-list"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-warning" id="RightsSaveBtn">Сохранить изменения</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно данных -->
+    <div class="modal fade" id="ProfileModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Данные пользователя <span class="text-gradient" id="ProfileUserName"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <div id="ProfileStatus" class="alert" style="display:none"></div>
+
+                    <div id="ProfileInfo">
+                        <div class="profile-row">
+                            <span class="profile-label">Имя в Discord</span>
+                            <span class="profile-value" id="ProfileDiscordName">—</span>
+                        </div>
+                        <div class="profile-row">
+                            <span class="profile-label">Логин</span>
+                            <span class="profile-value" id="ProfileLogin">не установлен</span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h6 class="mb-3">Сброс пароля</h6>
+                    <p class="text-muted small mb-3">Задайте новый пароль — все активные сессии пользователя будут завершены. Чтобы пользователь заново прошёл регистрацию, можно очистить пароль.</p>
+                    <div class="mb-3">
+                        <label for="ProfileNewPassword" class="form-label">Новый пароль</label>
+                        <input type="text" class="form-control" name="new_password" id="ProfileNewPassword" placeholder="Оставьте пустым, чтобы очистить пароль">
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="button" class="btn btn-warning" id="ProfileSetPassBtn">Установить пароль</button>
+                        <button type="button" class="btn btn-outline-light" id="ProfileClearPassBtn">Очистить пароль</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+    const rightsModalEl = document.getElementById('RightsModal');
+    const profileModalEl = document.getElementById('ProfileModal');
+    if (!rightsModalEl && !profileModalEl) return;
+
+    const csrfInput = document.querySelector('#RightsModal input[name="_csrf_token"]')
+                      || document.querySelector('#ProfileModal input[name="_csrf_token"]');
+
+    function showStatus(el, msg, isError) {
+        if (!el) return;
+        el.textContent = msg || '';
+        el.className = isError ? 'alert alert-danger' : 'alert alert-info';
+        el.style.display = msg ? 'block' : 'none';
+    }
+
+    function api(url, options) {
+        return fetch(url, options)
+            .then(function (r) {
+                return r.json().then(function (d) { return { status: r.status, data: d }; });
+            })
+            .catch(function () {
+                return { status: 0, data: { error: 'Ошибка сети. Попробуйте ещё раз.' } };
+            });
+    }
+
+    function postJson(url, body) {
+        return api(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+    }
+
+    /* ================= Права ================= */
+    if (rightsModalEl) {
+        const listEl = document.getElementById('RightsList');
+        const statusEl = document.getElementById('RightsStatus');
+        const saveBtn = document.getElementById('RightsSaveBtn');
+        const userNameEl = document.getElementById('RightsUserName');
+        let currentUserId = null;
+        let rightsData = [];
+
+        function renderRights(rights) {
+            rightsData = rights;
+            listEl.innerHTML = '';
+            rights.forEach(function (r, idx) {
+                const item = document.createElement('div');
+                item.className = 'rights-item';
+
+                const info = document.createElement('div');
+                info.className = 'rights-info';
+                const name = document.createElement('div');
+                name.className = 'rights-name';
+                name.textContent = r.name;
+                const desc = document.createElement('div');
+                desc.className = 'rights-desc';
+                desc.textContent = r.desc || '—';
+                info.appendChild(name);
+                info.appendChild(desc);
+
+                const label = document.createElement('label');
+                label.className = 'form-check form-switch mb-0';
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.className = 'form-check-input';
+                input.id = 'right-check-' + idx;
+                input.checked = r.granted;
+                input.addEventListener('change', function () {
+                    rightsData[idx].granted = input.checked;
+                });
+                const lbl = document.createElement('span');
+                lbl.className = 'visually-hidden';
+                lbl.textContent = 'Выдать право';
+                label.appendChild(input);
+                label.appendChild(lbl);
+
+                item.appendChild(info);
+                item.appendChild(label);
+                listEl.appendChild(item);
+            });
+        }
+
+        rightsModalEl.addEventListener('show.bs.modal', function (e) {
+            const btn = e.relatedTarget;
+            if (!btn) return;
+            currentUserId = btn.dataset.userId || '';
+            if (userNameEl) userNameEl.textContent = btn.dataset.userName || '';
+            showStatus(statusEl, '');
+            listEl.innerHTML = '<div class="text-muted text-center py-4">Загрузка…</div>';
+            saveBtn.disabled = false;
+
+            api('/users/api/user_rights?user_id=' + encodeURIComponent(currentUserId), {
+                headers: { 'Accept': 'application/json' }
+            }).then(function (res) {
+                if (res.status === 200 && res.data.ok) {
+                    renderRights(res.data.rights || []);
+                } else {
+                    listEl.innerHTML = '';
+                    showStatus(statusEl, res.data.error || 'Не удалось загрузить права', true);
+                }
+            });
+        });
+
+        saveBtn.addEventListener('click', function () {
+            showStatus(statusEl, '');
+            saveBtn.disabled = true;
+
+            // Собираем ID прав, отмеченных в данный момент.
+            const ids = [];
+            rightsData.forEach(function (r) {
+                if (r.granted) ids.push(r.id);
+            });
+
+            postJson('/users/api/save_rights', {
+                user_id: currentUserId,
+                rights: ids,
+                _csrf_token: csrfInput ? csrfInput.value : ''
+            }).then(function (res) {
+                saveBtn.disabled = false;
+                if (res.status === 200 && res.data.ok) {
+                    showStatus(statusEl, 'Права сохранены ✔');
+                    setTimeout(function () {
+                        const modal = bootstrap.Modal.getInstance(rightsModalEl);
+                        if (modal) modal.hide();
+                    }, 900);
+                } else {
+                    showStatus(statusEl, res.data.error || 'Не удалось сохранить права', true);
+                }
+            });
+        });
+    }
+
+    /* ================= Данные ================= */
+    if (profileModalEl) {
+        const discordNameEl = document.getElementById('ProfileDiscordName');
+        const loginEl = document.getElementById('ProfileLogin');
+        const statusEl = document.getElementById('ProfileStatus');
+        const passInput = document.getElementById('ProfileNewPassword');
+        const setPassBtn = document.getElementById('ProfileSetPassBtn');
+        const clearPassBtn = document.getElementById('ProfileClearPassBtn');
+        const userNameEl = document.getElementById('ProfileUserName');
+        let currentUserId = null;
+
+        profileModalEl.addEventListener('show.bs.modal', function (e) {
+            const btn = e.relatedTarget;
+            if (!btn) return;
+            currentUserId = btn.dataset.userId || '';
+            if (userNameEl) userNameEl.textContent = btn.dataset.userName || '';
+            if (passInput) passInput.value = '';
+            showStatus(statusEl, '');
+
+            api('/users/api/profile?user_id=' + encodeURIComponent(currentUserId), {
+                headers: { 'Accept': 'application/json' }
+            }).then(function (res) {
+                if (res.status === 200 && res.data.ok) {
+                    const u = res.data.user || {};
+                    if (discordNameEl) discordNameEl.textContent = u.name || '—';
+                    if (loginEl) loginEl.textContent = u.login || 'не установлен';
+                } else {
+                    showStatus(statusEl, res.data.error || 'Не удалось загрузить данные', true);
+                }
+            });
+        });
+
+        if (setPassBtn) {
+            setPassBtn.addEventListener('click', function () {
+                const value = (passInput ? passInput.value : '').trim();
+                if (!value) {
+                    showStatus(statusEl, 'Введите новый пароль или нажмите «Очистить пароль».', true);
+                    return;
+                }
+                showStatus(statusEl, '');
+                setPassBtn.disabled = true;
+                postJson('/users/api/set_password', {
+                    user_id: currentUserId,
+                    new_password: value,
+                    _csrf_token: csrfInput ? csrfInput.value : ''
+                }).then(function (res) {
+                    setPassBtn.disabled = false;
+                    if (res.status === 200 && res.data.ok) {
+                        if (passInput) passInput.value = '';
+                        showStatus(statusEl, res.data.message || 'Пароль обновлён ✔');
+                    } else {
+                        showStatus(statusEl, res.data.error || 'Не удалось установить пароль', true);
+                    }
+                });
+            });
+        }
+
+        if (clearPassBtn) {
+            clearPassBtn.addEventListener('click', function () {
+                if (!confirm('Очистить пароль пользователя? Он сможет зарегистрироваться заново.')) return;
+                showStatus(statusEl, '');
+                clearPassBtn.disabled = true;
+                postJson('/users/api/set_password', {
+                    user_id: currentUserId,
+                    clear_password: true,
+                    _csrf_token: csrfInput ? csrfInput.value : ''
+                }).then(function (res) {
+                    clearPassBtn.disabled = false;
+                    if (res.status === 200 && res.data.ok) {
+                        if (passInput) passInput.value = '';
+                        showStatus(statusEl, res.data.message || 'Пароль очищен ✔');
+                    } else {
+                        showStatus(statusEl, res.data.error || 'Не удалось очистить пароль', true);
+                    }
+                });
+            });
+        }
+    }
+})();
+</script>
+{% endblock %}

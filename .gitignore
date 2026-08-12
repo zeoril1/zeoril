@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+
+# Секреты и конфиденциальные данные
+resources/*.txt
+resources/token.txt
+resources/refresh_token.txt
+resources/cookies.txt
+resources/cookie.txt
+resources/config_google.json
+
+# База данных
+resources/*.sqlite3
+
+# Destiny 2 Manifest (скачивается Bungie API при первом запросе коллекций)
+resources/manifest.content
+resources/manifest_ru.content
+resources/manifest_items_ru.sqlite
+resources/manifest_items_en.sqlite
+resources/manifest.sqlite3
+resources/manifest.sqlite3.tmp
+resources/manifest.content.tmp
+
+
+# Логи
+resources/logs.txt
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Окружение
+.env
+_cfg_tmp.env
+_cfg_*.env
+
+# Временные файлы для отладки
+
+.tmp_pycord/
+.tmp/

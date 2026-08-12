@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block title %}Destiny 2 — Предметы{% endblock %}
+
+{% block content %}
+    <div class="page-head fade-up">
+        <h1 class="page-title">Destiny 2 — <span class="text-gradient">предметы</span></h1>
+        <p class="page-sub">База данных предметов из локального манифеста</p>
+    </div>
+
+    <form method="get" action="/destiny" class="glass-card fade-up mb-4 p-3">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="limit" class="form-label">Количество записей</label>
+                <select name="limit" id="limit" class="form-select">
+                    {% for l in limits %}
+                        <option value="{{ l }}" {% if l == limit %}selected{% endif %}>{{ l }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="tier" class="form-label">Редкость</label>
+                <select name="tier" id="tier" class="form-select">
+                    <option value="">Все</option>
+                    {% for t in tiers %}
+                        <option value="{{ t }}" {% if t == selected_tier %}selected{% endif %}>{{ t }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="item_type" class="form-label">Тип предмета</label>
+                <select name="item_type" id="item_type" class="form-select">
+                    <option value="">Все</option>
+                    {% for it in item_types %}
+                        <option value="{{ it }}"
+                                {% if it == selected_item_type %}selected{% endif %}>
+                            {{ it }} — {{ item_type_labels.get(it, 'Неизвестно') }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label d-block">&nbsp;</label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="only_filled" value="1"
+                           id="only_filled" {% if only_filled %}checked{% endif %}>
+                    <label class="form-check-label" for="only_filled">
+                        Только с описаниями
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Применить</button>
+                <a href="/destiny" class="btn btn-secondary">Сброс</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="glass-card table-card fade-up">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-3 px-3">
+            <p class="page-sub mb-0">Найдено: <strong>{{ total }}</strong></p>
+            {% if total_pages > 1 %}
+                <p class="page-sub mb-0">
+                    Страница {{ page }} из {{ total_pages }}
+                </p>
+            {% endif %}
+        </div>
+        <table class="table table-dark table-striped">
+
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Hash</th>
+                    <th scope="col">Иконка</th>
+                    <th scope="col">Название</th>
+                    <th scope="col">Редкость</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Ammo</th>
+                    <th scope="col">Element</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>
+                            <a href="https://www.light.gg/db/items/{{ item['hash'] }}"
+                               target="_blank" rel="noopener">
+                                <code>{{ item['hash'] }}</code>
+                            </a>
+                        </td>
+
+                        <td>
+                            {% if item['icon'] %}
+                                <img src="https://www.bungie.net{{ item['icon'] }}"
+                                     alt="иконка" style="width:40px;height:40px;border-radius:8px"
+                                     onerror="this.style.display='none'">
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ item['name'] or '—' }}</strong>
+                        </td>
+                        <td>
+                            <span class="badge-soft">{{ item['tier_type_name'] or '—' }}</span>
+                        </td>
+
+
+                        <td>
+                            {{ item['item_type_display_name'] or '—' }}
+                        </td>
+                        <td>
+                            {% set am = item['ammo_type'] %}
+                            {% if am is not none and am != '' %}
+                                {{ ammo_type_labels.get(am|int, '—') }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% set ddt = item['default_damage_type'] %}
+                            {% if ddt %}
+                                {{ damage_type_labels.get(ddt|int, '—') }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                    </tr>
+
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+
+
+
+
+                            Ничего не найдено. Измените фильтры.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if total_pages > 1 %}
+        <nav class="d-flex justify-content-center mt-3 pb-3" aria-label="Пагинация">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+                    <a class="page-link"
+                       href="?page={{ page - 1 }}&limit={{ limit }}&tier={{ selected_tier|urlencode }}&item_type={{ selected_item_type if selected_item_type is not none else '' }}&only_filled={{ 1 if only_filled else '' }}"
+                       aria-label="Назад">←</a>
+                </li>
+
+                {% set start = [1, page - 2]|max %}
+                {% set end = [total_pages, page + 2]|min %}
+                {% if start > 1 %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page=1&limit={{ limit }}&tier={{ selected_tier|urlencode }}&item_type={{ selected_item_type if selected_item_type is not none else '' }}&only_filled={{ 1 if only_filled else '' }}">1</a>
+                    </li>
+                    {% if start > 2 %}
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    {% endif %}
+                {% endif %}
+
+                {% for p in range(start, end + 1) %}
+                    <li class="page-item {% if p == page %}active{% endif %}">
+                        <a class="page-link"
+                           href="?page={{ p }}&limit={{ limit }}&tier={{ selected_tier|urlencode }}&item_type={{ selected_item_type if selected_item_type is not none else '' }}&only_filled={{ 1 if only_filled else '' }}">{{ p }}</a>
+                    </li>
+                {% endfor %}
+
+                {% if end < total_pages %}
+                    {% if end < total_pages - 1 %}
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    {% endif %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ total_pages }}&limit={{ limit }}&tier={{ selected_tier|urlencode }}&item_type={{ selected_item_type if selected_item_type is not none else '' }}&only_filled={{ 1 if only_filled else '' }}">{{ total_pages }}</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+                    <a class="page-link"
+                       href="?page={{ page + 1 }}&limit={{ limit }}&tier={{ selected_tier|urlencode }}&item_type={{ selected_item_type if selected_item_type is not none else '' }}&only_filled={{ 1 if only_filled else '' }}"
+                       aria-label="Вперёд">→</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+{% endblock %}

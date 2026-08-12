@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block title %}Звуки{% endblock %}
+
+{% block content %}
+    {% if message %}
+        <div class="alert alert-info fade-up">{{ message }}</div>
+    {% endif %}
+
+    <div class="page-head fade-up">
+        <h1 class="page-title">Звуки <span class="text-gradient">клана</span></h1>
+        <p class="page-sub">Управляйте звуком каждого участника и загружайте новые треки</p>
+    </div>
+
+    <div class="glass-card p-4 mb-4 fade-up">
+        <form method="POST" action="/song" enctype="multipart/form-data" class="d-flex gap-2 flex-wrap align-items-center">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="action" value="upload_music">
+            <span class="profile-label me-1">Новый трек:</span>
+            <input type="file" name="music" accept=".mp3" class="form-control" style="max-width: 320px">
+            <button type="submit" class="btn btn-primary btn-sm">Загрузить музыку</button>
+        </form>
+    </div>
+
+
+    <div class="glass-card table-card fade-up">
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Пользователь</th>
+                    <th scope="col">Музыка</th>
+                    <th scope="col" class="text-end">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                    <tr data-user-id="{{ u['id'] }}">
+                        <td style="min-width: 200px">
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="{{ url_for('static', filename='zaebala.jpg') }}" class="brand-logo" style="width:30px;height:30px" alt="">
+                                <strong>{{ u['name_discord'] }}</strong>
+                            </div>
+                        </td>
+                        <td class="song-music-cell">
+                            {% if u['song'] %}
+                                <audio src="{{ url_for('views.download_file', filename=u['song']) }}" controls></audio>
+                            {% else %}
+                                <span class="badge-soft cyan">звук не установлен</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end" style="min-width: 150px">
+                            <button type="button"
+                                    class="btn btn-warning btn-sm song-open-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#SongModal"
+                                    data-user-id="{{ u['id'] }}"
+                                    data-user-name="{{ u['name_discord'] }}"
+                                    data-current-song="{{ u['song'] or '' }}">
+                                {% if u['song'] %}Изменить{% else %}Установить{% endif %}
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if selected_user %}
+        <div class="glass-card p-4 mt-4 fade-up">
+            <h5 class="mb-1">Выбор музыки для <span class="text-gradient">{{ selected_user['name_discord'] }}</span></h5>
+            <p class="page-sub mb-4">Найдите трек из библиотеки клана</p>
+            <form method="POST" action="/song" class="d-flex gap-2 flex-wrap">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="action" value="save_song">
+                <input type="hidden" name="Name" value="{{ selected_user['id'] }}">
+                <select name="new_music" class="form-select" style="max-width: 420px">
+                    {% for f in music_files %}
+                        <option value="{{ f }}" {% if f == selected_user['song'] %}selected{% endif %}>{{ f }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary">Сохранить звук</button>
+            </form>
+
+        </div>
+    {% endif %}
+
+    <!-- Модальное окно выбора музыки -->
+    <div class="modal fade" id="SongModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Выбор музыки для <span class="text-gradient" id="SongUserName"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <div class="mb-3">
+                        <input type="search" class="form-control" id="SongSearch"
+                               placeholder="Поиск трека…" autocomplete="off">
+                    </div>
+                    <div id="SongStatus" class="alert" style="display:none"></div>
+                    <div id="SongList" class="song-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+    const modalEl = document.getElementById('SongModal');
+    if (!modalEl) return;
+
+    const listEl = document.getElementById('SongList');
+    const searchEl = document.getElementById('SongSearch');
+    const statusEl = document.getElementById('SongStatus');
+    const userNameEl = document.getElementById('SongUserName');
+    const csrfEl = modalEl.querySelector('input[name="_csrf_token"]');
+
+    let currentUserId = null;
+    let currentSong = '';
+    let allFiles = [];
+
+    function showStatus(msg, isError) {
+        statusEl.textContent = msg || '';
+        statusEl.className = isError ? 'alert alert-danger' : 'alert alert-info';
+        statusEl.style.display = msg ? 'block' : 'none';
+    }
+
+    function renderList() {
+        const q = (searchEl.value || '').trim().toLowerCase();
+        const files = q
+            ? allFiles.filter(function (f) { return f.toLowerCase().includes(q); })
+            : allFiles.slice();
+        listEl.innerHTML = '';
+        if (!files.length) {
+            const empty = document.createElement('div');
+            empty.className = 'text-muted text-center py-4';
+            empty.textContent = 'Треки не найдены';
+            listEl.appendChild(empty);
+            return;
+        }
+        files.forEach(function (file) {
+            const item = document.createElement('div');
+            item.className = 'song-item' + (file === currentSong ? ' active' : '');
+
+            const name = document.createElement('span');
+            name.className = 'song-name';
+            name.textContent = file;
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn btn-primary btn-sm';
+            if (file === currentSong) {
+                btn.textContent = '✓ Текущий';
+                btn.disabled = true;
+            } else {
+                btn.textContent = 'Выбрать';
+                btn.addEventListener('click', function () { choose(file); });
+            }
+
+            item.appendChild(name);
+            item.appendChild(btn);
+            listEl.appendChild(item);
+        });
+    }
+
+    function choose(file) {
+        showStatus('');
+        fetch('/song/api/save_song', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id: currentUserId,
+                new_music: file,
+                _csrf_token: csrfEl ? csrfEl.value : ''
+            })
+        })
+            .then(function (r) { return r.json().then(function (d) { return { status: r.status, data: d }; }); })
+            .then(function (res) {
+                if (res.status === 200 && res.data.ok) {
+                    currentSong = res.data.song || file;
+                    updateRow(currentUserId, currentSong);
+                    renderList();
+                    showStatus('Звук сохранён ✔');
+                    setTimeout(function () {
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+                    }, 900);
+                } else {
+                    showStatus(res.data.error || 'Не удалось сохранить звук', true);
+                }
+            })
+            .catch(function () { showStatus('Ошибка сети. Попробуйте ещё раз.', true); });
+    }
+
+    function updateRow(uid, song) {
+        const row = document.querySelector('tr[data-user-id="' + uid + '"]');
+        if (!row) return;
+
+        const musicCell = row.querySelector('.song-music-cell');
+        if (musicCell) {
+            musicCell.innerHTML = '';
+            if (song) {
+                const audio = document.createElement('audio');
+                audio.src = '/music/' + encodeURIComponent(song);
+                audio.controls = true;
+                musicCell.appendChild(audio);
+            } else {
+                const badge = document.createElement('span');
+                badge.className = 'badge-soft cyan';
+                badge.textContent = 'звук не установлен';
+                musicCell.appendChild(badge);
+            }
+        }
+
+        const actionBtn = row.querySelector('.song-open-btn');
+        if (actionBtn) {
+            actionBtn.textContent = 'Изменить';
+            actionBtn.dataset.currentSong = song;
+        }
+    }
+
+    modalEl.addEventListener('show.bs.modal', function (e) {
+        const btn = e.relatedTarget;
+        if (!btn) return;
+
+        currentUserId = btn.dataset.userId || '';
+        currentSong = btn.dataset.currentSong || '';
+        if (userNameEl) userNameEl.textContent = btn.dataset.userName || '';
+        if (searchEl) searchEl.value = '';
+
+        showStatus('');
+        listEl.innerHTML = '<div class="text-muted text-center py-4">Загрузка…</div>';
+
+        fetch('/song/api/music_list?user_id=' + encodeURIComponent(currentUserId), {
+            headers: { 'Accept': 'application/json' }
+        })
+            .then(function (r) { return r.json().then(function (d) { return { status: r.status, data: d }; }); })
+            .then(function (res) {
+                if (res.status === 200 && res.data.ok) {
+                    allFiles = res.data.music_files || [];
+                    currentSong = (res.data.user && res.data.user.song) || '';
+                    renderList();
+                } else {
+                    listEl.innerHTML = '';
+                    showStatus(res.data.error || 'Не удалось загрузить список', true);
+                }
+            })
+            .catch(function () {
+                listEl.innerHTML = '';
+                showStatus('Ошибка сети. Попробуйте ещё раз.', true);
+            });
+    });
+
+    if (searchEl) {
+        searchEl.addEventListener('input', renderList);
+    }
+})();
+</script>
+{% endblock %}

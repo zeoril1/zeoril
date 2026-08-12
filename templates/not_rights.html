@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Нет прав{% endblock %}
+
+{% block content %}
+    <div class="denied-wrap fade-up">
+        <div class="denied-ico">🚫</div>
+        <h1 class="page-title">У вас нет прав</h1>
+        <p class="page-sub">Этот раздел доступен только администраторам клана.</p>
+        <a href="/" class="btn btn-primary mt-4">Вернуться на главную</a>
+    </div>
+{% endblock %}

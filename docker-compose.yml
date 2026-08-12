@@ -1,0 +1,109 @@
+# Запуск:
+#   1) docker compose down                        # убить текущие запущенные контейнеры
+#   2) docker compose up -d --build --force-recreate  # пересобрать image и поднять заново
+#
+# В .env НЕТ секретов — только ссылки на конфиг-сервис: CONFIG_SERVICE_URL,
+# CONFIG_PROJECT_NAME, CONFIG_PROJECT_DB_NAME, CONFIG_TOKEN (опционально).
+# ВСЕ значения (включая PostgreSQL) приложения получают ИСКЛЮЧИТЕЛЬНО из
+# конфиг-сервиса:
+#   GET {URL}/config/{CONFIG_PROJECT_NAME}?format=env     (дискорд)
+#   GET {URL}/config/{CONFIG_PROJECT_DB_NAME}?format=env  (БД)
+#
+# Проект БД (по умолчанию 'postgress') отдаёт PGDATABASE, PGUSER, PGPASSWORD
+# (опц. PGPORT, PGHOST); основной проект ('discord') — DISCORD_*, SECRET_KEY,
+# а также BUNGIE_CLIENT_ID, BUNGIE_API_KEY, BUNGIE_REDIRECT_URI (вход через
+# Bungie.net). BUNGIE_CLIENT_SECRET нужен только если приложение Bungie
+# имеет тип Confidential (у Public-приложений секрета нет).
+#
+# pull_policy: build в сервисах с build-секцией заставляет compose при каждом
+# `up` пересобирать образ из Dockerfile и перезаписывать локальный image
+# (zeoril-db:latest, zeoril:latest), даже если он уже существует.
+
+
+#
+# Наружу смотрят сайт (waitress) на порту 80 и PostgreSQL.
+services:
+  db:
+    build:
+      context: .
+      dockerfile: db.Dockerfile
+    image: zeoril-db:latest
+    pull_policy: build
+    container_name: zeoril-db
+    # Параметры БД получает db-entrypoint.sh из конфиг-сервиса и передаёт
+    # штатному docker-entrypoint.sh образа postgres.
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "${DB_EXTERNAL_PORT:-5432}:${DB_INTERNAL_PORT:-5432}"
+    extra_hosts:
+      # Доступ к конфиг-сервису на хосте (localhost:8420).
+      - "host.docker.internal:host-gateway"
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Токен конфиг-сервиса, введённый админом на сайте, виден и БД.
+      - ./resources:/resources:ro
+    restart: unless-stopped
+    healthcheck:
+      # Порт берём из /tmp/pgport: PostgreSQL может слушать нестандартный порт.
+      test: ['CMD-SHELL', 'port=$$(cat /tmp/pgport 2>/dev/null || echo 5432); pg_isready -h 127.0.0.1 -p "$$port"']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  site:
+    build: .
+    image: zeoril:latest
+    pull_policy: build
+    container_name: zeoril-site
+    command: python BotSite.py
+    ports:
+      - "8080:80"
+    env_file:
+      - path: .env
+        required: false
+    extra_hosts:
+      # Доступ к конфиг-сервису на хосте (localhost:8420).
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      # Общие с ботом ресурсы (логи, heartbeat, токен) и музыка.
+      - ./resources:/app/resources
+      - ./music:/app/music
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://127.0.0.1/', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  bot:
+    # Использует тот же image zeoril:latest, который пересобирает сервис site
+    # (pull_policy: build задан там), поэтому на `up` его контейнер тоже
+    # пересоздаётся с новым образом.
+    image: zeoril:latest
+    container_name: zeoril-bot
+    command: python DiscordBot.py
+    env_file:
+      - path: .env
+        required: false
+    extra_hosts:
+      # Доступ к конфиг-сервису на хосте (localhost:8420).
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./resources:/app/resources
+      - ./music:/app/music
+    restart: unless-stopped
+
+volumes:
+  pgdata:

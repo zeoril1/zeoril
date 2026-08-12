@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+
+{% block title %}Коллекция Destiny 2{% endblock %}
+
+{% block content %}
+    <div class="page-head fade-up">
+        <h1 class="page-title">Коллекция Destiny 2 — <span class="text-gradient">что собрано</span></h1>
+        <p class="page-sub">
+            {% if meta and meta.get('bungie_name') %}
+                Bungie: <strong>{{ meta['bungie_name'] }}</strong> ·
+            {% endif %}
+            Собрано: <strong>{{ obtained }}</strong> из <strong>{{ total }}</strong>
+        </p>
+
+        {# Переключатель «Только не собранные» #}
+        <label class="coll-filter-collapse-btn" for="collOnlyMissing">
+            <input type="checkbox" id="collOnlyMissing" class="form-check-input" role="switch">
+            <span class="coll-filter-label">Только не собранные</span>
+        </label>
+    </div>
+
+    {% if error %}
+        <div class="glass-card fade-up p-4 text-center">
+            <p class="text-muted mb-0">{{ error }}</p>
+        </div>
+    {% elif not categories %}
+        <div class="glass-card fade-up p-4 text-center">
+            <p class="text-muted mb-0">Коллекции пусты. Попробуйте обновить страницу позже.</p>
+        </div>
+    {% else %}
+
+        {# Макрос плитки предмета: иконка + «получен/не получен» #}
+        {% macro render_item(item) -%}
+            <button type="button"
+                    class="coll-tile{% if item['obtained'] %} coll-tile-obtained{% endif %}"
+                    data-bs-toggle="modal"
+                    data-bs-target="#collectibleModal"
+                    data-name="{{ item['name'] }}"
+                    data-icon="{{ item['icon'] or '' }}"
+                    data-source="{{ item['source'] or '' }}"
+                    data-obtained="{{ 1 if item['obtained'] else 0 }}"
+                    data-item-hash="{{ item['item_hash'] }}"
+                    data-hash="{{ item['hash'] }}"
+                    title="{{ item['name'] }}">
+                {% if item['icon'] %}
+                    <img src="https://www.bungie.net{{ item['icon'] }}"
+                         alt=""
+                         loading="lazy"
+                         onerror="this.style.display='none'">
+                {% else %}
+                    <span class="weapon-tile-fallback">?</span>
+                {% endif %}
+                {% if not item['obtained'] %}
+                    <span class="coll-tile-lock" aria-hidden="true"></span>
+                {% endif %}
+            </button>
+        {%- endmacro %}
+
+        {# Макрос сетки предметов #}
+        {% macro render_grid(items) -%}
+            <div class="coll-grid">
+                {% for item in items %}
+                    {{ render_item(item) }}
+                {% endfor %}
+            </div>
+        {%- endmacro %}
+
+        {# Макрос статистики собрано/всего #}
+        {% macro render_count(obtained, total) -%}
+            <span class="coll-count"><b>{{ obtained }}</b>/{{ total }}</span>
+        {%- endmacro %}
+
+        {# Макрос групп-сетов: заголовок сета + сетка его предметов #}
+        {% macro render_groups(groups) -%}
+            {% for group in groups %}
+                {% if group['name'] %}
+                    <div class="coll-set-label">{{ group['name'] }}</div>
+                {% endif %}
+                {{ render_grid(group['items']) }}
+            {% endfor %}
+        {%- endmacro %}
+
+        {# Макрос сворачиваемого узла дерева (рекурсивный: любой глубины) #}
+        {% macro render_node(node, depth) -%}
+            <div class="coll-subgroup">
+                <button type="button"
+                        class="coll-collapse-btn coll-subgroup-title"
+                        aria-expanded="false"
+                        data-coll-depth="{{ depth }}">
+                    <span class="coll-caret" aria-hidden="true">▸</span>
+                    <span class="coll-section-label">{{ node['name'] }}</span>
+                    {{ render_count(node.get('obtained', 0), node.get('total', 0)) }}
+                </button>
+                <div class="coll-subgroup-body" hidden>
+                    {% if node['groups'] %}
+                        {{ render_groups(node['groups']) }}
+                    {% elif node['items'] %}
+                        {{ render_grid(node['items']) }}
+                    {% endif %}
+                    {% for sub in node['subgroups'] %}
+                        {{ render_node(sub, depth + 1) }}
+                    {% endfor %}
+                </div>
+            </div>
+        {%- endmacro %}
+
+        {% for category in categories %}
+            <div class="glass-card coll-category fade-up">
+                <button type="button"
+                        class="coll-collapse-btn coll-category-head"
+                        aria-expanded="false">
+                    {% if category['icon'] %}
+                        <img class="coll-category-icon"
+                             src="https://www.bungie.net{{ category['icon'] }}"
+                             alt=""
+                             onerror="this.style.display='none'">
+                    {% endif %}
+                    <span class="coll-caret" aria-hidden="true">▸</span>
+                    <h2 class="coll-category-title">{{ category['name'] }}</h2>
+                    <span class="coll-count coll-category-count">{{ category.get('obtained', 0) }}/{{ category.get('total', 0) }}</span>
+                </button>
+
+                <div class="coll-category-body" hidden>
+                    {# Предметы прямо в категории (например, у Exotic) #}
+                    {% if category['groups'] %}
+                        {{ render_groups(category['groups']) }}
+                    {% elif category['items'] %}
+                        {{ render_grid(category['items']) }}
+                    {% endif %}
+
+                    {% for subgroup in category['subgroups'] %}
+                        {{ render_node(subgroup, 1) }}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+    {% endif %}
+
+    {# Модалка с информацией о коллекционном предмете #}
+    <div class="modal fade" id="collectibleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title collectible-modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="weapon-modal-body d-flex gap-3">
+                        <div class="weapon-modal-icon-wrap">
+                            <img class="weapon-modal-icon" src="" alt="" onerror="this.style.display='none'">
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="collectible-modal-source text-muted small mb-2"></div>
+                            <table class="weapon-modal-info">
+                                <tbody>
+                                    <tr>
+                                        <td>Статус</td>
+                                        <td class="collectible-modal-status"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Источник</td>
+                                        <td class="collectible-modal-source-row"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <a class="btn btn-primary btn-sm mt-3 collectible-modal-link"
+                               href="#" target="_blank" rel="noopener">
+                                Открыть на light.gg
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      (function () {
+        // ---- Сворачивание секций/подсекций/категорий (по умолчанию всё свёрнуто) ----
+        document.querySelectorAll('.coll-collapse-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const body = btn.nextElementSibling;
+            if (!body) return;
+            const collapsed = body.hidden;
+            body.hidden = !collapsed;
+            btn.setAttribute('aria-expanded', collapsed ? 'true' : 'false');
+            const caret = btn.querySelector('.coll-caret');
+            if (caret) caret.textContent = collapsed ? '▾' : '▸';
+          });
+        });
+
+        // ---- Переключатель «Только не собранные» ----
+        const onlyMissing = document.getElementById('collOnlyMissing');
+        if (onlyMissing) {
+          // Есть ли в поддереве раздела хотя бы один не собранный предмет?
+          function hasMissingTile(root) {
+            const tiles = root.querySelectorAll('.coll-tile');
+            for (let i = 0; i < tiles.length; i++) {
+              if (!tiles[i].classList.contains('coll-tile-obtained')) {
+                return true;
+              }
+            }
+            return false;
+          }
+
+          function applyMissingFilter(missingOnly) {
+            // Скрываем собранные предметы, а также группы-сеты, где всё собрано.
+            document.querySelectorAll('.coll-grid').forEach(function (grid) {
+              const label = grid.previousElementSibling;
+              const isSetGroup = label && label.classList.contains('coll-set-label');
+              let hasMissing = false;
+              grid.querySelectorAll('.coll-tile').forEach(function (tile) {
+                const missing = !tile.classList.contains('coll-tile-obtained');
+                if (missing) hasMissing = true;
+                tile.style.display = (missingOnly && !missing) ? 'none' : '';
+              });
+              // Группу-сет (заголовок + сетка) скрываем целиком,
+              // если в ней нет ни одного не собранного предмета.
+              if (isSetGroup) {
+                const hideGroup = missingOnly && !hasMissing;
+                grid.style.display = hideGroup ? 'none' : '';
+                label.style.display = hideGroup ? 'none' : '';
+              }
+            });
+            // Скрываем разделы (подгруппы и категории), где всё уже собрано.
+            document.querySelectorAll('.coll-subgroup').forEach(function (section) {
+              section.style.display = (missingOnly && !hasMissingTile(section)) ? 'none' : '';
+            });
+            document.querySelectorAll('.coll-category').forEach(function (category) {
+              category.style.display = (missingOnly && !hasMissingTile(category)) ? 'none' : '';
+            });
+          }
+
+          onlyMissing.addEventListener('change', function () {
+            applyMissingFilter(onlyMissing.checked);
+          });
+        }
+
+        // ---- Модалка с информацией о коллекционном предмете ----
+        const modalEl = document.getElementById('collectibleModal');
+        if (!modalEl) return;
+
+        const fields = {
+          title: modalEl.querySelector('.collectible-modal-title'),
+          icon: modalEl.querySelector('.weapon-modal-icon'),
+          status: modalEl.querySelector('.collectible-modal-status'),
+          source: modalEl.querySelector('.collectible-modal-source-row'),
+          link: modalEl.querySelector('.collectible-modal-link'),
+        };
+
+        modalEl.addEventListener('show.bs.modal', function (event) {
+          const btn = event.relatedTarget;
+          if (!btn) return;
+
+          const name = btn.getAttribute('data-name') || '';
+          const icon = btn.getAttribute('data-icon') || '';
+          const source = btn.getAttribute('data-source') || '';
+          const obtained = btn.getAttribute('data-obtained') === '1';
+          const itemHash = btn.getAttribute('data-item-hash') || '';
+
+          fields.title.textContent = name;
+          fields.status.textContent = obtained ? '✅ Собрано' : '🔒 Не собрано';
+          fields.source.textContent = source || '—';
+          fields.link.href = 'https://www.light.gg/db/items/' + itemHash;
+
+          if (icon) {
+            fields.icon.src = 'https://www.bungie.net' + icon;
+            fields.icon.style.display = '';
+          } else {
+            fields.icon.removeAttribute('src');
+            fields.icon.style.display = 'none';
+          }
+        });
+      })();
+    </script>
+{% endblock %}

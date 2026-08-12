@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Рулетка челленджей{% endblock %}
+
+{% block content %}
+    <div class="page-head fade-up">
+        <h1 class="page-title">Рулетка <span class="text-gradient">челленджей</span></h1>
+        <p class="page-sub">Создайте лобби, позовите друзей и крутите колесо — кому какой челлендж экзотики выпадет</p>
+    </div>
+
+    {% if message %}
+        <div class="alert alert-danger fade-up">{{ message }}</div>
+    {% endif %}
+
+    <div class="glass-card fade-up p-4 game-create-card" style="max-width: 560px; margin: 0 auto;">
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="game-ico">🎰</div>
+            <div>
+                <h4 class="mb-0">Новое лобби</h4>
+                <div class="page-sub mb-0">Игроки войдут по ссылке и встанут в очередь</div>
+            </div>
+        </div>
+
+        <form method="post" action="/destiny/game">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            <div class="mb-3">
+                <label for="lobbyName" class="form-label">Название лобби (необязательно)</label>
+                <input type="text" class="form-control" name="name" id="lobbyName"
+                       maxlength="80" placeholder="Например: Субботний забег">
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-fill">Создать лобби</button>
+            </div>
+        </form>
+    </div>
+
+    {% if active_sessions %}
+        <div class="glass-card fade-up p-4 mt-4">
+            <h5 class="mb-3">🟢 Текущие игровые сессии</h5>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>Лобби</th>
+                            <th>Создатель</th>
+                            <th>Игроков</th>
+                            <th>Статус</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in active_sessions %}
+                            <tr>
+                                <td><strong>{{ s.name }}</strong></td>
+                                <td>{{ s.owner_name }}</td>
+                                <td>{{ s.members_count }}</td>
+                                <td>
+                                    {% if s.rolling %}
+                                        <span class="badge-soft">🎰 крутится</span>
+                                    {% else %}
+                                        <span class="badge-soft">в лобби</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <a class="btn btn-sm btn-outline-light"
+                                       href="/destiny/game/{{ s.id }}">Войти</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if past_games %}
+        <div class="glass-card fade-up p-4 mt-4">
+            <h5 class="mb-3">📁 Прошлые игры</h5>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Лобби</th>
+                            <th>Создатель</th>
+                            <th>Результатов</th>
+                            <th>Завершена</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for g in past_games %}
+                            <tr>
+                                <td>{{ g.id }}</td>
+                                <td><strong>{{ g.name }}</strong></td>
+                                <td>{{ g.owner_name or '—' }}</td>
+                                <td>{{ g.results | length }}</td>
+                                <td class="small text-muted">{{ g.ended_at.strftime('%d.%m.%Y %H:%M') if g.ended_at else '—' }}</td>
+                                <td class="text-end">
+                                    <a class="btn btn-sm btn-outline-light"
+                                       href="/destiny/game/{{ g.id }}/view">Просмотр</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="glass-card fade-up p-4 mt-4 text-muted text-center">
+            Прошлых игр пока нет — создайте первое лобби и сыграйте! 🎲
+        </div>
+    {% endif %}
+{% endblock %}
