@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 
 import flask
-from flask import make_response, redirect
+from flask import make_response, redirect, request
 
 from app import config_service
 from app.site.auth import (_cookie_secure, delete_session, request_user_is_admin,
