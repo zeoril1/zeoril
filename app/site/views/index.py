@@ -8,9 +8,9 @@ from flask import make_response, redirect, render_template, request
 from werkzeug.security import generate_password_hash
 
 from app import database
-from app.site.auth import (_client_ip, _rate_key, clear_failures,
-                           create_session, current_user, get_user_by_id,
-                           get_user_by_login, rate_limit_wait,
+from app.site.auth import (_client_ip, _hash_session_token, _rate_key,
+                           clear_failures, create_session, current_user,
+                           get_user_by_id, get_user_by_login, rate_limit_wait,
                            register_failure, user_rights, validate_csrf,
                            verify_password)
 from app.site.music import save_music
@@ -77,6 +77,8 @@ def handle_authed(user):
     if request.method == 'POST':
         validate_csrf()
         action = request.form.get('action')
+        if action == 'change_password':
+            return change_password(user)
         if action == 'save_song':
             if not is_music:
                 return redirect('/', code=403)
@@ -96,6 +98,40 @@ def handle_authed(user):
     if show_select and not is_music:
         return redirect('/', code=403)
     return render_profile(user, rights, show_select=show_select)
+
+
+def change_password(user):
+    """Смена пароля в личном кабинете."""
+    uid = user['id']
+    current = request.form.get('current_password') or ''
+    new_password = request.form.get('new_password') or ''
+    confirm = request.form.get('confirm_password') or ''
+
+    # У пользователей, вошедших через OAuth, пароля может не быть —
+    # тогда разрешаем просто задать новый.
+    if user.get('password') and not verify_password(current, user['password']):
+        return render_profile(
+            user, user_rights(uid), message='Текущий пароль указан неверно')
+    if len(new_password) < 8:
+        return render_profile(
+            user, user_rights(uid),
+            message='Новый пароль должен содержать не менее 8 символов')
+    if new_password != confirm:
+        return render_profile(
+            user, user_rights(uid), message='Введённые пароли не совпадают')
+
+    with database.db() as conn:
+        database.execute(
+            conn, 'UPDATE users SET password = %s WHERE id = %s',
+            (generate_password_hash(new_password), uid))
+        # Завершаем все остальные сессии, текущую оставляем активной.
+        current_hash = _hash_session_token(request.cookies.get('Auth') or '')
+        database.execute(
+            conn,
+            'DELETE FROM session WHERE id = %s AND hash != %s',
+            (uid, current_hash))
+    return render_profile(
+        user, user_rights(uid), message='Пароль успешно изменён ✔')
 
 
 # --------------------------------------------------------------------------- #
