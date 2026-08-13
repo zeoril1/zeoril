@@ -3,10 +3,11 @@ from __future__ import annotations
 
 import logging
 
-from flask import redirect, render_template
+from flask import jsonify, make_response, redirect, render_template, request
 
-from app.site.auth import current_user
+from app.site.auth import current_user, validate_csrf_json
 from app.site.bungie import get_user_inventory
+from app.site.bungie.api import transfer_item
 from app.site.bungie import items as manifest_items
 from app.site.lang import get_lang
 from app.site.views.blueprint import bp
@@ -433,6 +434,7 @@ def inventory():
             armor_slot_list = [armor_slots[k] for k, _ in ARMOR_SLOTS]
 
             classes.append({
+                'character_id': str(character_id),
                 'label': label,
                 'light': cdata.get('light') or '',
                 'emblem': cdata.get('emblem_path') or '',
@@ -518,7 +520,8 @@ def inventory():
         # персонажей сюда НЕ дублируются (у персонажей свой «Почтмейстер»).
         grid_rows: list[dict] = []
 
-        def _cell(label: str, *, equipped=None, other=None, postmaster=False):
+        def _cell(label: str, *, equipped=None, other=None, postmaster=False,
+                  source: str = 'vault'):
             eq = list(equipped or [])
             items = list(other or [])
             return {
@@ -527,12 +530,14 @@ def inventory():
                 'items': items,
                 'has_equipped_col': equipped is not None,
                 'postmaster': postmaster,
+                'source': source,
                 'total': len(eq) + len(items),
             }
 
         # Ряд «📬 Почтмейстер» (персонажи) / «Разное» (хранилище).
         pm_cells = [
-            _cell('📬 Почтмейстер', other=cls['postmaster'], postmaster=True)
+            _cell('📬 Почтмейстер', other=cls['postmaster'], postmaster=True,
+                  source=cls['character_id'])
             for cls in classes
         ]
         pm_cells.append(_cell('Разное', other=vault_other))
@@ -544,7 +549,8 @@ def inventory():
             for cls in classes:
                 slot = next(s for s in cls['slots'] if s['key'] == key)
                 cells.append(_cell(label, equipped=slot['equipped'],
-                                   other=slot['other']))
+                                   other=slot['other'],
+                                   source=cls['character_id']))
             cells.append(_cell(label, other=vault_slots[key]['items']))
             grid_rows.append({'key': key, 'cells': cells})
 
@@ -554,7 +560,8 @@ def inventory():
             for cls in classes:
                 slot = next(s for s in cls['armor_slots'] if s['key'] == key)
                 cells.append(_cell(label, equipped=slot['equipped'],
-                                   other=slot['other']))
+                                   other=slot['other'],
+                                   source=cls['character_id']))
             cells.append(_cell(label, other=vault_armor_slots[key]['items']))
             grid_rows.append({'key': key, 'cells': cells})
 
@@ -590,14 +597,18 @@ def inventory():
             'vault': vault['total'],
         }
 
-        return render_template(
+        # После перемещения предметов страница всегда должна перезагружаться
+        # со свежими данными — запрещаем кэширование HTML.
+        resp = make_response(render_template(
             'inventory.html',
             error=None,
             classes=classes,
             vault=vault,
             grid_rows=grid_rows,
             meta=meta,
-        )
+        ))
+        resp.headers['Cache-Control'] = 'no-store'
+        return resp
 
     except Exception as exc:
         # Любая внутренняя ошибка не должна превращаться в 500:
@@ -609,3 +620,35 @@ def inventory():
                   'или сообщите администратору.',
             meta={},
         )
+
+
+@bp.route('/inventory/transfer', methods=['POST'])
+def inventory_transfer():
+    """Перемещает предмет (drag & drop) через Bungie TransferItem.
+
+    Тело JSON: ``hash`` (itemReferenceHash), ``instance`` (itemInstanceId),
+    ``target`` — 'vault' или character_id получателя.
+    """
+    user = current_user()
+    if user is None:
+        return jsonify({'ok': False, 'error': 'Не авторизован'}), 401
+    if not validate_csrf_json():
+        return jsonify({'ok': False, 'error': 'Неверный CSRF-токен'}), 400
+
+    payload = request.get_json(silent=True) or {}
+    try:
+        item_hash = int(payload.get('hash'))
+    except (TypeError, ValueError):
+        return jsonify({'ok': False, 'error': 'Некорректный hash предмета'}), 400
+    instance_id = str(payload.get('instance') or '')
+    target = str(payload.get('target') or '').strip()
+    source = str(payload.get('source') or '').strip()
+    if not target or target not in ('vault',) and not target.isdigit():
+        return jsonify({'ok': False, 'error': 'Некорректная цель перемещения'}), 400
+    if not source or source not in ('vault',) and not source.isdigit():
+        return jsonify({'ok': False, 'error': 'Некорректный источник предмета'}), 400
+
+    ok, err = transfer_item(user, item_hash, instance_id, target, source)
+    if not ok:
+        return jsonify({'ok': False, 'error': err}), 400
+    return jsonify({'ok': True})

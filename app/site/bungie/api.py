@@ -559,6 +559,126 @@ def _get_user_inventory_inner(user) -> dict:
         'item_plug_objectives': item_plug_objectives,
     }
 
+# Эндпоинт Bungie для перемещения предметов (TransferItem).
+BUNGIE_TRANSFER_URL = ('https://www.bungie.net/Platform/Destiny2/Actions/'
+                       'Items/TransferItem/')
+
+
+def transfer_item(user, item_hash: int, instance_id: str, target: str,
+                  source: str = '') -> tuple[bool, str]:
+    """Перемещает предмет через Bungie TransferItem.
+
+    ``target`` — 'vault' (в сейв) или строковый character_id (персонажу).
+    ``source`` — где предмет сейчас: 'vault' или character_id (нужен для
+    пересылки в сейв: Bungie требует characterId персонажа-источника).
+
+    По схеме Bungie:
+    * в сейв (transferToVault=true): characterId = персонаж-источник;
+    * персонажу (transferToVault=false): characterId = персонаж-получатель.
+
+    Возвращает ``(True, '')`` при успехе и ``(False, сообщение)`` иначе.
+    Исключений наружу не бросает.
+    """
+    try:
+        return _transfer_item_inner(user, item_hash, instance_id, target,
+                                    source)
+    except Exception as exc:
+        logger.exception('Непредвиденная ошибка TransferItem: %s', exc)
+        return False, 'Внутренняя ошибка при перемещении предмета.'
+
+
+def _transfer_item_inner(user, item_hash: int, instance_id: str, target: str,
+                         source: str = '') -> tuple[bool, str]:
+    membership_id = user.get('bungie_membership_id')
+    membership_type = user.get('bungie_membership_type')
+    if not membership_id or not membership_type:
+        return False, 'Bungie-аккаунт не привязан.'
+
+    try:
+        cfg = bungie_config()
+    except RuntimeError as exc:
+        logger.warning('Bungie OAuth не настроен: %s', exc)
+        return False, 'Bungie OAuth не настроен на сервере.'
+
+    to_vault = target == 'vault'
+    if to_vault:
+        # Для пересылки в сейв Bungie требует персонажа, у которого предмет
+        # находится сейчас (источник), а не '0'.
+        character_id = str(source or '')
+        if not character_id or character_id == 'vault':
+            return False, 'Неизвестен персонаж-источник предмета.'
+    else:
+        character_id = str(target or '')
+        if not character_id:
+            return False, 'Не указан персонаж-получатель.'
+
+    access_token = user.get('bungie_access_token')
+    if not access_token or _token_is_expired(user):
+        access_token = _refresh_access_token(user, cfg)
+        if not access_token:
+            return False, 'Не удалось обновить токен Bungie. Привяжите заново.'
+
+    payload = {
+        'itemReferenceHash': int(item_hash),
+        'stackSize': 1,
+        'transferToVault': to_vault,
+        'itemId': str(instance_id or '0'),
+        'characterId': character_id,
+        'membershipType': int(membership_type),
+    }
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'X-API-Key': cfg['api_key'],
+        'Content-Type': 'application/json',
+    }
+
+    def _post() -> tuple[dict | None, int]:
+        try:
+            resp = requests.post(
+                BUNGIE_TRANSFER_URL, headers=headers, json=payload, timeout=10)
+        except requests.RequestException as exc:
+            logger.warning('Ошибка запроса TransferItem: %s', exc)
+            return None, 0
+        # Тело парсим всегда, чтобы при 4xx/5xx можно было показать
+        # ErrorCode/Message от Bungie.
+        try:
+            return resp.json(), resp.status_code
+        except ValueError:
+            return None, resp.status_code
+
+    data, status = _post()
+    if status == 401:
+        # Токен протух — обновляем и пробуем ещё раз один раз.
+        access_token = _refresh_access_token(user, cfg)
+        if not access_token:
+            return False, 'Не удалось обновить токен Bungie. Привяжите заново.'
+        headers['Authorization'] = f'Bearer {access_token}'
+        data, status = _post()
+
+    if status == 0:
+        return False, 'Сетевая ошибка при обращении к Bungie.'
+    if status >= 400:
+        code = int((data or {}).get('ErrorCode') or 0)
+        message = (data or {}).get('Message') or ''
+        detail = (data or {}).get('ErrorStatus') or ''
+        logger.warning('TransferItem: HTTP %s, ErrorCode=%s, %s %s',
+                       status, code, message, detail)
+        if code == 3102:
+            return False, 'Нельзя переместить экипированный предмет.'
+        return False, f'Bungie: HTTP {status} ({message or detail or code})'.strip()
+
+    code = int((data or {}).get('ErrorCode') or 0)
+    if code == 1:  # PlatformErrorCodes.Success
+        return True, ''
+
+    message = (data or {}).get('Message') or ''
+    detail = (data or {}).get('ErrorStatus') or ''
+    logger.warning('TransferItem: ErrorCode=%s, %s %s', code, message, detail)
+    if code == 3102 or 'requires' in message.lower():
+        return False, 'Нельзя переместить экипированный предмет.'
+    return False, f'Bungie отказал: {message or detail or code}'.strip()
+
+
 # Компоненты профиля для проверки «что есть у игрока» (лёгкий запрос без
 # прогресса катализаторов и коллекций): сейв, инвентари и экипировка.
 OWNED_COMPONENTS = '102,201,205'

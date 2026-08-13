@@ -7,12 +7,16 @@
 
 {% block content %}
     {# Плитка предмета: кнопка с иконкой и бейджем количества (общая для всех
-       секций инвентаря). При equipped=True — подсвечиваем и показываем ★. #}
-    {% macro render_tile(w, equipped=false) -%}
+       секций инвентаря). При equipped=True — подсвечиваем и показываем ★.
+       source — откуда предмет ('vault' или character_id); неэкипированные
+       плитки можно перетаскивать (drag & drop). #}
+    {% macro render_tile(w, equipped=false, source='') -%}
         <button type="button"
                 class="weapon-tile{{ ' weapon-tile-equipped' if equipped else '' }}"
                 data-bs-toggle="modal"
                 data-bs-target="#weaponModal"
+                {% if not equipped %}draggable="true"{% endif %}
+                data-source="{{ source }}"
                 data-name="{{ w['name'] }}"
                 data-icon="{{ w['icon'] or '' }}"
                 data-tier="{{ w['tier'] or '—' }}"
@@ -23,7 +27,7 @@
                 data-instance="{{ w['instance'] }}"
                 data-hash="{{ w['hash'] }}"
                 data-equipped="{{ 1 if equipped else 0 }}"
-                title="{{ w['name'] }}">
+                title="Перетащите, чтобы переместить: {{ w['name'] }}">
             {% if w['icon'] %}
                 <img src="https://www.bungie.net{{ w['icon'] }}"
                      alt=""
@@ -88,10 +92,20 @@
         </div>
 
     {% else %}
-        <div class="inv-grid fade-up">
+        <div class="inv-search fade-up">
+            <input type="search"
+                   id="invSearch"
+                   class="form-control inv-search-input"
+                   placeholder="Поиск: имя / тип / стихия / патроны / сила..."
+                   autocomplete="off"
+                   aria-label="Поиск по инвентарю">
+            <span class="inv-search-count text-muted small" id="invSearchCount"></span>
+        </div>
+
+        <div class="inv-grid fade-up" data-csrf="{{ csrf_token() }}">
             {# --- Заголовки карточек: 3 персонажа + хранилище --- #}
             {% for cls in classes %}
-                <div class="inv-cell">
+                <div class="inv-cell" data-char-id="{{ cls['character_id'] }}">
                     <div class="inv-card-head">
                         {% if cls['emblem'] %}
                             <img src="https://www.bungie.net{{ cls['emblem'] }}"
@@ -108,7 +122,7 @@
                     </div>
                 </div>
             {% endfor %}
-            <div class="inv-cell">
+            <div class="inv-cell" data-char-id="vault">
                 <div class="inv-card-head">
                     <div class="inv-vault-badge">🏦</div>
                     <div class="inv-head-text">
@@ -125,7 +139,7 @@
                  самая высокая ячейка, предметы не скрываются. --- #}
             {% for row in grid_rows %}
                 {% for cell in row['cells'] %}
-                    <div class="inv-cell">
+                    <div class="inv-cell" data-char-id="{{ cell['source'] }}">
                         <div class="weapon-slot{{ ' weapon-slot-postmaster' if cell['postmaster'] else '' }}">
                             <div class="weapon-slot-head">
                                 <span class="weapon-slot-title">{{ cell['label'] }}</span>
@@ -138,7 +152,7 @@
                                     <div class="weapon-slot-body">
                                         <div class="weapon-slot-equipped">
                                             {% for w in cell['equipped'] %}
-                                                {{ render_tile(w, equipped=true) }}
+                                                {{ render_tile(w, equipped=true, source=cell['source']) }}
                                             {% endfor %}
                                             {% if not cell['equipped'] %}
                                                 <div class="weapon-slot-empty d-flex align-items-center justify-content-center px-3">
@@ -150,7 +164,7 @@
                                             {% if cell['items'] %}
                                                 <div class="weapon-slot-grid">
                                                     {% for w in cell['items'] %}
-                                                        {{ render_tile(w) }}
+                                                        {{ render_tile(w, source=cell['source']) }}
                                                     {% endfor %}
                                                 </div>
                                             {% else %}
@@ -163,7 +177,7 @@
                                 {% else %}
                                     <div class="weapon-slot-grid">
                                         {% for w in cell['items'] %}
-                                            {{ render_tile(w) }}
+                                            {{ render_tile(w, source=cell['source']) }}
                                         {% endfor %}
                                     </div>
                                 {% endif %}
@@ -303,6 +317,191 @@
 
           fields.link.href = 'https://www.light.gg/db/items/' + hash;
         });
+      })();
+
+      // --- Перемещение предметов drag & drop (Bungie TransferItem) ---
+      (function () {
+        const grid = document.querySelector('.inv-grid');
+        if (!grid) return;
+
+        const CSRF = grid.getAttribute('data-csrf') || '';
+        let dragItem = null;
+
+        grid.querySelectorAll('.weapon-tile[draggable]').forEach(function (tile) {
+          tile.addEventListener('dragstart', function (e) {
+            dragItem = {
+              hash: tile.getAttribute('data-hash') || '',
+              instance: tile.getAttribute('data-instance') || '',
+              source: tile.getAttribute('data-source') || '',
+              quantity: tile.getAttribute('data-quantity') || '1',
+              tile: tile, // сам элемент — для мгновенного переноса
+            };
+            e.dataTransfer.effectAllowed = 'move';
+            try {
+              e.dataTransfer.setData('text/plain', tile.getAttribute('data-name') || '');
+            } catch (err) { /* не критично */ }
+            tile.classList.add('weapon-tile-dragging');
+          });
+          tile.addEventListener('dragend', function () {
+            dragItem = null;
+            tile.classList.remove('weapon-tile-dragging');
+            grid.querySelectorAll('.inv-cell').forEach(function (c) {
+              c.classList.remove('inv-drop-over');
+            });
+          });
+        });
+
+        // Цель перетаскивания — любая ячейка колонки персонажа/хранилища.
+        grid.querySelectorAll('.inv-cell').forEach(function (cell) {
+          cell.addEventListener('dragover', function (e) {
+            if (!dragItem) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            cell.classList.add('inv-drop-over');
+          });
+          cell.addEventListener('dragleave', function () {
+            cell.classList.remove('inv-drop-over');
+          });
+          cell.addEventListener('drop', function (e) {
+            e.preventDefault();
+            cell.classList.remove('inv-drop-over');
+            if (!dragItem) return;
+            const target = cell.getAttribute('data-char-id');
+            if (!target || target === dragItem.source) return;
+            doTransfer(dragItem, target);
+          });
+        });
+
+        // Простой тост-индикатор поверх страницы.
+        function showToast(msg, kind) {
+          var old = document.querySelector('.inv-toast');
+          if (old) old.remove();
+          var el = document.createElement('div');
+          el.className = 'inv-toast' + (kind ? ' inv-toast-' + kind : '');
+          el.textContent = msg;
+          document.body.appendChild(el);
+          setTimeout(function () { el.classList.add('inv-toast-show'); }, 10);
+          return el;
+        }
+
+        // Мгновенно переносим плитку в ту же секцию колонки-цели, чтобы
+        // предмет сразу было видно (Bungie отдаёт свежий инвентарь с
+        // небольшой задержкой). Если подходящей секции в цели нет
+        // (например, «Разное» → персонаж) — просто пропускаем.
+        function moveTileOptimistic(tile, target) {
+          var sourceCell = tile.closest('.inv-cell');
+          if (!sourceCell) return;
+          var titleEl = sourceCell.querySelector('.weapon-slot-title');
+          if (!titleEl) return;
+          var title = titleEl.textContent.trim();
+          var targetCell = null;
+          Array.prototype.forEach.call(
+            document.querySelectorAll('.inv-cell'), function (c) {
+              if (targetCell) return;
+              var t = c.querySelector('.weapon-slot-title');
+              if (c.getAttribute('data-char-id') === target && t &&
+                  t.textContent.trim() === title) {
+                targetCell = c;
+              }
+            });
+          if (!targetCell) return;
+          var grid = targetCell.querySelector('.weapon-slot-grid');
+          if (!grid) return;
+          var empty = targetCell.querySelector('.weapon-slot-empty');
+          if (empty) empty.remove();
+          grid.appendChild(tile);
+        }
+
+        function bumpCount(cell, delta) {
+          var el = cell ? cell.querySelector('.weapon-slot-count') : null;
+          if (!el) return;
+          var m = el.textContent.match(/(\d+)/);
+          if (!m) return;
+          var n = Math.max(0, parseInt(m[1], 10) + delta);
+          el.textContent = el.textContent.replace(/(\d+)/, String(n));
+        }
+
+        function doTransfer(item, target) {
+          if (doTransfer.busy) return; // защита от повторных кликов
+          doTransfer.busy = true;
+          var toast = showToast('Перемещение…');
+          var tile = item.tile || null; // сам перетаскиваемый элемент
+
+          fetch('/inventory/transfer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              _csrf_token: CSRF,
+              hash: item.hash,
+              instance: item.instance,
+              quantity: item.quantity,
+              source: item.source,
+              target: target,
+            }),
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              if (data.ok) {
+                // Сразу показываем перемещение, не дожидаясь ответа Bungie.
+                if (tile && tile.parentNode) {
+                  var srcCell = tile.closest('.inv-cell');
+                  moveTileOptimistic(tile, target);
+                  bumpCount(srcCell, -1);
+                  bumpCount(tile.closest('.inv-cell'), 1);
+                }
+                toast.textContent = 'Перемещено ✓';
+                toast.classList.add('inv-toast-success');
+                // Даём Bungie время обновить кэш инвентаря (обычно 1-2с),
+                // затем перезагружаемся без кэша для синхронизации.
+                setTimeout(function () {
+                  var url = window.location.pathname + window.location.search;
+                  url += (url.indexOf('?') !== -1 ? '&' : '?') + '_t=' + Date.now();
+                  window.location.href = url;
+                }, 2500);
+              } else {
+                toast.remove();
+                window.alert(data.error || 'Не удалось переместить предмет.');
+              }
+            })
+            .catch(function () {
+              toast.remove();
+              window.alert('Ошибка сети при перемещении предмета.');
+            })
+            .finally(function () { doTransfer.busy = false; });
+        }
+      })();
+
+      // --- Поиск по инвентарю с подсветкой подходящих предметов ---
+      (function () {
+        const input = document.getElementById('invSearch');
+        if (!input) return;
+
+        const tiles = Array.prototype.slice.call(
+          document.querySelectorAll('.weapon-tile'));
+        const countEl = document.getElementById('invSearchCount');
+
+        function search() {
+          const q = input.value.trim().toLowerCase();
+          let found = 0;
+          tiles.forEach(function (tile) {
+            const haystack = [
+              tile.getAttribute('data-name') || '',
+              tile.getAttribute('data-type') || '',
+              tile.getAttribute('data-element') || '',
+              tile.getAttribute('data-ammo') || '',
+              tile.getAttribute('data-tier') || '',
+            ].join(' ').toLowerCase();
+            const match = !q || haystack.indexOf(q) !== -1;
+            tile.classList.toggle('weapon-tile-match', match);
+            tile.classList.toggle('weapon-tile-mismatch', !!q && !match);
+            if (match) found += 1;
+          });
+          if (countEl) {
+            countEl.textContent = q ? (found + ' / ' + tiles.length) : '';
+          }
+        }
+
+        input.addEventListener('input', search);
       })();
     </script>
 {% endblock %}
