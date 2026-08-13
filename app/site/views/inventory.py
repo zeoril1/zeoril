@@ -50,6 +50,96 @@ ARMOR_SLOT_BUCKETS = {
     1585787867: 'class_item',
 }
 
+# Отображаемые типы брони (item_type_display_name), по которым можно надёжно
+# определить слот, даже когда у предмета аномальный item_type (0/19) и/или
+# скрытый bucket (например, 2422292810 у брони «ЭОНА»). Проверяются
+# подстрокой в нижнем регистре; порядок важен — более конкретные фразы
+# («броня для ног») идут раньше общих («броня»).
+ARMOR_DISPLAY_KEYWORDS: tuple[tuple[str, str], ...] = (
+    # RU — шлем
+    ('шлем', 'helmet'),
+    ('маска', 'helmet'),
+    ('капюшон', 'helmet'),
+    # RU — руки
+    ('рукавиц', 'arms'),
+    ('перчатк', 'arms'),
+    ('обмотк', 'arms'),
+    ('наруч', 'arms'),
+    ('нарукавник', 'arms'),
+    # RU — ноги (раньше «броня», чтобы не съесть её)
+    ('броня для ног', 'legs'),
+    ('поножи', 'legs'),
+    ('сапоги', 'legs'),
+    ('штаны', 'legs'),
+    ('голенища', 'legs'),
+    # RU — торс
+    ('нагрудник', 'chest'),
+    ('жилет', 'chest'),
+    ('кираса', 'chest'),
+    ('мантия', 'chest'),
+    ('броня', 'chest'),
+    # RU — классовый предмет
+    ('плащ', 'class_item'),
+    ('метка', 'class_item'),
+    ('повязка', 'class_item'),
+    ('классовое снаряжение', 'class_item'),
+    # EN
+    ('helmet', 'helmet'),
+    ('mask', 'helmet'),
+    ('hood', 'helmet'),
+    ('gauntlet', 'arms'),
+    ('gloves', 'arms'),
+    ('glove', 'arms'),
+    ('grips', 'arms'),
+    ('wraps', 'arms'),
+    ('brace', 'arms'),
+    ('chest armor', 'chest'),
+    ('plate', 'chest'),
+    ('vest', 'chest'),
+    ('robe', 'chest'),
+    ('chest', 'chest'),
+    ('leg armor', 'legs'),
+    ('greaves', 'legs'),
+    ('boots', 'legs'),
+    ('strides', 'legs'),
+    ('pants', 'legs'),
+    ('legs', 'legs'),
+    ('class item', 'class_item'),
+    ('cloak', 'class_item'),
+    ('mark', 'class_item'),
+    ('bond', 'class_item'),
+)
+
+# Типы предметов (DestinyItemType), которые НЕ показываем в сейве: материалы
+# и расходники (Finest Matterweave, ядра, осколки и т.п.) лежат в общем
+# инвентаре и только засоряют вывод. Оружие (3) и броня (2) идут в слоты,
+# остальное ценное (призраки/корабли/эмблемы/моды) — в секцию Почтмейстера.
+VAULT_HIDDEN_ITEM_TYPES = {
+    1,   # Currency
+    6,   # Consumable
+    7,   # ExchangeMaterial
+    8,   # MissionReward
+    9,   # QuestStep
+    10,  # QuestStepComplete
+    12,  # Quest
+    22,  # Package
+    23,  # Bounty
+    24,  # Wrapper
+    25,  # SeasonalArtifact
+}
+
+# Локализованные имена типа предмета (item_type_display_name), которые
+# соответствуют материалам/валютам/расходникам (Exotic Cipher, Herealways
+# Piece, Ascendant Shard и т.п.). У таких предметов item_type может быть 0
+# или 20, поэтому надёжнее фильтровать по отображаемому имени типа.
+VAULT_HIDDEN_TYPE_NAMES = {
+    # EN
+    'Currency', 'Material', 'Materials', 'Consumable', 'Consumables',
+    # RU
+    'Валюта', 'Материал', 'Материалы', 'Расходный материал',
+    'Расходные материалы', 'Расходник', 'Расходники',
+}
+
 # Почтмейстер (Lost Items) определяется в api.py по bucketHash
 # 215593132 и приходит отдельным списком ``postmaster``. Здесь
 # константы не нужны — предметы почтмейстера уже вырезаны из ``items``.
@@ -109,6 +199,45 @@ def _armor_slot(it, row) -> str | None:
     return ARMOR_SLOT_BUCKETS.get(bucket)
 
 
+def _vault_slot(it, row, item_type: int) -> str | None:
+    """Определяет слот предмета сейва (оружие/броня) или None.
+
+    Источники по убыванию надёжности:
+    1) bucketHash из API — точный слот оружия/брони;
+    2) оружие по патронам/стихии (_weapon_slot) — работает даже при
+       аномальном item_type=0;
+    3) отображаемый тип брони (item_type_display_name) — надёжно при
+       item_type=0/19 и скрытом bucket (например, 2422292810 у «ЭОНА»),
+       когда предмет в манифесте числится броней, но слот по bucket
+       не определяется.
+
+    Возвращает ключ слота ('primary'/'special'/'heavy'/'helmet'/...
+    /'class_item') или None (не оружие и не броня).
+    """
+    bucket = _safe_int(it.get('bucket'))
+
+    slot = WEAPON_SLOT_BUCKETS.get(bucket)
+    if slot:
+        return slot
+
+    slot = ARMOR_SLOT_BUCKETS.get(bucket)
+    if slot:
+        return slot
+
+    if item_type in (0, 3):  # оружие (в т.ч. с аномальным item_type=0)
+        slot = _weapon_slot(it, row)
+        if slot:
+            return slot
+
+    if item_type in (0, 2):  # броня (в т.ч. с аномальным item_type=0/19)
+        disp = (row.get('item_type_display_name') or '').lower()
+        for keyword, armor_slot in ARMOR_DISPLAY_KEYWORDS:
+            if keyword in disp:
+                return armor_slot
+
+    return None
+
+
 def _inventory_weapon(row, it, uid: int) -> dict:
 
     """Собирает словарь оружия с подписями Ammo/Element (как в /destiny)."""
@@ -123,6 +252,8 @@ def _inventory_weapon(row, it, uid: int) -> dict:
         'quantity': _safe_int(it.get('quantity')) or 1,
         'instance': it.get('itemInstanceId') or '',
         'equipped': bool(it.get('equipped')),
+        # Сила (Power/Light) предмета — из primaryStat.value (0, если нет).
+        'power': _safe_int(it.get('power')),
     }
     ammo = _safe_int(row.get('ammo_type'))
     weapon['ammo'] = ammo
@@ -166,11 +297,15 @@ def inventory():
         # они уже не входят в ``items``, поэтому гарантированно не
         # отображаются в слотах оружия.
         postmaster_items = result.get('postmaster') or []
+        # Предметы сейфа (Vault) — приходят отдельным списком из API
+        # (компонент profileInventory/102), у них character_id=None.
+        vault_items = result.get('vault') or []
         characters_raw = result.get('characters') or {}
-        # Запрашиваем в БД инфу и по обычным предметам, и по почтмейстеру
-        # (у Lost Items тоже должны быть иконки/имена).
+        # Запрашиваем в БД инфу и по обычным предметам, и по почтмейстеру,
+        # и по сейфу (у всех должны быть иконки/имена).
         hashes = [it.get('itemHash') for it in items]
         hashes += [it.get('itemHash') for it in postmaster_items]
+        hashes += [it.get('itemHash') for it in vault_items]
         # Имена/иконки берём из манифеста (в локали выбранного языка).
         info = manifest_items.get_items_by_hashes(get_lang(), hashes)
 
@@ -308,61 +443,132 @@ def inventory():
 
 
 
-        # Выравниваем высоту слотов по всем персонажам. Высота слота
-        # складывается из левой колонки (экипированные, 1 в столбик)
-        # и правой сетки (неэкипированные, по 3 в ряд), поэтому максимумы
-        # считаем раздельно для каждой колонки и добиваем заглушками.
-        slot_max_equipped: dict[str, int] = {}
-        slot_max_other: dict[str, int] = {}
-        for cls in classes:
-            for slot in cls['slots']:
-                key = slot['key']
-                n_eq = len(slot['equipped'])
-                n_other = len(slot['other'])
-                slot_max_equipped[key] = max(
-                    slot_max_equipped.get(key, 0), n_eq)
-                slot_max_other[key] = max(slot_max_other.get(key, 0), n_other)
+        # Секции выводятся ЕДИНОЙ сеткой: каждый ряд — одна секция
+        # (Почтмейстер/Разное, Primary, Special, Heavy, Шлем, Наручи, Броня,
+        # Поножи, Классовый предмет) для всех четырёх колонок сразу
+        # (3 персонажа + хранилище). Благодаря этому заголовки секций всегда
+        # на одной высоте без исключений — высоту ряда задаёт самая высокая
+        # ячейка, предметы нигде не скрываются и не обрезаются.
 
-        for cls in classes:
-            for slot in cls['slots']:
-                key = slot['key']
-                slot['equip_placeholders'] = max(
-                    0, slot_max_equipped[key] - len(slot['equipped']))
-                slot['other_placeholders'] = max(
-                    0, slot_max_other[key] - len(slot['other']))
+        # --- Хранилище (Vault): справа от персонажей ---
+        # Предметы сейва (account-wide, character_id=None) раскладываем по
+        # слотам оружия (Primary/Special/Heavy) и брони. У сейва нет
+        # экипировки — только "обычные" предметы. Всё, что не легло ни в
+        # один слот (призраки, корабли, жетоны, расходники, моды и т.п.),
+        # показываем отдельной секцией «Разное».
+        vault_slots: dict[str, dict] = {key: {
+            'key': key,
+            'label': label_i,
+            'items': [],
+        } for key, label_i in WEAPON_SLOTS}
+        vault_armor_slots: dict[str, dict] = {key: {
+            'key': key,
+            'label': label_i,
+            'items': [],
+        } for key, label_i in ARMOR_SLOTS}
 
-        # Почтмейстер тоже выравниваем по всем персонажам: берём максимум
-        # предметов среди персонажей и добиваем пустыми плитками, чтобы
-        # секция у всех была одинаковой высоты.
-        postmaster_max = 0
-        for cls in classes:
-            postmaster_max = max(postmaster_max, len(cls['postmaster']))
+        # Предметы сейва, не попавшие ни в один слот (уходят в Почтмейстер).
+        vault_other: list[dict] = []
 
-        for cls in classes:
-            cls['postmaster_max'] = postmaster_max
-            cls['postmaster_placeholders'] = max(
-                0, postmaster_max - len(cls['postmaster']))
+        for it in vault_items:
+            item_hash = it.get('itemHash')
+            row = info.get(item_hash, {})
+            item = _inventory_weapon(row, it, uid)
+            uid += 1
+            item_type = _safe_int(row.get('item_type'))
 
-        # Выравниваем высоту слотов брони по всем персонажам точно так же,
-        # как и слоты оружия: максимумы экипированных/неэкипированных
-        # раздельно, потом добиваем заглушками.
-        armor_max_equipped: dict[str, int] = {}
-        armor_max_other: dict[str, int] = {}
-        for cls in classes:
-            for slot in cls['armor_slots']:
-                key = slot['key']
-                armor_max_equipped[key] = max(
-                    armor_max_equipped.get(key, 0), len(slot['equipped']))
-                armor_max_other[key] = max(
-                    armor_max_other.get(key, 0), len(slot['other']))
+            # Слот предмета сейва определяем по трём источникам сразу
+            # (bucketHash → патроны/стихия → отображаемый тип брони),
+            # см. _vault_slot. Это чинит броню с аномальным item_type
+            # (0/19) и/или скрытым bucket (2422292810 у «ЭОНА»), которая
+            # раньше ошибочно падала в «Разное».
+            slot_key = _vault_slot(it, row, item_type)
 
-        for cls in classes:
-            for slot in cls['armor_slots']:
-                key = slot['key']
-                slot['equip_placeholders'] = max(
-                    0, armor_max_equipped[key] - len(slot['equipped']))
-                slot['other_placeholders'] = max(
-                    0, armor_max_other[key] - len(slot['other']))
+            if slot_key in WEAPON_SLOT_BUCKETS.values():
+                item['slot'] = slot_key
+                item['slot_label'] = vault_slots[slot_key]['label']
+                vault_slots[slot_key]['items'].append(item)
+                continue
+
+            if slot_key in ARMOR_SLOT_BUCKETS.values():
+                item['slot'] = slot_key
+                item['slot_label'] = vault_armor_slots[slot_key]['label']
+                vault_armor_slots[slot_key]['items'].append(item)
+                continue
+
+            # Материалы/расходники/квесты (Finest Matterweave, Exotic Cipher,
+            # Herealways Piece и т.п.) лежат в общем инвентаре — в сейве их
+            # не показываем.
+            if item_type in VAULT_HIDDEN_ITEM_TYPES:
+                continue
+            type_name = (row.get('item_type_display_name') or '').strip()
+            if type_name in VAULT_HIDDEN_TYPE_NAMES:
+                continue
+
+            # Не подошло ни к одному слоту — выводим секцией «Разное».
+            item['slot'] = 'other'
+            item['slot_label'] = 'Разное'
+            vault_other.append(item)
+
+        # --- Единая рядовая сетка секций ---
+        # Каждый ряд сетки — одна секция для всех четырёх колонок
+        # (3 персонажа + хранилище), чтобы заголовки всегда были на одной
+        # высоте без исключений. В «Разное» хранилища попадают только
+        # предметы сейва, не легшие в слоты; предметы почтмейстера
+        # персонажей сюда НЕ дублируются (у персонажей свой «Почтмейстер»).
+        grid_rows: list[dict] = []
+
+        def _cell(label: str, *, equipped=None, other=None, postmaster=False):
+            eq = list(equipped or [])
+            items = list(other or [])
+            return {
+                'label': label,
+                'equipped': eq,
+                'items': items,
+                'has_equipped_col': equipped is not None,
+                'postmaster': postmaster,
+                'total': len(eq) + len(items),
+            }
+
+        # Ряд «📬 Почтмейстер» (персонажи) / «Разное» (хранилище).
+        pm_cells = [
+            _cell('📬 Почтмейстер', other=cls['postmaster'], postmaster=True)
+            for cls in classes
+        ]
+        pm_cells.append(_cell('Разное', other=vault_other))
+        grid_rows.append({'key': 'postmaster', 'cells': pm_cells})
+
+        # Ряды оружия: Primary / Special / Heavy.
+        for key, label in WEAPON_SLOTS:
+            cells = []
+            for cls in classes:
+                slot = next(s for s in cls['slots'] if s['key'] == key)
+                cells.append(_cell(label, equipped=slot['equipped'],
+                                   other=slot['other']))
+            cells.append(_cell(label, other=vault_slots[key]['items']))
+            grid_rows.append({'key': key, 'cells': cells})
+
+        # Ряды брони: Шлем / Наручи / Броня / Поножи / Классовый предмет.
+        for key, label in ARMOR_SLOTS:
+            cells = []
+            for cls in classes:
+                slot = next(s for s in cls['armor_slots'] if s['key'] == key)
+                cells.append(_cell(label, equipped=slot['equipped'],
+                                   other=slot['other']))
+            cells.append(_cell(label, other=vault_armor_slots[key]['items']))
+            grid_rows.append({'key': key, 'cells': cells})
+
+        # Итоговый счётчик — все предметы сейва (материалы/расходники
+        # отфильтрованы).
+        vault_display_total = (
+            sum(len(slot['items']) for slot in vault_slots.values())
+            + sum(len(slot['items']) for slot in vault_armor_slots.values())
+            + len(vault_other)
+        )
+
+        vault = {
+            'total': vault_display_total,
+        }
 
 
 
@@ -381,12 +587,15 @@ def inventory():
             'weapons': weapons_count,
             'armor': armor_count,
             'characters': len(classes),
+            'vault': vault['total'],
         }
 
         return render_template(
             'inventory.html',
             error=None,
             classes=classes,
+            vault=vault,
+            grid_rows=grid_rows,
             meta=meta,
         )
 

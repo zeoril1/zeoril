@@ -11,10 +11,10 @@ from app.site.bungie.config import BUNGIE_TOKEN_URL, bungie_config
 
 
 # Компоненты профиля: 102 (сейф), 200 (персонажи), 201 (инвентари, включая
-# почтмейстер), 205 (экипировка), 301/305/309 (цели/сокеты/плаги — прогресс
-# катализаторов), 800 (коллекции).
+# почтмейстер), 205 (экипировка), 300 (ItemInstances — primaryStat = сила),
+# 301/305/309 (цели/сокеты/плаги — прогресс катализаторов), 800 (коллекции).
 BUNGIE_PROFILE_URL = ('https://www.bungie.net/Platform/Destiny2/{membership_type}'
-                      '/Profile/{membership_id}/?components=102,200,201,205,301,305,309,800')
+                      '/Profile/{membership_id}/?components=102,200,201,205,300,301,305,309,800')
 
 
 # Почтмейстерские предметы (Lost Items) в 201 определяются по bucketHash
@@ -33,6 +33,33 @@ def _is_postmaster(entry: dict) -> bool:
         return int(bucket) in POSTMASTER_BUCKETS
     except (TypeError, ValueError):
         return False
+
+
+def _item_power(entry: dict, instances: dict) -> int:
+    """Сила (Power/Light) предмета (0, если её нет).
+
+    Источники по очереди:
+    1) ``primaryStat`` у самого компонента предмета (если пришёл);
+    2) компонент 300 (ItemInstances): ``instances[instanceId].primaryStat.value``
+       — надёжный источник силы из профильного ответа.
+    """
+    primary = entry.get('primaryStat')
+    if isinstance(primary, dict):
+        try:
+            return int(primary.get('value') or 0)
+        except (TypeError, ValueError):
+            pass
+    instance_id = entry.get('itemInstanceId')
+    if not instance_id:
+        return 0
+    inst = instances.get(str(instance_id))
+    if not isinstance(inst, dict):
+        return 0
+    primary = inst.get('primaryStat') or {}
+    try:
+        return int(primary.get('value') or 0)
+    except (TypeError, ValueError):
+        return 0
 
 
 def _save_user_tokens(user_id, access_token: str, refresh_token: str,
@@ -324,6 +351,9 @@ def _get_user_inventory_inner(user) -> dict:
     if not isinstance(item_components, dict):
         item_components = {}
 
+    # Компонент 300 (ItemInstances): instanceId -> primaryStat.value (сила).
+    instances_data = _component_data(item_components, 'instances')
+
     item_objectives: dict[str, dict[int, dict]] = {}
     objectives_data = _component_data(item_components, 'objectives')
     for instance_id, odata in objectives_data.items():
@@ -424,6 +454,7 @@ def _get_user_inventory_inner(user) -> dict:
             'location': entry.get('location'),
             'character_id': None,
             'equipped': False,
+            'power': _item_power(entry, instances_data),
         })
 
     # Информация о персонажах: класс (0=Титан, 1=Охотник, 2=Варлок),
@@ -472,6 +503,7 @@ def _get_user_inventory_inner(user) -> dict:
                     'location': entry.get('location'),
                     'character_id': character_id,
                     'equipped': equipped,
+                    'power': _item_power(entry, instances_data),
                 })
 
     # Собираем обычные предметы: сначала экипировку, затем инвентари.
@@ -497,6 +529,7 @@ def _get_user_inventory_inner(user) -> dict:
                 'location': entry.get('location'),
                 'character_id': character_id,
                 'equipped': False,
+                'power': _item_power(entry, instances_data),
             })
 
 

@@ -1375,21 +1375,101 @@ audio::-webkit-media-controls-enclosure { background: #fff; border-radius: 999px
   color: #d97706;
 }
 
-/* Сетка почтмейстера — на всю ширину карточки (без узкой колонки
-   88px как у слотов оружия), но иконки делаем компактнее, чем в
-   инвентаре: больше колонок + фиксированный меньший размер плитки. */
-.weapon-slot-grid-postmaster {
+/* ---------- Инвентарь: широкий контейнер и рядовая сетка секций ---------- */
+
+/* Инвентарь: полноширинный контейнер с минимальными отступами от краёв. */
+.inv-container {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.main-content:has(.inv-container) {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+/* Каркас инвентаря: единый грид из 4 колонок (3 персонажа + хранилище).
+   Каждый РЯД грида — одна секция (Почтмейстер/Разное, Primary, Special,
+   Heavy, Шлем, Наручи, Броня, Поножи, Классовый предмет) сразу для всех
+   колонок, поэтому заголовки секций всегда на одной высоте без исключений:
+   высоту ряда задаёт самая высокая ячейка, предметы не скрываются. */
+.inv-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: 300px 300px 300px minmax(0, 1fr);
+  gap: 2px;
+}
+
+.inv-cell {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Карточка-секция внутри ячейки тянется на всю высоту ряда. */
+.inv-cell > .weapon-slot,
+.inv-cell > .inv-card-head {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Заголовки карточек (персонаж / хранилище) — верхний ряд грида. */
+.inv-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.inv-emblem {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex: none;
+}
+
+.inv-vault-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  flex: none;
+  font-size: 1.4rem;
+  background: rgba(139, 92, 246, 0.15);
+}
+
+.inv-head-text {
+  min-width: 0;
+}
+
+/* На экранах уже 1400px грид кладётся в один столбик. */
+@media (max-width: 1399.98px) {
+  .inv-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Базовая сетка плиток: колонки ровно 50px, авто-подбор (без лимита в
+   ряд), маленький одинаковый зазор 2px, плитки не растягиваются. */
+.weapon-slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 50px);
+  justify-content: start;
+  gap: 2px;
+}
+
+/* Отдельностоящая сетка (не внутри weapon-slot-body: хранилище, Разное,
+   Почтмейстер) — свой отступ; в weapon-slot-body отступ даёт сам body. */
+.weapon-slot > .weapon-slot-grid {
   padding: 10px;
 }
 
-.weapon-slot-grid-postmaster .weapon-tile,
-.weapon-slot-grid-postmaster .weapon-tile-placeholder {
-  max-width: 64px;
-  justify-self: center;
-}
 
 
 
@@ -1401,6 +1481,7 @@ audio::-webkit-media-controls-enclosure { background: #fff; border-radius: 999px
   gap: 8px;
   flex-wrap: wrap;
   padding: 8px 12px;
+  min-height: 40px;
   background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid var(--border);
 }
@@ -1415,8 +1496,8 @@ audio::-webkit-media-controls-enclosure { background: #fff; border-radius: 999px
 
 .weapon-slot-body {
   display: grid;
-  grid-template-columns: 88px minmax(0, 1fr);
-  gap: 10px;
+  grid-template-columns: 50px minmax(0, 1fr);
+  gap: 4px;
   padding: 10px;
   align-items: stretch;
 }
@@ -1424,8 +1505,8 @@ audio::-webkit-media-controls-enclosure { background: #fff; border-radius: 999px
 /* Экипированное оружие — левая колонка */
 .weapon-slot-equipped {
   display: grid;
-  grid-auto-rows: 1fr;
-  gap: 8px;
+  grid-auto-rows: auto;
+  gap: 2px;
   min-width: 0;
 }
 
@@ -1437,7 +1518,7 @@ audio::-webkit-media-controls-enclosure { background: #fff; border-radius: 999px
 .weapon-slot-empty {
   border: 1px dashed var(--border);
   border-radius: 10px;
-  min-height: 72px;
+  min-height: 63px;
 }
 
 @media (max-width: 575.98px) {
@@ -1448,39 +1529,74 @@ audio::-webkit-media-controls-enclosure { background: #fff; border-radius: 999px
 
 /* ---------- Инвентарь Destiny 2: сетка иконок + модалка ---------- */
 
-/* Неэкипированное оружие — ровно 3 колонки. */
-.weapon-slot-other .weapon-slot-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
+/* Сетка внутри weapon-slot-body наследует базовую .weapon-slot-grid. */
 
 .weapon-tile {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 50 / 63;
   padding: 0;
   border: 1px solid var(--border);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.7);
+  /* Подложка прозрачная — предмет виден на фоне карточки. */
+  background: transparent;
   overflow: hidden;
   cursor: pointer;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
+/* Иконка — квадратная 50x50, НЕ растягивается на высоту контейнера 50x63.
+   Нижние ~13px контейнера — полоса под силу/стихию/бейдж количества. */
 .weapon-tile img {
   display: block;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1;
   object-fit: cover;
+  flex: none;
 }
+
+/* Нижняя полоса 13px: сила (слева) и стихия (справа). */
+.weapon-tile-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  height: 13px;
+  padding: 0 3px;
+  flex: none;
+  pointer-events: none;
+}
+
+.weapon-tile-power {
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+}
+
+/* Цветной индикатор стихии (defaultDamageType): 2=Arc, 3=Solar, 4=Void,
+   5=Raid, 6=Stasis, 7=Strand. */
+.weapon-tile-element {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  flex: none;
+}
+.weapon-tile-element[data-el="2"] { background: #69c4ff; }  /* Arc */
+.weapon-tile-element[data-el="3"] { background: #ff9a3c; }  /* Solar */
+.weapon-tile-element[data-el="4"] { background: #b28aff; }  /* Void */
+.weapon-tile-element[data-el="5"] { background: #ffd166; }  /* Raid */
+.weapon-tile-element[data-el="6"] { background: #8be9fd; }  /* Stasis */
+.weapon-tile-element[data-el="7"] { background: #a6e3a1; }  /* Strand */
 
 /* Заглушки для выравнивания высоты слотов: невидимые плитки той же
    высоты, что и weapon-tile (aspect-ratio: 1). Занимают место в сетке,
    но не отображаются как контент. */
 .weapon-tile-placeholder {
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 50 / 63;
   visibility: hidden;
   pointer-events: none;
 }
@@ -1512,6 +1628,29 @@ audio::-webkit-media-controls-enclosure { background: #fff; border-radius: 999px
   line-height: 1;
   color: #f59e0b;
   text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+}
+
+/* Бейдж количества — в нижней полосе (13px) контейнера 50x63, выводится
+   только когда есть доп. информация (например, количество > 1). */
+.weapon-tile-count {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 15px;
+  height: 12px;
+  padding: 0 3px;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  background: rgba(8, 8, 16, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 4px;
   pointer-events: none;
 }
 

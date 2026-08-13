@@ -1,104 +1,57 @@
 {% extends 'base.html' %}
 
+{# Инвентарь: полноширинный контейнер с минимальными отступами от краёв #}
+{% block container_class %}container-fluid inv-container{% endblock %}
+
 {% block title %}Инвентарь Destiny 2{% endblock %}
 
 {% block content %}
-    {# Общий рендер слота (оружие и броня): экипированное слева, остальное сеткой по 3 #}
-    {% macro render_slot(slot) -%}
-        <div class="weapon-slot">
-            <div class="weapon-slot-head">
-                <span class="weapon-slot-title">{{ slot['label'] }}</span>
-                <span class="weapon-slot-count text-muted small">
-                    экип: {{ slot['equipped']|length }} ·
-                    в хранилище: {{ slot['other']|length }}
+    {# Плитка предмета: кнопка с иконкой и бейджем количества (общая для всех
+       секций инвентаря). При equipped=True — подсвечиваем и показываем ★. #}
+    {% macro render_tile(w, equipped=false) -%}
+        <button type="button"
+                class="weapon-tile{{ ' weapon-tile-equipped' if equipped else '' }}"
+                data-bs-toggle="modal"
+                data-bs-target="#weaponModal"
+                data-name="{{ w['name'] }}"
+                data-icon="{{ w['icon'] or '' }}"
+                data-tier="{{ w['tier'] or '—' }}"
+                data-type="{{ w['type'] or '—' }}"
+                data-element="{{ w['element_label'] }}"
+                data-ammo="{{ w['ammo_label'] }}"
+                data-quantity="{{ w['quantity'] }}"
+                data-instance="{{ w['instance'] }}"
+                data-hash="{{ w['hash'] }}"
+                data-equipped="{{ 1 if equipped else 0 }}"
+                title="{{ w['name'] }}">
+            {% if w['icon'] %}
+                <img src="https://www.bungie.net{{ w['icon'] }}"
+                     alt=""
+                     loading="lazy"
+                     onerror="this.style.display='none'">
+            {% else %}
+                <span class="weapon-tile-fallback">?</span>
+            {% endif %}
+            {# Нижняя полоса 13px: сила (слева) и стихия (справа), если есть #}
+            {% if w['power'] or (w['element'] and w['element'] > 1) %}
+                <span class="weapon-tile-info">
+                    {% if w['power'] %}
+                        <span class="weapon-tile-power" title="Сила">{{ w['power'] }}</span>
+                    {% endif %}
+                    {% if w['element'] and w['element'] > 1 %}
+                        <span class="weapon-tile-element"
+                              data-el="{{ w['element'] }}"
+                              title="{{ w['element_label'] }}"></span>
+                    {% endif %}
                 </span>
-            </div>
-            <div class="weapon-slot-body">
-                {# Экипированный предмет — отдельная колонка слева #}
-                <div class="weapon-slot-equipped">
-                    {% if slot['equipped'] %}
-                        {% for w in slot['equipped'] %}
-                            <button type="button"
-                                    class="weapon-tile weapon-tile-equipped"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#weaponModal"
-                                    data-name="{{ w['name'] }}"
-                                    data-icon="{{ w['icon'] or '' }}"
-                                    data-tier="{{ w['tier'] or '—' }}"
-                                    data-type="{{ w['type'] or '—' }}"
-                                    data-element="{{ w['element_label'] }}"
-                                    data-ammo="{{ w['ammo_label'] }}"
-                                    data-quantity="{{ w['quantity'] }}"
-                                    data-instance="{{ w['instance'] }}"
-                                    data-hash="{{ w['hash'] }}"
-                                    data-equipped="1"
-                                    title="{{ w['name'] }}">
-                                {% if w['icon'] %}
-                                    <img src="https://www.bungie.net{{ w['icon'] }}"
-                                         alt=""
-                                         loading="lazy"
-                                         onerror="this.style.display='none'">
-                                {% else %}
-                                    <span class="weapon-tile-fallback">?</span>
-                                {% endif %}
-                                <span class="weapon-tile-star" title="Экипировано">★</span>
-                            </button>
-                        {% endfor %}
-                    {% endif %}
-                    {# Заглушки для выравнивания высоты слота по всем персонажам #}
-                    {% for _ in range(slot['equip_placeholders']) %}
-                        <div class="weapon-tile-placeholder" aria-hidden="true"></div>
-                    {% endfor %}
-                    {% if not slot['equipped'] and slot['equip_placeholders'] == 0 %}
-                        <div class="weapon-slot-empty d-flex align-items-center justify-content-center p-3">
-                            <span class="text-muted small text-center">Экипировано нет</span>
-                        </div>
-                    {% endif %}
-                </div>
-
-                {# Остальные предметы — сетка по 3 в ряд #}
-                <div class="weapon-slot-other">
-                    {% if slot['other'] or slot['other_placeholders'] %}
-                        <div class="weapon-slot-grid">
-                            {% for w in slot['other'] %}
-                                <button type="button"
-                                        class="weapon-tile"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#weaponModal"
-                                        data-name="{{ w['name'] }}"
-                                        data-icon="{{ w['icon'] or '' }}"
-                                        data-tier="{{ w['tier'] or '—' }}"
-                                        data-type="{{ w['type'] or '—' }}"
-                                        data-element="{{ w['element_label'] }}"
-                                        data-ammo="{{ w['ammo_label'] }}"
-                                        data-quantity="{{ w['quantity'] }}"
-                                        data-instance="{{ w['instance'] }}"
-                                        data-hash="{{ w['hash'] }}"
-                                        data-equipped="0"
-                                        title="{{ w['name'] }}">
-                                    {% if w['icon'] %}
-                                        <img src="https://www.bungie.net{{ w['icon'] }}"
-                                             alt=""
-                                             loading="lazy"
-                                             onerror="this.style.display='none'">
-                                    {% else %}
-                                        <span class="weapon-tile-fallback">?</span>
-                                    {% endif %}
-                                </button>
-                            {% endfor %}
-                            {# Заглушки для выравнивания высоты слота по всем персонажам #}
-                            {% for _ in range(slot['other_placeholders']) %}
-                                <div class="weapon-tile-placeholder" aria-hidden="true"></div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="weapon-slot-empty d-flex align-items-center justify-content-center p-3">
-                            <span class="text-muted small text-center">В хранилище нет</span>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+            {% endif %}
+            {% if equipped %}
+                <span class="weapon-tile-star" title="Экипировано">★</span>
+            {% endif %}
+            {% if w['quantity'] and w['quantity'] > 1 %}
+                <span class="weapon-tile-count">{{ w['quantity'] }}</span>
+            {% endif %}
+        </button>
     {%- endmacro %}
 
     <div class="page-head fade-up">
@@ -113,6 +66,7 @@
                 · Персонажи: <strong>{{ meta['characters'] }}</strong>
                 · Оружие: <strong>{{ meta['weapons'] }}</strong>
                 · Броня: <strong>{{ meta['armor'] }}</strong>
+                · Хранилище: <strong>{{ meta['vault'] }}</strong>
             {% endif %}
 
         </p>
@@ -134,83 +88,94 @@
         </div>
 
     {% else %}
-        <div class="row g-3 fade-up">
+        <div class="inv-grid fade-up">
+            {# --- Заголовки карточек: 3 персонажа + хранилище --- #}
             {% for cls in classes %}
-                <div class="col-12 col-xl-4">
-                    <div class="glass-card h-100 d-flex flex-column">
-                        <div class="d-flex align-items-center gap-3 p-3 border-bottom">
-                            {% if cls['emblem'] %}
-                                <img src="https://www.bungie.net{{ cls['emblem'] }}"
-                                     alt="эмблема"
-                                     style="width:48px;height:48px;border-radius:8px;object-fit:cover"
-                                     onerror="this.style.display='none'">
+                <div class="inv-cell">
+                    <div class="inv-card-head">
+                        {% if cls['emblem'] %}
+                            <img src="https://www.bungie.net{{ cls['emblem'] }}"
+                                 alt="эмблема"
+                                 class="inv-emblem"
+                                 onerror="this.style.display='none'">
+                        {% endif %}
+                        <div class="inv-head-text">
+                            <h5 class="mb-0 fw-bold text-truncate">{{ cls['label'] }}</h5>
+                            {% if cls['light'] %}
+                                <small class="text-muted">Свет: {{ cls['light'] }}</small>
                             {% endif %}
-                            <div>
-                                <h5 class="mb-0 fw-bold">{{ cls['label'] }}</h5>
-                                {% if cls['light'] %}
-                                    <small class="text-muted">Свет: {{ cls['light'] }}</small>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="p-3 d-flex flex-column gap-4 flex-grow-1">
-                            {% if cls['postmaster'] or cls['postmaster_max'] %}
-                                <div class="weapon-slot weapon-slot-postmaster">
-                                    <div class="weapon-slot-head">
-                                        <span class="weapon-slot-title">📬 Почтмейстер</span>
-                                        <span class="weapon-slot-count text-muted small">
-                                            предметов: {{ cls['postmaster']|length }}
-                                        </span>
-                                    </div>
-                                    <div class="weapon-slot-grid weapon-slot-grid-postmaster">
-                                        {% for w in cls['postmaster'] %}
-                                            <button type="button"
-                                                    class="weapon-tile"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#weaponModal"
-                                                    data-name="{{ w['name'] }}"
-                                                    data-icon="{{ w['icon'] or '' }}"
-                                                    data-tier="{{ w['tier'] or '—' }}"
-                                                    data-type="{{ w['type'] or '—' }}"
-                                                    data-element="{{ w['element_label'] }}"
-                                                    data-ammo="{{ w['ammo_label'] }}"
-                                                    data-quantity="{{ w['quantity'] }}"
-                                                    data-instance="{{ w['instance'] }}"
-                                                    data-hash="{{ w['hash'] }}"
-                                                    data-equipped="0"
-                                                    title="{{ w['name'] }}">
-                                                {% if w['icon'] %}
-                                                    <img src="https://www.bungie.net{{ w['icon'] }}"
-                                                         alt=""
-                                                         loading="lazy"
-                                                         onerror="this.style.display='none'">
-                                                {% else %}
-                                                    <span class="weapon-tile-fallback">?</span>
-                                                {% endif %}
-                                            </button>
-                                        {% endfor %}
-                                        {# Заглушки для выравнивания высоты почтмейстера по всем персонажам #}
-                                        {% for _ in range(cls['postmaster_placeholders']) %}
-                                            <div class="weapon-tile-placeholder" aria-hidden="true"></div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            {% endif %}
-
-
-                            {% for slot in cls['slots'] %}
-                                {{ render_slot(slot) }}
-                            {% endfor %}
-
-                            {# --- Броня: слоты Шлем / Наручи / Броня / Поножи / Классовый предмет --- #}
-                            {% for slot in cls['armor_slots'] %}
-                                {{ render_slot(slot) }}
-                            {% endfor %}
                         </div>
                     </div>
                 </div>
             {% endfor %}
+            <div class="inv-cell">
+                <div class="inv-card-head">
+                    <div class="inv-vault-badge">🏦</div>
+                    <div class="inv-head-text">
+                        <h5 class="mb-0 fw-bold text-truncate">Хранилище</h5>
+                        <small class="text-muted">предметов: {{ vault['total'] }}</small>
+                    </div>
+                </div>
+            </div>
 
+            {# --- Секции: каждый ряд — одна секция (Почтмейстер/Разное,
+                 Primary, Special, Heavy, Шлем, Наручи, Броня, Поножи,
+                 Классовый предмет) для всех 4 колонок. Заголовки секций
+                 всегда на одной высоте без исключений: высоту ряда задаёт
+                 самая высокая ячейка, предметы не скрываются. --- #}
+            {% for row in grid_rows %}
+                {% for cell in row['cells'] %}
+                    <div class="inv-cell">
+                        <div class="weapon-slot{{ ' weapon-slot-postmaster' if cell['postmaster'] else '' }}">
+                            <div class="weapon-slot-head">
+                                <span class="weapon-slot-title">{{ cell['label'] }}</span>
+                                <span class="weapon-slot-count text-muted small">
+                                    предметов: {{ cell['total'] }}
+                                </span>
+                            </div>
+                            {% if cell['equipped'] or cell['items'] %}
+                                {% if cell['has_equipped_col'] %}
+                                    <div class="weapon-slot-body">
+                                        <div class="weapon-slot-equipped">
+                                            {% for w in cell['equipped'] %}
+                                                {{ render_tile(w, equipped=true) }}
+                                            {% endfor %}
+                                            {% if not cell['equipped'] %}
+                                                <div class="weapon-slot-empty d-flex align-items-center justify-content-center px-3">
+                                                    <span class="text-muted small text-center">Экипировано нет</span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="weapon-slot-other">
+                                            {% if cell['items'] %}
+                                                <div class="weapon-slot-grid">
+                                                    {% for w in cell['items'] %}
+                                                        {{ render_tile(w) }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                <div class="weapon-slot-empty d-flex align-items-center justify-content-center px-3">
+                                                    <span class="text-muted small text-center">В хранилище нет</span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="weapon-slot-grid">
+                                        {% for w in cell['items'] %}
+                                            {{ render_tile(w) }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="weapon-slot-empty d-flex align-items-center justify-content-center px-3">
+                                    <span class="text-muted small text-center">Пусто</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
         </div>
     {% endif %}
 

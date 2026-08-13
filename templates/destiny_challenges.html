@@ -234,6 +234,7 @@
           const btn = event.relatedTarget;
           if (!btn) return;
           hideError();
+          saveBtn.disabled = false;
           title.textContent = 'Оружие: ' + btn.getAttribute('data-item-name');
           hashInput.value = btn.getAttribute('data-item-hash');
           soloInput.value = btn.getAttribute('data-solo');
@@ -276,6 +277,7 @@
                 if (bootstrap && bootstrap.Modal) {
                   bootstrap.Modal.getInstance(modal).hide();
                 }
+                saveBtn.disabled = false;
                 return;
               }
               showError((data && data.error) || 'Не удалось сохранить изменения');
