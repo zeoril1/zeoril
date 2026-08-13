@@ -12,6 +12,15 @@
         <div class="alert alert-danger fade-up">{{ message }}</div>
     {% endif %}
 
+    {% if bungie_link_required %}
+        <div class="text-center fade-up mb-3">
+            <a href="/bungie/login" class="btn-bungie btn-sm d-inline-flex align-items-center gap-2">
+                <span class="bungie-ico">B</span>
+                Привязать Bungie
+            </a>
+        </div>
+    {% endif %}
+
     <div class="glass-card fade-up p-4 game-create-card" style="max-width: 560px; margin: 0 auto;">
         <div class="d-flex align-items-center gap-3 mb-3">
             <div class="game-ico">🎰</div>

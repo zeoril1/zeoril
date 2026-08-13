@@ -70,23 +70,49 @@ def _build_wheel(pool: list[dict], challenge: dict) -> list[dict] | None:
     return wheel
 
 
-def _pick_challenge() -> tuple[dict | None, list[dict]]:
-    """Случайный челлендж из БД и пул оружия (с данными из манифеста)."""
-    challenge = database.get_random_destiny_challenge()
-    if not challenge:
-        return None, []
+def _filter_pool(enriched: list[dict], owned: set[int] | None,
+                 rolled: set[int] | None) -> list[dict]:
+    """Оставляет в пуле только оружие, которое есть у игрока и ещё не выпадало.
+
+    ``owned`` — множество itemHash предметов игрока (что у него есть в
+    Destiny 2); если ``None`` — фильтр владения не применяется.
+    ``rolled`` — множество itemHash, уже выпадавших игроку в этом лобби;
+    такие предметы исключаются.
+    """
+    out: list[dict] = []
+    for c in enriched:
+        try:
+            h = int(c['item_hash'])
+        except (TypeError, ValueError):
+            continue
+        if owned is not None and h not in owned:
+            continue
+        if rolled and h in rolled:
+            continue
+        out.append(c)
+    return out
+
+
+def _pick_challenge(owned: set[int] | None = None,
+                    rolled: set[int] | None = None
+                    ) -> tuple[dict | None, list[dict]]:
+    """Случайный челлендж из пула и сам пул оружия (из манифеста).
+
+    ``owned`` — itemHash предметов, которые есть у игрока (в Destiny 2).
+    Если задано, из пула исключается оружие, которого у игрока НЕТ, —
+    остаётся только то, что он уже имеет. ``rolled`` — itemHash, уже
+    выпадавшие игроку в этом лобби; они тоже исключаются. Если после
+    фильтров пул пуст, возвращается ``(None, [])`` — крутить нечего.
+    """
     pool = database.get_destiny_roulette_pool()
     enriched = _enrich_challenges(pool)
-    target = next(
-        (c for c in enriched
-         if str(c['item_hash']) == str(challenge['item_hash'])),
-        None)
-    if target is None:
-        single = _enrich_challenges([challenge])
-        target = single[0] if single else None
-    if target is None:
+    if not enriched:
         return None, []
-    return target, enriched
+    eligible = _filter_pool(enriched, owned, rolled)
+    if not eligible:
+        return None, []
+    target = random.choice(eligible)
+    return target, eligible
 
 
 def _begin_roll_locked(lobby: Lobby, uid: str, challenge: dict,
@@ -159,6 +185,13 @@ def _finish_roll(lobby_ref: Lobby, uid: str, challenge: dict,
         }
         lobby.history.insert(0, entry)
         del lobby.history[HISTORY_LIMIT:]
+
+        # Запоминаем, что это оружие уже выпадало игроку, — чтобы в
+        # следующих бросках оно исключалось из его пула рулетки.
+        try:
+            lobby.rolled.setdefault(uid, set()).add(int(challenge['item_hash']))
+        except (TypeError, ValueError):
+            pass
 
         # Обновляем результат круга для этого игрока (по одному на игрока).
         for i, r in enumerate(lobby.round_results):

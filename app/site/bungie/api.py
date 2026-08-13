@@ -141,14 +141,23 @@ def _refresh_access_token(user, cfg: dict[str, str]) -> str | None:
 
 
 def _fetch_profile(cfg: dict[str, str], access_token: str,
-                   membership_type, membership_id) -> tuple[dict, int]:
+                   membership_type, membership_id,
+                   components: str | None = None) -> tuple[dict, int]:
     """Запрашивает профиль Destiny 2 (компоненты 200/201/205).
+
+    ``components`` — при желании можно передать свой список компонентов
+    (через запятую) для лёгких запросов; по умолчанию используется
+    полный набор из ``BUNGIE_PROFILE_URL``.
 
     Возвращает кортеж (данные Response, HTTP-статус). При сетевой ошибке
     возвращает ``(None, 0)``, при HTTP-ошибке — ``(None, <status>)``.
     Исключений не бросает.
     """
-    url = BUNGIE_PROFILE_URL.format(
+    if components:
+        url = BUNGIE_PROFILE_URL.split('?')[0] + '?components=' + components
+    else:
+        url = BUNGIE_PROFILE_URL
+    url = url.format(
         membership_type=int(membership_type),
         membership_id=int(membership_id),
     )
@@ -575,6 +584,97 @@ def _get_user_inventory_inner(user) -> dict:
         # Связки плаг -> цель (для поиска цели катализатора).
         'item_plug_objectives': item_plug_objectives,
     }
+
+
+# Компоненты профиля для проверки «что есть у игрока» (лёгкий запрос без
+# прогресса катализаторов и коллекций): сейв, инвентари и экипировка.
+OWNED_COMPONENTS = '102,201,205'
+
+
+def get_user_owned_hashes(user) -> tuple[bool, set[int]]:
+    """Возвращает (ok, hashes) — множество itemHash предметов игрока.
+
+    Учитываются экипировка, инвентари персонажей и сейв (Vault); предметы
+    почтмейстера игнорируются. Нужно для рулетки челленджей: в пул игрока
+    должны попадать только те оружия, которые у него уже есть в Destiny 2.
+
+    При любой ошибке возвращает ``(False, set())`` — исключений наружу
+    не бросает (как и ``get_user_inventory``).
+    """
+    try:
+        return _get_user_owned_hashes_inner(user)
+    except Exception as exc:
+        logger.exception('Непредвиденная ошибка при получении инвентаря '
+                         'Bungie (owned): %s', exc)
+        return False, set()
+
+
+def _get_user_owned_hashes_inner(user) -> tuple[bool, set[int]]:
+    """Внутренняя реализация get_user_owned_hashes (без try/except)."""
+    membership_id = user.get('bungie_membership_id')
+    membership_type = user.get('bungie_membership_type')
+    if not membership_id or not membership_type:
+        return False, set()
+
+    try:
+        cfg = bungie_config()
+    except RuntimeError as exc:
+        logger.warning('Bungie OAuth не настроен: %s', exc)
+        return False, set()
+
+    access_token = user.get('bungie_access_token')
+    if not access_token or _token_is_expired(user):
+        access_token = _refresh_access_token(user, cfg)
+        if not access_token:
+            logger.warning('Пользователь %s: не удалось обновить токен '
+                           'Bungie для проверки инвентаря (owned)',
+                           user['id'])
+            return False, set()
+
+    data, status = _fetch_profile(
+        cfg, access_token, membership_type, membership_id,
+        components=OWNED_COMPONENTS)
+    if status == 401:
+        access_token = _refresh_access_token(user, cfg)
+        if not access_token:
+            return False, set()
+        data, status = _fetch_profile(
+            cfg, access_token, membership_type, membership_id,
+            components=OWNED_COMPONENTS)
+    if status == 0 or status >= 400:
+        logger.warning('Ошибка запроса инвентаря Bungie (owned): HTTP %s',
+                       status)
+        return False, set()
+
+    hashes: set[int] = set()
+
+    # Сейв (ProfileInventories): data['profileInventory']['data']['items'].
+    vault = _component_data(data, 'profileInventory')
+    for entry in vault.get('items') or []:
+        if not isinstance(entry, dict) or _is_postmaster(entry):
+            continue
+        try:
+            hashes.add(int(entry.get('itemHash')))
+        except (TypeError, ValueError):
+            continue
+
+    # Инвентари и экипировка персонажей:
+    # data['<component>']['data'] = {character_id: {'items': [...]}}.
+    def _collect(containers: dict) -> None:
+        for container in containers.values():
+            if not isinstance(container, dict):
+                continue
+            for entry in container.get('items') or []:
+                if not isinstance(entry, dict) or _is_postmaster(entry):
+                    continue
+                try:
+                    hashes.add(int(entry.get('itemHash')))
+                except (TypeError, ValueError):
+                    continue
+
+    _collect(_component_data(data, 'characterInventories'))
+    _collect(_component_data(data, 'characterEquipment'))
+    return True, hashes
 
 
 

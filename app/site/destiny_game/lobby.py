@@ -38,6 +38,10 @@ class Lobby:
         self.closed = False
         self.last_activity = time.time()
         self.subscribers: list[queue.Queue] = []
+        # item_hash, которые уже выпадали конкретному игроку в этом лобби
+        # (uid -> set[int]). Нужно, чтобы игроку не выпадало одно и то же
+        # оружие несколько раз за игру.
+        self.rolled: dict[str, set[int]] = {}
 
 
 def _create_lobby(user: dict, name: str) -> Lobby:

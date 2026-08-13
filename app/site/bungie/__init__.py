@@ -10,15 +10,15 @@
 """
 from __future__ import annotations
 
-from app.site.bungie.api import get_user_inventory
+from app.site.bungie.api import get_user_inventory, get_user_owned_hashes
 from app.site.bungie.config import (BUNGIE_AUTH_URL, BUNGIE_MEMBERSHIPS_URL,
                                     BUNGIE_TOKEN_URL, DESTINY_MEMBERSHIP_TYPES,
-                                    bungie_config)
+                                    bungie_config, bungie_linked)
 from app.site.bungie.oauth import (bungie_callback, bungie_login, bungie_unlink)
 
 __all__ = [
     'BUNGIE_AUTH_URL', 'BUNGIE_TOKEN_URL', 'BUNGIE_MEMBERSHIPS_URL',
     'DESTINY_MEMBERSHIP_TYPES',
-    'bungie_config', 'bungie_login', 'bungie_callback', 'bungie_unlink',
-    'get_user_inventory',
+    'bungie_config', 'bungie_linked', 'bungie_login', 'bungie_callback',
+    'bungie_unlink', 'get_user_inventory', 'get_user_owned_hashes',
 ]

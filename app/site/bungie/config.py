@@ -25,6 +25,19 @@ DESTINY_MEMBERSHIP_TYPES = {
 }
 
 
+def bungie_linked(user: dict | None) -> bool:
+    """True, если у пользователя привязан Bungie-аккаунт Destiny 2.
+
+    Достаточно наличия membershipId и типа платформы (3 = Steam и т.д.).
+    Используется для проверки при подключении к мини-игре и в других местах,
+    где нужен доступ к инвентарю Destiny 2.
+    """
+    if not user:
+        return False
+    return bool(user.get('bungie_membership_id')
+                and user.get('bungie_membership_type'))
+
+
 def bungie_config() -> dict[str, str]:
     """Возвращает настройки Bungie OAuth из конфиг-сервиса.
 
