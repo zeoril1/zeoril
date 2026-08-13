@@ -356,6 +356,11 @@ def _get_user_inventory_inner(user) -> dict:
     #   plugObjectives[instanceId].objectivesPerPlug — массив
     #   {socketIndex, plugItemHash, objectiveHash}: по нему цель катализатора
     #   привязывается к плагу даже когда у самого катализатора цели нет.
+    #   plugObjectives[instanceId].objectivesPerPlug — СЛОВАРЬ
+    #   plugItemHash -> [ {objectiveHash, progress, completionValue, complete} ]:
+    #   по нему цель и прогресс катализатора привязываются к плагу даже когда
+    #   у самого катализатора цели в манифесте не прописаны (там обычно шаги
+    #   «0/1», а реальные убийства/носители живут именно здесь).
     item_components = data.get('itemComponents')
     if not isinstance(item_components, dict):
         item_components = {}
@@ -407,31 +412,43 @@ def _get_user_inventory_inner(user) -> dict:
                 continue
         item_socket_plugs[str(instance_id)] = plugs
 
-    item_plug_objectives: dict[str, list[dict]] = {}
+    # components=309 (ItemPlugObjectives). objectivesPerPlug — словарь
+    # plugItemHash -> список целей с реальным прогрессом.
+    item_plug_objectives: dict[str, dict[int, dict[int, dict]]] = {}
     plug_objectives_data = _component_data(item_components, 'plugObjectives')
     for instance_id, pdata in plug_objectives_data.items():
         if not isinstance(pdata, dict):
             continue
         per_plug = pdata.get('objectivesPerPlug')
-        if not isinstance(per_plug, list):
+        if not isinstance(per_plug, dict):
             continue
-        entries: list[dict] = []
-        for entry in per_plug:
-            if not isinstance(entry, dict):
-                continue
+        by_plug: dict[int, dict[int, dict]] = {}
+        for plug_raw, obj_list in per_plug.items():
             try:
-                plug_hash = int(entry.get('plugItemHash'))
-                obj_hash = int(entry.get('objectiveHash'))
+                plug_hash = int(plug_raw)
             except (TypeError, ValueError):
                 continue
-            if not plug_hash or not obj_hash:
+            if not isinstance(obj_list, list):
                 continue
-            entries.append({
-                'plug_hash': plug_hash,
-                'objective_hash': obj_hash,
-            })
-        if entries:
-            item_plug_objectives[str(instance_id)] = entries
+            by_obj: dict[int, dict] = {}
+            for obj in obj_list:
+                if not isinstance(obj, dict):
+                    continue
+                try:
+                    obj_hash = int(obj.get('objectiveHash'))
+                except (TypeError, ValueError):
+                    continue
+                if not obj_hash:
+                    continue
+                by_obj[obj_hash] = {
+                    'progress': obj.get('progress') or 0,
+                    'completion_value': obj.get('completionValue') or 0,
+                    'complete': bool(obj.get('complete', False)),
+                }
+            if by_obj:
+                by_plug[plug_hash] = by_obj
+        if by_plug:
+            item_plug_objectives[str(instance_id)] = by_plug
 
 
     # components=202 (ProfileInventories) — сейф (Vault). Оружие из сейфа

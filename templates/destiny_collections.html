@@ -17,6 +17,25 @@
             <input type="checkbox" id="collOnlyMissing" class="form-check-input" role="switch">
             <span class="coll-filter-label">Только не собранные</span>
         </label>
+
+        {% if is_admin %}
+            {# Админ: ручное обновление манифестов Destiny 2 #}
+            <div class="manifest-update-row">
+                <button type="button" id="manifestsUpdateBtn"
+                        class="btn btn-sm btn-outline-primary manifest-update-btn"
+                        data-csrf="{{ csrf_token() }}">
+                    Обновить манифесты
+                </button>
+                <span id="manifestsUpdateStatus" class="manifest-update-status" aria-live="polite"></span>
+                <span class="manifest-update-info">
+                    {% if manifests_last_updated %}
+                        Последнее обновление: <strong>{{ manifests_last_updated }}</strong> (UTC+3)
+                    {% else %}
+                        Манифесты ещё не загружены
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
     </div>
 
     {% if error %}
@@ -218,6 +237,43 @@
 {% block scripts %}
     <script>
       (function () {
+        // ---- Обновление манифестов (только админы) ----
+        const updateBtn = document.getElementById('manifestsUpdateBtn');
+        if (updateBtn) {
+          const statusEl = document.getElementById('manifestsUpdateStatus');
+          updateBtn.addEventListener('click', async function () {
+            updateBtn.disabled = true;
+            const original = updateBtn.textContent;
+            updateBtn.textContent = 'Обновляю…';
+            if (statusEl) statusEl.textContent = 'Загружаю манифесты с Bungie, это может занять минуту…';
+            try {
+              const resp = await fetch('/destiny/collections/manifests/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ _csrf_token: updateBtn.getAttribute('data-csrf') || '' }),
+              });
+              const data = await resp.json();
+              if (data && data.ok) {
+                if (statusEl) statusEl.textContent = data.updated
+                  ? '✅ Манифесты обновлены.'
+                  : '⚠️ Не удалось обновить: ' + (data.error || 'неизвестная ошибка');
+                // Обновляем страницу, чтобы подтянулись свежие данные/дата.
+                if (data.updated) { location.reload(); return; }
+                if (statusEl && data.last_updated) {
+                  statusEl.textContent = '✅ Манифесты актуальны (последнее обновление: ' + data.last_updated + ').';
+                }
+              } else {
+                if (statusEl) statusEl.textContent = '❌ ' + ((data && data.error) || 'Ошибка обновления');
+              }
+            } catch (e) {
+              if (statusEl) statusEl.textContent = '❌ Ошибка сети при обновлении манифестов.';
+            } finally {
+              updateBtn.disabled = false;
+              updateBtn.textContent = original;
+            }
+          });
+        }
+
         // ---- Сворачивание секций/подсекций/категорий (по умолчанию всё свёрнуто) ----
         document.querySelectorAll('.coll-collapse-btn').forEach(function (btn) {
           btn.addEventListener('click', function () {

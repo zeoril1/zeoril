@@ -7,8 +7,12 @@ from app.logging import setup_logging
 logger = setup_logging('BotSite', filter_werkzeug=True)
 
 from app.site.app import create_app
+from app.site.bungie.manifest import start_manifest_scheduler
 
 app = create_app()
+
+# Еженедельное обновление манифестов Destiny (вторник 22:00 UTC+3).
+start_manifest_scheduler()
 
 
 if __name__ == '__main__':

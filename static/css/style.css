@@ -1740,6 +1740,27 @@ audio::-webkit-media-controls-enclosure { background: #fff; border-radius: 999px
   color: var(--text);
 }
 
+/* Блок ручного обновления манифестов (только админы) */
+.manifest-update-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+.manifest-update-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.manifest-update-info {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.manifest-update-info strong {
+  color: var(--text);
+}
+
 @media (max-width: 575.98px) {
 
   .coll-grid {

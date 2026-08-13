@@ -18,13 +18,15 @@ import logging
 import flask
 from flask import redirect, render_template
 
-from app.site.auth import current_user
+from app.site.auth import current_user, user_rights, validate_csrf_json
 from app.site.bungie import items as manifest_items
 from app.site.bungie.api import get_user_inventory
 from app.site.bungie.manifest import (
     ManifestError,
     build_collections_view,
+    get_manifests_last_updated,
     load_tree,
+    update_manifests,
 )
 from app.site.lang import get_lang
 from app.site.views.blueprint import bp
@@ -291,10 +293,10 @@ def _build_catalysts(result: dict, locale: str) -> dict:
     obj_hashes = set()
     for cat in cats_by_name.values():
         obj_hashes.update(cat.get('objective_hashes') or [])
-    for entries in item_plug_objectives.values():
-        for entry in entries:
-            if entry.get('plug_hash') in cat_hashes:
-                obj_hashes.add(entry.get('objective_hash'))
+    for by_plug in item_plug_objectives.values():
+        for plug_hash, by_obj in by_plug.items():
+            if plug_hash in cat_hashes:
+                obj_hashes.update(by_obj.keys())
     for objectives in item_objectives.values():
         obj_hashes.update(objectives.keys())
     obj_defs = manifest_items.get_objective_defs(locale, list(obj_hashes))
@@ -308,31 +310,30 @@ def _build_catalysts(result: dict, locale: str) -> dict:
             inst_id = str(it.get('itemInstanceId') or '')
             plugs = item_socket_plugs.get(inst_id) or []
             objectives = item_objectives.get(inst_id) or {}
-            plug_objectives = item_plug_objectives.get(inst_id) or []
+            plug_objectives = item_plug_objectives.get(inst_id) or {}
 
-            # Цели катализатора: сначала по связке плаг→цель (компонент 309),
-            # затем — цели самого катализатора из манифеста, затем — все цели
-            # экземпляра (у экзотики это и есть цель катализатора).
-            cat_obj_hashes = [
-                e.get('objective_hash') for e in plug_objectives
-                if e.get('plug_hash') == cat['hash']
-            ]
-            if not cat_obj_hashes:
-                cat_obj_hashes = list(cat.get('objective_hashes') or [])
-            if not cat_obj_hashes:
-                cat_obj_hashes = list(objectives.keys())
+            # Цели катализатора и их реальный прогресс. Приоритет источников:
+            #  1) компонент 309 (plugObjectives) по плагу катализатора — там
+            #     реальные убийства/носители (500/700 и т.п.);
+            #  2) цели самого катализатора из манифеста (обычно шаги «0/1»);
+            #  3) все цели экземпляра из компонента 301.
+            cat_po = plug_objectives.get(cat['hash']) or {}
+            cat_obj_hashes = (list(cat_po.keys())
+                              or list(cat.get('objective_hashes') or [])
+                              or list(objectives.keys()))
 
             quests = []
             for oh in cat_obj_hashes:
-                od = objectives.get(oh)
-                if od is None:
+                # Прогресс: предпочитаем 309 (реальный), fallback на 301.
+                data = cat_po.get(oh) or objectives.get(oh)
+                if data is None:
                     continue
                 quests.append({
                     'text': (obj_defs.get(oh) or {}).get(
                         'progressDescription') or '',
-                    'progress': od.get('progress') or 0,
-                    'completion_value': od.get('completion_value') or 0,
-                    'complete': bool(od.get('complete')),
+                    'progress': data.get('progress') or 0,
+                    'completion_value': data.get('completion_value') or 0,
+                    'complete': bool(data.get('complete')),
                 })
 
             socketed = cat['hash'] in plugs
@@ -417,6 +418,8 @@ def destiny_collections():
             obtained=0,
             catalysts={},
             catalysts_json='{}',
+            is_admin='Admin' in user_rights(user['id']),
+            manifests_last_updated=get_manifests_last_updated(),
         )
     except Exception as exc:
         logger.exception('Ошибка построения дерева коллекций: %s', exc)
@@ -429,6 +432,8 @@ def destiny_collections():
             obtained=0,
             catalysts={},
             catalysts_json='{}',
+            is_admin='Admin' in user_rights(user['id']),
+            manifests_last_updated=get_manifests_last_updated(),
         )
 
     result = _inventory_result(user)
@@ -461,4 +466,24 @@ def destiny_collections():
         meta=meta,
         catalysts=catalysts,
         catalysts_json=catalysts_json,
+        is_admin='Admin' in user_rights(user['id']),
+        manifests_last_updated=get_manifests_last_updated(),
     )
+
+
+@bp.route('/destiny/collections/manifests/update', methods=['POST'])
+def manifests_update():
+    """AJAX: ручное обновление манифестов Destiny 2 (только админы)."""
+    user = current_user()
+    if user is None:
+        return flask.jsonify({'ok': False, 'error': 'Не авторизован'}), 401
+    if 'Admin' not in user_rights(user['id']):
+        return flask.jsonify({'ok': False, 'error': 'Недостаточно прав'}), 403
+    if not validate_csrf_json():
+        return flask.jsonify({'ok': False, 'error': 'Неверный CSRF-токен'}), 400
+
+    # Админ нажал кнопку явно — принудительно перекачиваем манифесты.
+    result = update_manifests(force=True)
+    if result.get('ok'):
+        result['last_updated'] = get_manifests_last_updated()
+    return flask.jsonify(result)

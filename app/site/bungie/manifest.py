@@ -21,7 +21,9 @@ import logging
 import os
 import sqlite3
 import threading
+import time
 import zipfile
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
@@ -37,6 +39,9 @@ COLLECTIONS_ROOT_HASH = 3790247699
 MANIFEST_FILE = paths.RESOURCES_DIR / 'manifest.content'
 SQLITE_FILE = paths.RESOURCES_DIR / 'manifest.sqlite3'
 
+# Маркер версии скачанного манифеста (версия из DestinyManifest Bungie).
+MANIFEST_VERSION_FILE = paths.RESOURCES_DIR / 'manifest_version.txt'
+
 # Доступные локали манифеста (код языка).
 LOCALES = ('en', 'ru')
 DEFAULT_LOCALE = 'en'
@@ -45,6 +50,9 @@ DEFAULT_LOCALE = 'en'
 MANIFEST_ENDPOINT = (
     'https://www.bungie.net/Platform/Destiny2/Manifest/'
 )
+
+# Еженедельный ресет Destiny: вторник 22:00 UTC+3 (= 19:00 UTC).
+WEEKLY_RESET_HOUR_UTC = 19
 
 # Подкаталог для кэша в resources/ (на случай, если хотим держать рядом).
 CACHE_DIR = paths.RESOURCES_DIR
@@ -110,11 +118,16 @@ def _fetch_manifest_url(locale: str = DEFAULT_LOCALE) -> str | None:
 
 def _download_manifest(locale: str = DEFAULT_LOCALE) -> None:
     """Скачивает и распаковывает манифест нужной локали в resources/."""
-    zip_path, sqlite_path = _manifest_paths(locale)
     url = _fetch_manifest_url(locale)
     if not url:
         raise ManifestError(
             f'Не удалось получить ссылку на манифест Bungie ({locale}).')
+    _download_manifest_url(locale, url)
+
+
+def _download_manifest_url(locale: str, url: str) -> None:
+    """Скачивает манифест по конкретному URL и атомарно сохраняет в resources/."""
+    zip_path, sqlite_path = _manifest_paths(locale)
 
     # Путь у Bungie абсолютный, начинается с '/', добавляем хост.
     full_url = url if url.startswith('http') else 'https://www.bungie.net' + url
@@ -160,6 +173,167 @@ def io_bytes(data: bytes) -> object:
     """Возвращает BytesIO-объект (для изоляции импорта в тестах)."""
     import io
     return io.BytesIO(data)
+
+
+# --------------------------------------------------------------------------- #
+# Версионирование и плановое/ручное обновление
+# --------------------------------------------------------------------------- #
+
+def _stored_version() -> str:
+    """Возвращает сохранённую версию манифеста (или '')."""
+    try:
+        return MANIFEST_VERSION_FILE.read_text(encoding='utf-8').strip()
+    except OSError:
+        return ''
+
+
+def _save_version(version: str) -> None:
+    """Сохраняет версию скачанного манифеста."""
+    try:
+        MANIFEST_VERSION_FILE.write_text(version, encoding='utf-8')
+    except OSError:
+        logger.warning('Не удалось сохранить версию манифеста: %s', version)
+
+
+def get_current_manifest_info() -> dict:
+    """Возвращает {'version': str, 'paths': {locale: url}} текущего манифеста.
+
+    ``paths`` — только для доступных локалей. При ошибке возвращает {}.
+    """
+    try:
+        resp = requests.get(MANIFEST_ENDPOINT, timeout=15)
+        resp.raise_for_status()
+        data = resp.json().get('Response') or {}
+        version = data.get('version') or ''
+        paths = data.get('mobileWorldContentPaths') or {}
+        return {
+            'version': version,
+            'paths': {loc: paths.get(loc) for loc in LOCALES
+                      if paths.get(loc)},
+        }
+    except (requests.RequestException, ValueError) as exc:
+        logger.warning('Не удалось получить информацию о манифесте: %s', exc)
+        return {}
+
+
+def update_manifests(force: bool = False) -> dict:
+    """Проверяет и (при необходимости) обновляет манифесты всех локалей.
+
+    ``force=False`` — скачивает только если версия Bungie отличается от
+    сохранённой (используется еженедельным планировщиком).
+    ``force=True`` — всегда перекачивает (кнопка «Обновить манифесты»).
+
+    Возвращает словарь: ok, updated, version, locales {locale: 'ok'|'error'|'skipped'},
+    error (None, если ok).
+    """
+    info = get_current_manifest_info()
+    if not info.get('paths'):
+        return {
+            'ok': False, 'updated': False, 'version': '', 'locales': {},
+            'error': 'Не удалось получить информацию о манифестах.',
+        }
+    version = info.get('version') or ''
+    if not force and version and version == _stored_version():
+        return {
+            'ok': True, 'updated': False, 'version': version,
+            'locales': {loc: 'skipped' for loc in LOCALES},
+            'error': None,
+        }
+
+    with _manifest_lock:
+        locales: dict[str, str] = {}
+        for loc in LOCALES:
+            url = info['paths'].get(loc)
+            if not url:
+                locales[loc] = 'error'
+                continue
+            try:
+                _download_manifest_url(loc, url)
+                locales[loc] = 'ok'
+            except ManifestError as exc:
+                logger.warning('Не удалось обновить манифест (%s): %s',
+                               loc, exc)
+                locales[loc] = 'error'
+        if any(v == 'ok' for v in locales.values()):
+            _save_version(version)
+
+    ok = any(v == 'ok' for v in locales.values())
+    return {
+        'ok': ok,
+        'updated': ok,
+        'version': version,
+        'locales': locales,
+        'error': None if ok else 'Не удалось обновить ни один манифест.',
+    }
+
+
+def get_manifests_last_updated() -> str | None:
+    """Время последнего обновления манифестов (UTC+3) или None."""
+    times = []
+    for loc in LOCALES:
+        _, sqlite_path = _manifest_paths(loc)
+        try:
+            times.append(sqlite_path.stat().st_mtime)
+        except OSError:
+            continue
+    if not times:
+        return None
+    tz_msk = timezone(timedelta(hours=3))  # UTC+3 (Москва)
+    return datetime.fromtimestamp(max(times), tz=tz_msk).strftime(
+        '%d.%m.%Y %H:%M')
+
+
+# --------------------------------------------------------------------------- #
+# Еженедельное обновление: вторник 22:00 UTC+3 (19:00 UTC)
+# --------------------------------------------------------------------------- #
+
+def _next_tuesday_19utc() -> datetime:
+    """Следующий вторник в 19:00 UTC (22:00 UTC+3)."""
+    now = datetime.now(timezone.utc)
+    # weekday(): Monday=0, Tuesday=1, ..., Sunday=6.
+    days_ahead = (1 - now.weekday()) % 7
+    target = (now + timedelta(days=days_ahead)).replace(
+        hour=WEEKLY_RESET_HOUR_UTC, minute=0, second=0, microsecond=0)
+    # Если сегодня вторник и время уже прошло — берём следующий вторник.
+    if days_ahead == 0 and now >= target:
+        target += timedelta(days=7)
+    return target
+
+
+def _manifest_scheduler_loop() -> None:
+    """Цикл: спит до следующего вторника 19:00 UTC, затем обновляет манифесты."""
+    while True:
+        try:
+            next_run = _next_tuesday_19utc()
+            delta = (next_run - datetime.now(timezone.utc)).total_seconds()
+            if delta > 0:
+                time.sleep(delta)
+            result = update_manifests(force=False)
+            logger.info('Плановое обновление манифестов: %s', result)
+        except Exception:
+            logger.exception('Ошибка в планировщике обновления манифестов')
+        # Защита от повторного срабатывания в ту же секунду/после ошибки.
+        time.sleep(60)
+
+
+_scheduler_started = False
+_scheduler_lock = threading.Lock()
+
+
+def start_manifest_scheduler() -> None:
+    """Запускает фоновый поток еженедельного обновления манифестов.
+
+    Идемпотентно: повторные вызовы ничего не делают.
+    """
+    global _scheduler_started
+    with _scheduler_lock:
+        if _scheduler_started:
+            return
+        _scheduler_started = True
+    thread = threading.Thread(target=_manifest_scheduler_loop,
+                              name='manifest-scheduler', daemon=True)
+    thread.start()
+    logger.info('Планировщик обновления манифестов запущен')
 
 
 def ensure_manifest(locale: str = DEFAULT_LOCALE) -> Path:
