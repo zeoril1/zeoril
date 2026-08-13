@@ -13,10 +13,19 @@ from app.site.bungie.config import BUNGIE_TOKEN_URL, bungie_config
 # 200 (Characters) — данные персонажей (класс, свет, эмблема),
 # 201 (CharacterInventories) — не-экипированные предметы персонажа
 #   (включая Lost Items / Special Deliveries почтмейстера),
+# 102 (ProfileInventories) — сейф (Vault): у игрока почти вся экзотика
+#   лежит в сейфе, без неё катализаторы находятся только у переносимых пушек.
 # 205 (CharacterEquipment) — экипированные предметы.
+# 301 (ItemObjectives) — цели/прогресс предметов (там живёт прогресс
+#   катализаторов экзотического оружия: убийства, носители и т.п.).
+# 305 (ItemSockets) — установленные в сокеты оружия плаги (plugHash),
+#   по ним определяется, установлен ли на экземпляре катализатор.
+# 309 (ItemPlugObjectives) — сопоставление установленных плагов с целями
+#   (socketIndex → plugItemHash + objectiveHash): по нему цель катализатора
+#   находится даже если у самого катализатора цели не прописаны.
 # 800 (Collectibles) — статусы коллекций игрока (собрано/не собрано).
 BUNGIE_PROFILE_URL = ('https://www.bungie.net/Platform/Destiny2/{membership_type}'
-                      '/Profile/{membership_id}/?components=200,201,205,800')
+                      '/Profile/{membership_id}/?components=102,200,201,205,301,305,309,800')
 
 
 # Почтмейстер (Lost Items) — это обычные предметы в компоненте
@@ -335,6 +344,115 @@ def _get_user_inventory_inner(user) -> dict:
 
 
 
+    # components=301 (ItemObjectives), 305 (ItemSockets) и 309
+    # (ItemPlugObjectives) — прогресс катализаторов экзотического оружия.
+    # В ответе они лежат под ключом itemComponents:
+    # itemComponents.{objectives,sockets,plugObjectives}.data =
+    # {<itemInstanceId>: {...}}.
+    #   objectives[instanceId].objectives — список целей (objectiveHash +
+    #   progress/completionValue/complete), в т.ч. цель катализатора;
+    #   sockets[instanceId].sockets — список сокетов, у каждого plugHash —
+    #   установленный в сокет плаг (для экзотики это катализатор);
+    #   plugObjectives[instanceId].objectivesPerPlug — массив
+    #   {socketIndex, plugItemHash, objectiveHash}: по нему цель катализатора
+    #   привязывается к плагу даже когда у самого катализатора цели нет.
+    item_components = data.get('itemComponents')
+    if not isinstance(item_components, dict):
+        item_components = {}
+
+    item_objectives: dict[str, dict[int, dict]] = {}
+    objectives_data = _component_data(item_components, 'objectives')
+    for instance_id, odata in objectives_data.items():
+        if not isinstance(odata, dict):
+            continue
+        objs = odata.get('objectives')
+        if not isinstance(objs, list):
+            continue
+        per: dict[int, dict] = {}
+        for obj in objs:
+            if not isinstance(obj, dict):
+                continue
+            try:
+                obj_hash = int(obj.get('objectiveHash'))
+            except (TypeError, ValueError):
+                continue
+            if not obj_hash:
+                continue
+            per[obj_hash] = {
+                'progress': obj.get('progress') or 0,
+                'completion_value': obj.get('completionValue') or 0,
+                'complete': bool(obj.get('complete', False)),
+            }
+        if per:
+            item_objectives[str(instance_id)] = per
+
+    item_socket_plugs: dict[str, list[int]] = {}
+    sockets_data = _component_data(item_components, 'sockets')
+    for instance_id, sdata in sockets_data.items():
+        if not isinstance(sdata, dict):
+            continue
+        sockets = sdata.get('sockets')
+        if not isinstance(sockets, list):
+            continue
+        plugs: list[int] = []
+        for socket in sockets:
+            if not isinstance(socket, dict):
+                continue
+            plug_hash = socket.get('plugHash')
+            if plug_hash is None:
+                continue
+            try:
+                plugs.append(int(plug_hash))
+            except (TypeError, ValueError):
+                continue
+        item_socket_plugs[str(instance_id)] = plugs
+
+    item_plug_objectives: dict[str, list[dict]] = {}
+    plug_objectives_data = _component_data(item_components, 'plugObjectives')
+    for instance_id, pdata in plug_objectives_data.items():
+        if not isinstance(pdata, dict):
+            continue
+        per_plug = pdata.get('objectivesPerPlug')
+        if not isinstance(per_plug, list):
+            continue
+        entries: list[dict] = []
+        for entry in per_plug:
+            if not isinstance(entry, dict):
+                continue
+            try:
+                plug_hash = int(entry.get('plugItemHash'))
+                obj_hash = int(entry.get('objectiveHash'))
+            except (TypeError, ValueError):
+                continue
+            if not plug_hash or not obj_hash:
+                continue
+            entries.append({
+                'plug_hash': plug_hash,
+                'objective_hash': obj_hash,
+            })
+        if entries:
+            item_plug_objectives[str(instance_id)] = entries
+
+
+    # components=202 (ProfileInventories) — сейф (Vault). Оружие из сейфа
+    # нужно для катализаторов: игрок хранит почти всю экзотику там, а в
+    # ``items`` попадает только экипировка и инвентари персонажей.
+    profile_inventory = _component_data(data, 'profileInventory')
+    vault: list[dict] = []
+    for entry in profile_inventory.get('items') or []:
+        if not isinstance(entry, dict):
+            continue
+        vault.append({
+            'itemInstanceId': entry.get('itemInstanceId'),
+            'itemHash': entry.get('itemHash'),
+            'quantity': entry.get('quantity', 1),
+            'bucket': entry.get('bucketHash'),
+            'location': entry.get('location'),
+            'character_id': None,
+            'equipped': False,
+        })
+
+
     # Информация о персонажах: класс (0=Титан, 1=Охотник, 2=Варлок),
     # уровень света и иконка эмблемы.
     characters: dict[str, dict] = {}
@@ -415,19 +533,30 @@ def _get_user_inventory_inner(user) -> dict:
 
 
     logger.info(
-        'Bungie инвентарь пользователя %s: items=%d, postmaster=%d, '
-        'collectibles=%d (profile=%d, chars=%d)',
-        user.get('id'), len(items), len(postmaster),
+        'Bungie инвентарь пользователя %s: items=%d, vault=%d, postmaster=%d, '
+        'collectibles=%d (profile=%d, chars=%d), objectives_instances=%d, '
+        'sockets_instances=%d, plug_objectives_instances=%d',
+        user.get('id'), len(items), len(vault), len(postmaster),
         len(collectible_states), len(profile_states), character_states_count,
+        len(item_objectives), len(item_socket_plugs),
+        len(item_plug_objectives),
     )
 
 
     return {
         'ok': True,
         'items': items,
+        # Предметы из сейфа (Vault) — отдельно, чтобы не ломать инвентарь.
+        'vault': vault,
         'postmaster': postmaster,
         'characters': characters,
         'collectible_states': collectible_states,
+        # Прогресс целей предметов (катализаторы) по itemInstanceId.
+        'item_objectives': item_objectives,
+        # Установленные в сокеты плаги (катализаторы) по itemInstanceId.
+        'item_socket_plugs': item_socket_plugs,
+        # Связки плаг -> цель (для поиска цели катализатора).
+        'item_plug_objectives': item_plug_objectives,
     }
 
 

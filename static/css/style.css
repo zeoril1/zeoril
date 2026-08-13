@@ -1790,3 +1790,171 @@ audio::-webkit-media-controls-enclosure { background: #fff; border-radius: 999px
   color: var(--text);
   word-break: break-word;
 }
+
+/* ---------- Катализатор в модалке коллекций ---------- */
+
+/* Бейдж статуса катализатора на плитке оружия (угол): ⚡ / ✓ / ✕ */
+.coll-tile-catalyst {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  z-index: 3;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 2px;
+  display: grid;
+  place-items: center;
+  font-size: 0.66rem;
+  line-height: 1;
+  font-weight: 800;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.62);
+  color: #fff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.4);
+  pointer-events: none;
+}
+
+/* Катализатор освоен — зелёная галочка */
+.coll-tile-catalyst-done {
+  background: rgba(34, 197, 94, 0.9);
+  color: #fff;
+}
+
+/* Катализатор есть у оружия, но не получен игроком — красный крестик */
+.coll-tile-catalyst-missing {
+  background: rgba(239, 68, 68, 0.9);
+  color: #fff;
+}
+
+/* Полоска прогресса катализатора внизу плитки */
+.coll-tile-catalyst-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  z-index: 3;
+  background: rgba(15, 23, 42, 0.22);
+  pointer-events: none;
+}
+.coll-tile-catalyst-bar {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #8b5cf6, #0ea5e9);
+  transition: width 0.3s ease;
+}
+.coll-tile:not(.coll-tile-obtained) .coll-tile-catalyst-progress {
+  background: rgba(15, 23, 42, 0.18);
+}
+.coll-tile:not(.coll-tile-obtained) .coll-tile-catalyst-bar {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.55), rgba(14, 165, 233, 0.55));
+}
+
+.catalyst-card {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(14, 165, 233, 0.06));
+}
+
+.catalyst-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.catalyst-icon-wrap {
+  flex: none;
+}
+.catalyst-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.14);
+}
+
+.catalyst-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+.catalyst-name {
+  font-weight: 800;
+  font-size: 0.98rem;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.catalyst-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.catalyst-status.is-complete { color: #22c55e; }
+.catalyst-status.is-progress { color: #f59e0b; }
+.catalyst-status.is-missing  { color: var(--text-muted); }
+
+.catalyst-desc {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.catalyst-quests {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.catalyst-quest {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.catalyst-quest-text {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.catalyst-quest-count {
+  margin-top: 4px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.catalyst-bar {
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.1);
+  overflow: hidden;
+}
+.catalyst-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #8b5cf6, #0ea5e9);
+  transition: width 0.3s ease;
+}
+
+.catalyst-quest-empty {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  font-style: italic;
+}

@@ -53,6 +53,26 @@
                 {% if not item['obtained'] %}
                     <span class="coll-tile-lock" aria-hidden="true"></span>
                 {% endif %}
+                {% if catalysts and item['name'] in catalysts %}
+                    {% set cat = catalysts[item['name']] %}
+                    {% if cat['status'] == 'progress' %}
+                        {# Катализатор в процессе: полоска прогресса снизу + ⚡ #}
+                        <span class="coll-tile-catalyst"
+                              title="Катализатор: {{ cat['name'] }} — {{ cat['progress_text'] or '' }}">⚡</span>
+                        <span class="coll-tile-catalyst-progress"
+                              title="Катализатор: {{ cat['name'] }} — {{ cat['progress_text'] or '' }}">
+                            <span class="coll-tile-catalyst-bar" style="width: {{ cat['progress_pct'] }}%"></span>
+                        </span>
+                    {% elif cat['status'] == 'complete' %}
+                        {# Катализатор освоен: галочка #}
+                        <span class="coll-tile-catalyst coll-tile-catalyst-done"
+                              title="Катализатор: {{ cat['name'] }} — освоен">✓</span>
+                    {% else %}
+                        {# Катализатор есть у оружия, но не получен: красный крестик #}
+                        <span class="coll-tile-catalyst coll-tile-catalyst-missing"
+                              title="Катализатор: {{ cat['name'] }} — не получен">✕</span>
+                    {% endif %}
+                {% endif %}
             </button>
         {%- endmacro %}
 
@@ -170,10 +190,29 @@
                             </a>
                         </div>
                     </div>
+
+                    {# Карточка катализатора (для экзотического оружия) #}
+                    <div class="catalyst-card collectible-modal-catalyst" hidden>
+                        <div class="catalyst-head">
+                            <div class="catalyst-icon-wrap">
+                                <img class="catalyst-icon" src="" alt="" onerror="this.style.display='none'">
+                            </div>
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="catalyst-label">Катализатор</div>
+                                <div class="catalyst-name"></div>
+                                <div class="catalyst-status"></div>
+                            </div>
+                        </div>
+                        <div class="catalyst-desc"></div>
+                        <div class="catalyst-quests"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    {# Данные о катализаторах (JSON для карточки при клике) #}
+    <script id="catalysts-data" type="application/json">{{ catalysts_json | safe }}</script>
 {% endblock %}
 
 {% block scripts %}
@@ -251,6 +290,108 @@
           link: modalEl.querySelector('.collectible-modal-link'),
         };
 
+        // Данные о катализаторах экзотического оружия.
+        let catalysts = {};
+        const catalystsData = document.getElementById('catalysts-data');
+        if (catalystsData) {
+          try { catalysts = JSON.parse(catalystsData.textContent || '{}'); }
+          catch (e) { catalysts = {}; }
+        }
+
+        const catalystCard = modalEl.querySelector('.collectible-modal-catalyst');
+        const catalystFields = {
+          icon: modalEl.querySelector('.catalyst-icon'),
+          name: modalEl.querySelector('.catalyst-name'),
+          status: modalEl.querySelector('.catalyst-status'),
+          desc: modalEl.querySelector('.catalyst-desc'),
+          quests: modalEl.querySelector('.catalyst-quests'),
+        };
+
+        // Заполняет карточку катализатора по данным из JSON.
+        function renderCatalyst(cat) {
+          if (!cat) {
+            catalystCard.hidden = true;
+            return;
+          }
+          catalystFields.name.textContent = cat.name || '';
+          catalystFields.desc.textContent = cat.description || '';
+
+          let statusText = '';
+          let statusClass = '';
+          if (cat.status === 'complete') {
+            statusText = '✅ Катализатор освоен';
+            statusClass = 'is-complete';
+          } else if (cat.status === 'progress') {
+            statusText = '🔧 Идёт прогресс';
+            statusClass = 'is-progress';
+          } else {
+            statusText = '🔒 Катализатор не получен';
+            statusClass = 'is-missing';
+          }
+          catalystFields.status.textContent = statusText;
+          catalystFields.status.className = 'catalyst-status ' + statusClass;
+
+          if (cat.icon) {
+            catalystFields.icon.src = 'https://www.bungie.net' + cat.icon;
+            catalystFields.icon.style.display = '';
+          } else {
+            catalystFields.icon.removeAttribute('src');
+            catalystFields.icon.style.display = 'none';
+          }
+
+          // Задания катализатора с прогрессом.
+          catalystFields.quests.textContent = '';
+          const quests = cat.quests || [];
+          if (quests.length === 0) {
+            if (cat.status === 'complete') {
+              const done = document.createElement('div');
+              done.className = 'catalyst-quest-empty';
+              done.textContent = 'Мастерворк полностью разблокирован.';
+              catalystFields.quests.appendChild(done);
+            } else {
+              const hint = document.createElement('div');
+              hint.className = 'catalyst-quest-empty';
+              hint.textContent = cat.description || 'Задания появятся после получения катализатора.';
+              catalystFields.quests.appendChild(hint);
+            }
+          } else {
+            quests.forEach(function (q) {
+              const wrap = document.createElement('div');
+              wrap.className = 'catalyst-quest';
+
+              if (q.text) {
+                const text = document.createElement('div');
+                text.className = 'catalyst-quest-text';
+                text.textContent = q.text;
+                wrap.appendChild(text);
+              }
+
+              const meta = document.createElement('div');
+              meta.className = 'catalyst-quest-count';
+              const total = q.completion_value || 0;
+              meta.textContent = q.complete
+                ? 'Готово'
+                : (q.progress || 0) + ' / ' + total;
+              wrap.appendChild(meta);
+
+              const barWrap = document.createElement('div');
+              barWrap.className = 'catalyst-bar';
+              const bar = document.createElement('div');
+              bar.className = 'catalyst-bar-fill';
+              const pct = total > 0
+                ? Math.min(100, Math.round((q.progress || 0) * 100 / total))
+                : (q.complete ? 100 : 0);
+              bar.style.width = pct + '%';
+              barWrap.appendChild(bar);
+              wrap.appendChild(barWrap);
+
+              catalystFields.quests.appendChild(wrap);
+            });
+          }
+
+          catalystCard.hidden = false;
+        }
+
         modalEl.addEventListener('show.bs.modal', function (event) {
           const btn = event.relatedTarget;
           if (!btn) return;
@@ -273,6 +414,10 @@
             fields.icon.removeAttribute('src');
             fields.icon.style.display = 'none';
           }
+
+          // Катализатор ищем по имени оружия (хэши у коллекции и у экземпляра
+          // игрока у легаси-версий могут отличаться).
+          renderCatalyst(catalysts[name] || null);
         });
       })();
     </script>
