@@ -10,28 +10,15 @@ from app.site.auth import logger
 from app.site.bungie.config import BUNGIE_TOKEN_URL, bungie_config
 
 
-# 200 (Characters) — данные персонажей (класс, свет, эмблема),
-# 201 (CharacterInventories) — не-экипированные предметы персонажа
-#   (включая Lost Items / Special Deliveries почтмейстера),
-# 102 (ProfileInventories) — сейф (Vault): у игрока почти вся экзотика
-#   лежит в сейфе, без неё катализаторы находятся только у переносимых пушек.
-# 205 (CharacterEquipment) — экипированные предметы.
-# 301 (ItemObjectives) — цели/прогресс предметов (там живёт прогресс
-#   катализаторов экзотического оружия: убийства, носители и т.п.).
-# 305 (ItemSockets) — установленные в сокеты оружия плаги (plugHash),
-#   по ним определяется, установлен ли на экземпляре катализатор.
-# 309 (ItemPlugObjectives) — сопоставление установленных плагов с целями
-#   (socketIndex → plugItemHash + objectiveHash): по нему цель катализатора
-#   находится даже если у самого катализатора цели не прописаны.
-# 800 (Collectibles) — статусы коллекций игрока (собрано/не собрано).
+# Компоненты профиля: 102 (сейф), 200 (персонажи), 201 (инвентари, включая
+# почтмейстер), 205 (экипировка), 301/305/309 (цели/сокеты/плаги — прогресс
+# катализаторов), 800 (коллекции).
 BUNGIE_PROFILE_URL = ('https://www.bungie.net/Platform/Destiny2/{membership_type}'
                       '/Profile/{membership_id}/?components=102,200,201,205,301,305,309,800')
 
 
-# Почтмейстер (Lost Items) — это обычные предметы в компоненте
-# CharacterInventories (201), у которых bucketHash указывает на
-# специальные bucket'ы почтмейстера. Определяем их именно по bucketHash:
-# это надёжный признак (поле location для этой задачи не подходит).
+# Почтмейстерские предметы (Lost Items) в 201 определяются по bucketHash
+# (поле location для этой задачи не подходит).
 POSTMASTER_BUCKETS = {215593132}
 
 
@@ -46,7 +33,6 @@ def _is_postmaster(entry: dict) -> bool:
         return int(bucket) in POSTMASTER_BUCKETS
     except (TypeError, ValueError):
         return False
-
 
 
 def _save_user_tokens(user_id, access_token: str, refresh_token: str,
@@ -197,29 +183,18 @@ def _component_data(data: dict, key: str) -> dict:
 
 
 def get_user_inventory(user) -> dict:
-
-
     """Возвращает инвентарь Destiny 2 пользователя через Bungie API.
 
-    ``user`` — запись из таблицы users (с полями bungie_membership_id,
-    bungie_membership_type, bungie_access_token, bungie_refresh_token,
-    bungie_token_expires).
+    ``user`` — запись из таблицы users (bungie_membership_id/type,
+    bungie_access_token/refresh_token, bungie_token_expires).
 
-    Возвращает словарь с ключами ``ok`` (bool), ``items`` (list[dict]),
-    ``postmaster`` (list[dict]) и ``characters`` (dict[character_id -> dict]):
-    каждый предмет — itemInstanceId, itemHash, quantity, bucket,
-    location (DestinyItemLocation: 3 = Postmaster), character_id;
-    каждый персонаж — class_type, light, emblem_path.
-
-    ``items`` содержит ТОЛЬКО обычный инвентарь/экипировку, а предметы
-    из почтмейстера — в ``postmaster`` (в ``items`` они не попадают,
-    чтобы не путаться со слотами оружия).
-
+    Возвращает словарь: ``ok`` (bool), ``items`` (обычный инвентарь и
+    экипировка), ``vault`` (сейф), ``postmaster`` (Lost Items), ``characters``
+    (class_type, light, emblem_path), а также collectible_states,
+    item_objectives, item_socket_plugs, item_plug_objectives (катализаторы).
     При ошибке возвращает ``ok=False`` и ``error`` (str).
 
-
-    Никогда не бросает исключений наружу — любые проблемы превращаются
-    в ``ok=False`` с логом (чтобы страница не падала в 500).
+    Никогда не бросает исключений наружу.
     """
     try:
         return _get_user_inventory_inner(user)
@@ -290,26 +265,16 @@ def _get_user_inventory_inner(user) -> dict:
         return {'ok': False, 'error': 'Не удалось получить инвентарь от Bungie.'}
 
 
-    # components=200 (Characters) — данные персонажей (класс, свет, эмблема),
-    # components=201 (CharacterEquipment) — экипировка,
-    # components=205 (CharacterInventories) — инвентари всех персонажей.
-    # Ответ Bungie имеет вид {"data": {<character_id>: {...}}, "privacy": N},
-    # поэтому берём именно вложенный словарь data (с защитой от мусора).
+    # components=200/201/205 (персонажи, инвентари, экипировка). Ответ Bungie —
+    # {"data": {<character_id>: {...}}}, берём вложенный словарь data.
     characters_data = _component_data(data, 'characters')
     character_equipment = _component_data(data, 'characterEquipment')
     character_inventories = _component_data(data, 'characterInventories')
 
-    # components=800 (Collectibles) — статусы коллекций игрока.
-    # Ответ Bungie для компонента 800 содержит ``profileCollectibles``
-    # (учётные записи на профиль) и ``characterCollectibles`` (на персонажа).
-    # Броня (особенно экзотическая) трекается ПО ПЕРСОНАЖУ и лежит только
-    # в characterCollectibles — в profileCollectibles её может не быть вовсе.
-    # Поэтому объединяем оба источника: предмет считается собранным, если
-    # он получен хотя бы одним персонажем или на профиле.
-    #
-    # state — битовая маска DestinyCollectibleState, где бит 1
-    # (NotObtained) означает «не получено». Предмет собран, если бит 1
-    # снят: (state & 1) == 0.
+    # components=800 (Collectibles). Броня трекается по персонажу (лежит в
+    # characterCollectibles), поэтому объединяем оба источника.
+    # state — битовая маска: бит 1 (NotObtained) = «не получено»,
+    # т.е. предмет собран при (state & 1) == 0.
     collectible_states: dict[int, int] = {}
 
     def _merge_collectibles(collectibles_data) -> None:
@@ -349,27 +314,12 @@ def _get_user_inventory_inner(user) -> dict:
         _merge_collectibles(char_entries)
 
 
-
-
-
-
-    # components=301 (ItemObjectives), 305 (ItemSockets) и 309
-    # (ItemPlugObjectives) — прогресс катализаторов экзотического оружия.
-    # В ответе они лежат под ключом itemComponents:
-    # itemComponents.{objectives,sockets,plugObjectives}.data =
-    # {<itemInstanceId>: {...}}.
-    #   objectives[instanceId].objectives — список целей (objectiveHash +
-    #   progress/completionValue/complete), в т.ч. цель катализатора;
-    #   sockets[instanceId].sockets — список сокетов, у каждого plugHash —
-    #   установленный в сокет плаг (для экзотики это катализатор);
-    #   plugObjectives[instanceId].objectivesPerPlug — массив
-    #   {socketIndex, plugItemHash, objectiveHash}: по нему цель катализатора
-    #   привязывается к плагу даже когда у самого катализатора цели нет.
-    #   plugObjectives[instanceId].objectivesPerPlug — СЛОВАРЬ
-    #   plugItemHash -> [ {objectiveHash, progress, completionValue, complete} ]:
-    #   по нему цель и прогресс катализатора привязываются к плагу даже когда
-    #   у самого катализатора цели в манифесте не прописаны (там обычно шаги
-    #   «0/1», а реальные убийства/носители живут именно здесь).
+    # components=301/305/309 — прогресс катализаторов (itemComponents):
+    # objectives[inst].objectives — цели (objectiveHash + прогресс),
+    # sockets[inst].sockets — установленные плаги (plugHash),
+    # plugObjectives[inst].objectivesPerPlug — словарь
+    # plugItemHash -> [{objectiveHash, progress, ...}]: реальные убийства
+    # катализатора, даже если у самого катализатора цели в манифесте нет.
     item_components = data.get('itemComponents')
     if not isinstance(item_components, dict):
         item_components = {}
@@ -459,10 +409,8 @@ def _get_user_inventory_inner(user) -> dict:
         if by_plug:
             item_plug_objectives[str(instance_id)] = by_plug
 
-
-    # components=202 (ProfileInventories) — сейф (Vault). Оружие из сейфа
-    # нужно для катализаторов: игрок хранит почти всю экзотику там, а в
-    # ``items`` попадает только экипировка и инвентари персонажей.
+    # components=202 (ProfileInventories) — сейф (Vault): почти вся экзотика
+    # игрока лежит там, а в ``items`` — только экипировка и инвентари.
     profile_inventory = _component_data(data, 'profileInventory')
     vault: list[dict] = []
     for entry in profile_inventory.get('items') or []:
@@ -477,7 +425,6 @@ def _get_user_inventory_inner(user) -> dict:
             'character_id': None,
             'equipped': False,
         })
-
 
     # Информация о персонажах: класс (0=Титан, 1=Охотник, 2=Варлок),
     # уровень света и иконка эмблемы.
@@ -500,7 +447,6 @@ def _get_user_inventory_inner(user) -> dict:
         НЕ попадают — они вырезаются из общего пула и собираются
         отдельно в ``postmaster`` (см. ниже).
         """
-
         for character_id, container in containers.items():
             if not isinstance(container, dict):
                 logger.warning('Bungie: пропущен контейнер персонажа %r '
@@ -528,16 +474,12 @@ def _get_user_inventory_inner(user) -> dict:
                     'equipped': equipped,
                 })
 
-
     # Собираем обычные предметы: сначала экипировку, затем инвентари.
     # Из них почтмейстерские предметы уже исключены.
     _collect(character_equipment, equipped=True)
     _collect(character_inventories, equipped=False)
 
-    # Почтмейстер (Lost Items / Special Deliveries) — это предметы из
-    # characterInventories (компонент 201), у которых bucketHash —
-    # почтмейстерский. Собираем их отдельно (в ``items`` они уже
-    # исключены в _collect выше).
+    # Почтмейстерские предметы (bucket почтмейстера в 201) собираем отдельно.
     postmaster: list[dict] = []
     for character_id, container in character_inventories.items():
         if not isinstance(container, dict):
@@ -568,7 +510,6 @@ def _get_user_inventory_inner(user) -> dict:
         len(item_plug_objectives),
     )
 
-
     return {
         'ok': True,
         'items': items,
@@ -584,7 +525,6 @@ def _get_user_inventory_inner(user) -> dict:
         # Связки плаг -> цель (для поиска цели катализатора).
         'item_plug_objectives': item_plug_objectives,
     }
-
 
 # Компоненты профиля для проверки «что есть у игрока» (лёгкий запрос без
 # прогресса катализаторов и коллекций): сейв, инвентари и экипировка.
@@ -607,7 +547,6 @@ def get_user_owned_hashes(user) -> tuple[bool, set[int]]:
         logger.exception('Непредвиденная ошибка при получении инвентаря '
                          'Bungie (owned): %s', exc)
         return False, set()
-
 
 def _get_user_owned_hashes_inner(user) -> tuple[bool, set[int]]:
     """Внутренняя реализация get_user_owned_hashes (без try/except)."""
@@ -675,6 +614,4 @@ def _get_user_owned_hashes_inner(user) -> tuple[bool, set[int]]:
     _collect(_component_data(data, 'characterInventories'))
     _collect(_component_data(data, 'characterEquipment'))
     return True, hashes
-
-
 
