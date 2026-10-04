@@ -90,13 +90,13 @@ services:
     # пересоздаётся с новым образом.
     image: zeoril:latest
     container_name: zeoril-bot
+    network_mode: "container:gluetun"
     command: python DiscordBot.py
     env_file:
       - path: .env
         required: false
-    extra_hosts:
-      # Доступ к конфиг-сервису на хосте (localhost:8420).
-      - "host.docker.internal:host-gateway"
+    environment:
+      CONFIG_SERVICE_URL: http://webenv:8420
     depends_on:
       db:
         condition: service_healthy
