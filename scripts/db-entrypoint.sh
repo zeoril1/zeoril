@@ -98,6 +98,9 @@ if [ -z "$PGUSER" ] || [ -z "$PGDATABASE" ]; then
     exit 1
 fi
 
+# Пользователь передаётся healthcheck'у docker-compose.
+printf '%s' "$PGUSER" > /tmp/pguser
+
 # Передаём параметры штатному docker-entrypoint.sh образа postgres.
 export POSTGRES_USER="$PGUSER"
 export POSTGRES_DB="$PGDATABASE"

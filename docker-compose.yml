@@ -47,8 +47,8 @@ services:
       - ./resources:/resources:ro
     restart: unless-stopped
     healthcheck:
-      # Порт берём из /tmp/pgport: PostgreSQL может слушать нестандартный порт.
-      test: ['CMD-SHELL', 'port=$$(cat /tmp/pgport 2>/dev/null || echo 5432); pg_isready -h 127.0.0.1 -p "$$port"']
+      # Пользователя берём из /tmp/pguser, порт — из /tmp/pgport.
+      test: ['CMD-SHELL', 'port=$$(cat /tmp/pgport 2>/dev/null || echo 5432); user=$$(cat /tmp/pguser) && pg_isready -h 127.0.0.1 -p "$$port" -U "$$user"']
       interval: 10s
       timeout: 5s
       retries: 5
