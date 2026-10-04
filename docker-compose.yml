@@ -65,6 +65,9 @@ services:
     env_file:
       - path: .env
         required: false
+    environment:
+      HTTPS_PROXY: http://gluetun:8888
+      NO_PROXY: localhost,127.0.0.1,db,webenv,host.docker.internal,192.168.88.0/24
     extra_hosts:
       # Доступ к конфиг-сервису на хосте (localhost:8420).
       - "host.docker.internal:host-gateway"
